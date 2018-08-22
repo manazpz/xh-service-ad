@@ -1,0 +1,17 @@
+*.iml
+*.swp
+.settings
+.DS_Store
+.idea
+.classpath
+.project
+log/*
+src/main/logs/*
+*.log
+target/
+rebel.xml
+.idea/workspace.xml
+depot/
+
+
+

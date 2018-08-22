@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="aq.dao.config.ConfigDao">
+
+    <!--插入配置表-->
+    <insert id="insertConfig" >
+        INSERT INTO system_config
+        VALUES(#{id},#{name},#{keyWord},#{num},#{type})
+    </insert>
+
+    <!--更新配置表-->
+    <update id="updateConfig" parameterType="java.util.Map">
+        UPDATE system_config sc
+        <trim prefix="set" suffixOverrides=",">
+            <if test="name!=null">
+                sc.NAME = #{name},
+            </if>
+            <if test="keyWord!=null">
+                sc.KEY_WORD = #{keyWord}
+            </if>
+            <if test="num!=null">
+                sc.NUM = #{num}
+            </if>
+            <if test="type!=null">
+                sc.TYPE = #{type}
+            </if>
+        </trim>
+        WHERE sc.ID = #{id}
+    </update>
+
+    <!--删除配置表-->
+    <delete id="deleteConfig"  parameterType="java.util.Map" >
+        DELETE FROM system_config WHERE ID = #{id}
+    </delete>
+
+    <!--查询配置表-->
+    <select id="selectConfig" resultType="java.util.Map" parameterType="java.util.Map">
+        SELECT
+          sc.ID AS id,
+          sc.NAME AS name,
+          sc.KEY_WORD AS keyWord,
+          sc.NUM AS num,
+          sc.TYPE AS type
+        FROM system_config sc
+        WHERE 1=1
+        <if test="name != null">
+            AND sc.NAME = #{name}
+        </if>
+        <if test="id != null">
+            AND sc.ID = #{id}
+        </if>
+        <if test="type != null">
+            AND sc.TYPE in (${type})
+        </if>
+    </select>
+
+</mapper>

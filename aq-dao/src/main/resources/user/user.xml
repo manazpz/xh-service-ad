@@ -1,0 +1,195 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="aq.dao.user.UserDao">
+
+    <!--新增用户信息-->
+    <insert id="insertUserInfo" >
+        INSERT INTO system_administrator
+        VALUES(#{id},#{nickName},#{headPortrait},#{userName},#{password},#{initPassword},#{phone}
+        ,#{weiXin},#{qq},#{name},#{idCard},#{email},#{status},#{createTime,jdbcType=TIMESTAMP}
+        ,#{updateTime,jdbcType=TIMESTAMP},'Y',#{remark})
+    </insert>
+
+    <!--查询用户信息-->
+    <select id="selectUserInfo" resultType="java.util.Map" parameterType="java.util.Map">
+        SELECT
+        sa.ID AS id,
+        sa.NICK_NAME AS nickName,
+        sat.FD_URL AS headPortrait,
+        sa.USER_NAME AS userName,
+        sa.PHONE AS phone,
+        sa.EMAIL AS email,
+        sa.WEI_XIN AS weiXin,
+        sa.QQ AS qq,
+        sa.NAME AS name,
+        sa.ID_CARD AS idCard,
+        sa.STATUS AS status,
+        sc.NAME AS statusName,
+        DATE_FORMAT(sa.CREATE_TIME,'%Y-%m-%d %H:%i:%S') AS createTime,
+        DATE_FORMAT(sa.UPDATE_TIME,'%Y-%m-%d %H:%i:%S') AS updateTime,
+        sa.IS_VALID AS isValid
+        FROM
+        system_administrator sa
+        LEFT JOIN system_config sc ON sc.KEY_WORD = sa. STATUS
+        LEFT JOIN system_token st on sa.ID = st.ADMINISTRATOR_ID
+        LEFT JOIN system_attachment sat ON sat.ID = sa.HEAD_PORTRAIT
+        WHERE 1=1
+        <if test="id != null">
+            AND sa.ID = #{id}
+        </if>
+        <if test="userName != null and userName != ''">
+            AND sa.USER_NAME LIKE CONCAT('%', #{userName}, '%')
+        </if>
+        <if test="nickName != null and nickName != ''">
+            AND sa.NICK_NAME LIKE CONCAT('%', #{nickName}, '%')
+        </if>
+        <if test="phone != null and phone != ''">
+            AND sa.PHONE LIKE CONCAT('%', #{phone}, '%')
+        </if>
+        <if test="status != null and status != ''">
+            AND sa.STATUS = #{status}
+        </if>
+        ORDER BY sa.IS_VALID ASC
+        <if test="sort != null">
+            ,#{sort}
+        </if>
+    </select>
+
+    <!--更新用户信息-->
+    <update id="updateUserInfo" parameterType="java.util.Map">
+        UPDATE system_administrator sa
+        <trim prefix="set" suffixOverrides=",">
+            <if test="nickName!=null and nickName != ''">
+                sa.NICK_NAME = #{nickName},
+            </if>
+            <if test="headPortrait!=null and headPortrait != ''">
+                sa.HEAD_PORTRAIT = #{headPortrait},
+            </if>
+            <if test="password!=null and password != ''">
+                sa.PASSWORD = #{password},
+            </if>
+            <if test="phone!=null and phone != ''">
+                sa.PHONE = #{phone},
+            </if>
+            <if test="weiXin!=null and weiXin != ''">
+                sa.WEI_XIN = #{weiXin},
+            </if>
+            <if test="qq!=null and qq != ''">
+                sa.QQ = #{qq},
+            </if>
+            <if test="name!=null and name != ''">
+                sa.NAME = #{name},
+            </if>
+            <if test="idCard!=null and idCard != ''">
+                sa.ID_CARD = #{idCard},
+            </if>
+            <if test="email!=null and email != ''">
+                sa.EMAIL = #{email},
+            </if>
+
+            <if test="status!=null and status != ''">
+                sa.STATUS = #{status},
+            </if>
+            <if test="updateTime!=null and updateTime != ''">
+                sa.UPDATE_TIME = #{updateTime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="remark!=null and remark != ''">
+                sa.REMARK = #{remark},
+            </if>
+        </trim>
+        WHERE sa.ID = #{id}
+    </update>
+
+    <!--删除/恢复用户信息-->
+    <update id="deleteUser" parameterType="java.util.Map">
+        UPDATE system_administrator sa
+        <trim prefix="set" suffixOverrides=",">
+            <if test="isValid!=null and isValid != ''">
+                sa.IS_VALID = #{isValid},
+            </if>
+        </trim>
+        WHERE sa.ID = #{id}
+    </update>
+
+    <!--查询权限-->
+    <select id="selectPermissionList" resultType="java.util.Map" parameterType="java.util.Map">
+        SELECT
+          sp.ID AS id,
+          sp.TYPE AS type,
+          sp.MODULE AS moduleKey,
+          sc.NAME AS moduleName,
+          sp.NAME AS name,
+          sp.DESCRIBE AS depict,
+          sp.IS_ENABLE AS isEnable,
+          DATE_FORMAT(sp.CREATE_TIME,'%Y-%m-%d %H:%i:%S') AS createTime
+        FROM
+        system_permission sp
+        INNER JOIN system_config sc on sp.MODULE = sc.KEY_WORD
+        WHERE 1=1
+        <if test="id != null">
+            AND sp.ID = #{id}
+        </if>
+        <if test="moduleKey != null and moduleKey != ''">
+            AND sp.MODULE = #{moduleKey}
+        </if>
+        <if test="depict != null and depict != ''">
+            AND sp.DESCRIBE LIKE CONCAT('%', #{depict}, '%')
+        </if>
+        ORDER BY sp.IS_ENABLE ASC, sp.MODULE ASC
+        <if test="sort != null">
+            ,#{sort}
+        </if>
+    </select>
+
+    <!--插入权限-->
+    <insert id="insertPermission" >
+        INSERT INTO system_permission
+        VALUES(#{id},#{type},#{module},#{name},#{depict},#{extend}
+        ,#{isEnable},#{createTime,jdbcType=TIMESTAMP})
+    </insert>
+
+    <!--更新权限-->
+    <update id="updatePermission" parameterType="java.util.Map">
+        UPDATE system_permission sp
+        <trim prefix="set" suffixOverrides=",">
+            <if test="depict!=null and depict != ''">
+                sp.DESCRIBE = #{depict},
+            </if>
+            <if test="isEnable!=null and isEnable != ''">
+                sp.IS_ENABLE = #{isEnable},
+            </if>
+            <if test="extend!=null and extend != ''">
+                sp.EXTEND = #{extend},
+            </if>
+        </trim>
+        WHERE sp.ID = #{id}
+    </update>
+
+    <!--查询用户权限-->
+    <select id="selectUserPermission" resultType="java.util.Map" parameterType="java.util.Map">
+        SELECT
+          ap.*
+        FROM
+        administrator_permission ap
+        WHERE 1=1 and ap.ADMINISTRATOR_ID  = #{userId}
+    </select>
+
+    <!--插入用户权限-->
+    <insert id="insertUserPermission" >
+        INSERT INTO administrator_permission
+        VALUES(#{userId},#{permissionId})
+    </insert>
+
+    <!--删除用户权限-->
+    <delete id="deleteUserPermission"  parameterType="java.util.Map" >
+        DELETE FROM administrator_permission WHERE 1=1
+        <if test="permissionId!=null and permissionId != ''">
+            AND ADMINISTRATOR_ID = #{userId} AND PERMISSION_ID = #{permissionId}
+        </if>
+        <if test="permissionId == null or permissionId == ''">
+            AND ADMINISTRATOR_ID = #{userId}
+        </if>
+    </delete>
+
+</mapper>

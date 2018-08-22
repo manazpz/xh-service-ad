@@ -1,0 +1,92 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:context="http://www.springframework.org/schema/context"
+       xmlns:tx="http://www.springframework.org/schema/tx" xmlns:aop="http://www.springframework.org/schema/aop"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans
+       http://www.springframework.org/schema/beans/spring-beans-3.0.xsd
+       http://www.springframework.org/schema/context
+       http://www.springframework.org/schema/context/spring-context-3.0.xsd
+       http://www.springframework.org/schema/tx
+       http://www.springframework.org/schema/tx/spring-tx-3.2.xsd http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop.xsd">
+    <context:component-scan base-package="aq.*">
+        <context:exclude-filter type="annotation" expression="org.springframework.stereotype.Controller" />
+    </context:component-scan>
+    <!--加载jdbc.properties配置文件-->
+    <bean id="propertyConfigurer"
+          class="org.springframework.beans.factory.config.PropertyPlaceholderConfigurer">
+        <property name="locations">
+            <list>
+                <value>classpath:jdbc.properties</value>
+                <value>classpath:server.properties</value>
+            </list>
+        </property>
+    </bean>
+    <!-- 定义数据源Bean，使用C3P0数据源实现-->
+        <!--Master-->
+        <bean id="dataSourceMaster" class="com.mchange.v2.c3p0.ComboPooledDataSource" destroy-method="close">
+        <property name="driverClass" value="${jdbc.master.driver}" />
+        <property name="jdbcUrl" value="${jdbc.master.url}" />
+        <property name="user" value="${jdbc.master.username}" />
+        <property name="password" value="${jdbc.master.password}" />
+        <property name="minPoolSize" value="${jdbc.minPoolSize}" />
+        <property name="maxPoolSize" value="${jdbc.maxPoolSize}" />
+        <!--初始化时获取三个连接，取值应在minPoolSize与maxPoolSize之间。Default: 3 -->
+        <property name="initialPoolSize" value="${jdbc.initialPoolSize}" />
+        <!--最大空闲时间,60秒内未使用则连接被丢弃。若为0则永不丢弃。Default: 0 -->
+        <property name="maxIdleTime" value="${jdbc.maxIdleTime}" />
+        <!--当连接池中的连接耗尽的时候c3p0一次同时获取的连接数。Default: 3 -->
+        <property name="acquireIncrement" value="${jdbc.acquireIncrement}" />
+        <!--定义在从数据库获取新连接失败后重复尝试的次数。Default: 30 -->
+        <property name="acquireRetryAttempts" value="${jdbc.acquireRetryAttempts}" />
+        <!--两次连接中间隔时间，单位毫秒。Default: 1000 -->
+        <property name="acquireRetryDelay" value="${jdbc.acquireRetryDelay}" />
+        <!--连接关闭时默认将所有未提交的操作回滚。Default: false -->
+        <property name="autoCommitOnClose" value="${jdbc.autoCommitOnClose}" />
+        <!--c3p0将建一张名为Test的空表，并使用其自带的查询语句进行测试。如果定义了这个参数那么
+        属性preferredTestQuery将被忽略。你不能在这张Test表上进行任何操作，它将只供c3p0测试
+        使用。Default: null
+        -->
+        <property name="preferredTestQuery" value="${jdbc.preferredTestQuery}" />
+        <!--当连接池用完时客户端调用getConnection()后等待获取新连接的时间，超时后将抛出
+        SQLException,如设为0则无限期等待。单位毫秒。Default: 0 -->
+        <property name="checkoutTimeout" value="${jdbc.checkoutTimeout}" />
+        <property name="testConnectionOnCheckin" value="${jdbc.testConnectionOnCheckin}" />
+        <property name="idleConnectionTestPeriod" value="${jdbc.idleConnectionTestPeriod}" />
+    </bean>
+    <!-- 创建SqlSessionFactory，同时指定数据源 -->
+    <bean id="sqlSessionFactory" class="org.mybatis.spring.SqlSessionFactoryBean">
+        <property name="dataSource" ref="dataSourceMaster" />
+        <property name="configLocation" value="classpath:mybatis-config.xml"></property>
+    </bean>
+    <!-- DAO接口所在包名，Spring会自动查找其下的类 ,包下的类需要使用@MapperScan注解,否则容器注入会失败 -->
+    <bean class="org.mybatis.spring.mapper.MapperScannerConfigurer">
+        <property name="basePackage" value="aq.dao.*" />
+        <property name="sqlSessionFactoryBeanName" value="sqlSessionFactory" />
+    </bean>
+    <bean id="transactionManager"  class="org.springframework.jdbc.datasource.DataSourceTransactionManager">
+        <property name="dataSource">
+            <ref bean="dataSourceMaster" />
+        </property>
+    </bean>
+    <tx:annotation-driven transaction-manager="transactionManager" />
+    <!-- 事务模板 -->
+    <tx:advice id="txAdvice" transaction-manager="transactionManager">
+        <tx:attributes>
+            <!-- 以下方法必须在事务内，如果外层已有事务，则使用外层事务，如果没有事务则创建 -->
+            <tx:method name="select*"   propagation="REQUIRED"  read-only="true"/>
+            <tx:method name="query*"    propagation="REQUIRED"  read-only="true"/>
+            <tx:method name="list*"     propagation="REQUIRED"  read-only="true"/>
+            <tx:method name="insert*" 	propagation="REQUIRED"  rollback-for="java.lang.Exception"/>
+            <tx:method name="delete*" 	propagation="REQUIRED"  rollback-for="java.lang.Exception"/>
+            <tx:method name="update*" 	propagation="REQUIRED"  rollback-for="java.lang.Exception"/>
+            <tx:method name="do*"       propagation="REQUIRED"  rollback-for="java.lang.Exception"/>
+            <tx:method name="*"         propagation="REQUIRED"  read-only="true"/>
+        </tx:attributes>
+    </tx:advice>
+    <aop:config>
+        <aop:pointcut expression="execution(* aq.service.*.impl.*.*(..))"
+                      id="serviceOpertation" />
+        <aop:advisor advice-ref="txAdvice" pointcut-ref="serviceOpertation" />
+    </aop:config>
+</beans>

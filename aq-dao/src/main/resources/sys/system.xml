@@ -1,0 +1,183 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="aq.dao.system.SystemDao">
+
+    <!--插入令牌-->
+    <insert id="insertSytToken" >
+        INSERT INTO system_token
+        VALUES(#{administratorId},#{token},#{exptime,jdbcType=TIMESTAMP},#{refreshToken})
+    </insert>
+
+    <!--查询令牌-->
+    <select id="selectSysToken" resultType="java.util.Map" parameterType="java.util.Map">
+        SELECT
+          st.ADMINISTRATOR_ID as administratorId,
+          st.TOKEN as token,
+          st.EXPTIME as exptime,
+          st.REFRESH_TOKEM as refreshToken
+        from system_token  st
+        WHERE 1=1
+        <if test="administratorId != null">
+            AND st.ADMINISTRATOR_ID = #{administratorId}
+        </if>
+        <if test="refresh != null">
+            AND st.REFRESH_TOKEM = #{refresh}
+        </if>
+        <if test="token != null">
+            AND st.TOKEN = #{token}
+        </if>
+    </select>
+
+    <!--更新令牌-->
+    <update id="updateSytToken" parameterType="java.util.Map">
+        UPDATE system_token
+        <trim prefix="set" suffixOverrides=",">
+            <if test="token!=null">
+                TOKEN = #{token},
+            </if>
+            <if test="exptime!=null">
+                EXPTIME = #{exptime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="refreshToken!=null">
+                REFRESH_TOKEM = #{refreshToken}
+            </if>
+        </trim>
+        WHERE REFRESH_TOKEM = #{refresh}
+    </update>
+
+    <!--删除令牌-->
+    <delete id="deleteSytToken"  parameterType="java.util.Map" >
+        DELETE FROM system_token WHERE ADMINISTRATOR_ID = #{administratorId}
+    </delete>
+
+    <!--登录-->
+    <select id="selectSysLogin" resultType="java.util.Map" parameterType="java.util.Map">
+        SELECT * FROM system_administrator sa WHERE sa.USER_NAME = #{userName} AND sa.IS_VALID = 'Y'
+    </select>
+
+    <!--查询用户信息-->
+    <select id="selectUserInfo" resultType="java.util.Map" parameterType="java.util.Map">
+        SELECT
+            sa.ID AS id,
+            sa.NICK_NAME AS nickName,
+            sat.FD_URL AS headPortrait,
+            sa.USER_NAME AS userName,
+            sa.PHONE AS phone,
+            sa.EMAIL AS email,
+            sa.WEI_XIN AS weiXin,
+            sa.QQ AS qq,
+            sa.STATUS AS statusKey,
+            sc.NAME AS statusName,
+            DATE_FORMAT(sa.CREATE_TIME,'%Y-%m-%d %H:%i:%S') AS createTime,
+            DATE_FORMAT(sa.UPDATE_TIME,'%Y-%m-%d %H:%i:%S') AS updateTime,
+            sa.IS_VALID AS isValid
+        FROM
+            system_administrator sa
+        INNER JOIN system_token st on sa.ID = st.ADMINISTRATOR_ID
+        LEFT JOIN system_config sc ON sc.KEY_WORD = sa.STATUS
+        LEFT JOIN system_attachment sat ON sat.ID = sa.HEAD_PORTRAIT
+        WHERE sa.IS_VALID = 'Y' AND st.TOKEN = #{token}
+    </select>
+
+    <!--查询用户拥有的权限-->
+    <select id="selectSysPermissionUser" resultType="java.util.Map" parameterType="java.util.Map">
+        SELECT
+          sp.ID AS id,
+          sp.TYPE AS type,
+          sp.MODULE AS module,
+          sp.NAME as name,
+          sp.EXTEND AS extend,
+          sp.IS_ENABLE AS isEnable
+        FROM
+        system_permission sp
+        INNER JOIN administrator_permission ap ON sp.ID = ap.PERMISSION_ID
+        WHERE ap.ADMINISTRATOR_ID = #{administratorId} AND sp.IS_ENABLE = 'Y'
+        <if test="type != null">
+            AND (sp.TYPE = #{type} or sp.MODULE = 'AM')
+        </if>
+    </select>
+
+    <!--获取密码-->
+    <select id="selectPassword" resultType="java.util.Map" parameterType="java.util.Map">
+        SELECT
+        sa.PASSWORD AS pwd,
+        sa.INIT_PASSWORD AS initPwd
+        FROM
+        system_administrator sa
+        WHERE sa.ID = #{id} AND sa.IS_VALID = 'Y'
+    </select>
+
+    <!--更新用户信息-->
+    <update id="updateUser" parameterType="java.util.Map">
+        UPDATE system_administrator sa
+        <trim prefix="set" suffixOverrides=",">
+            <if test="headPortrait!=null and headPortrait != ''">
+                sa.HEAD_PORTRAIT = #{headPortrait},
+            </if>
+            <if test="password!=null and password != ''">
+                sa.PASSWORD = #{password},
+            </if>
+            <if test="updateTime!=null and updateTime != ''">
+                sa.UPDATE_TIME = #{updateTime,jdbcType=TIMESTAMP},
+            </if>
+        </trim>
+        WHERE sa.ID = #{id}
+    </update>
+
+    <!--获取权限信息-->
+    <select id="selectSysPermissionInfo" resultType="java.util.Map" parameterType="java.util.Map">
+        SELECT
+            sp.ID AS id,
+            sp.TYPE AS type,
+            sp.MODULE AS module,
+            sp.NAME as name,
+            sp.DESCRIBE as depict,
+            sp.EXTEND AS extend,
+            sp.IS_ENABLE AS isEnable
+        FROM
+        system_permission sp
+        WHERE sp.ID = #{id} AND sp.IS_ENABLE = 'Y'
+    </select>
+
+    <!--插入附件-->
+    <insert id="insertAttachment" >
+        INSERT INTO system_attachment
+        VALUES(#{id},#{type},#{refId},#{url},#{extend},#{size},#{createUser},#{lastCreateUser},#{createTime,jdbcType=TIMESTAMP}
+        ,#{lastCreateTime,jdbcType=TIMESTAMP},#{remarks})
+    </insert>
+
+    <!--开关设置-->
+    <update id="updateSwitch" parameterType="java.util.Map">
+        UPDATE system_switch sw
+        <trim prefix="set" suffixOverrides=",">
+            <if test="isSwitch!=null and isSwitch != ''">
+                sw.IS_SWITCH = #{isSwitch},
+            </if>
+            <if test="updateTime!=null and updateTime != ''">
+                sw.UPDATE_TIME = #{updateTime,jdbcType=TIMESTAMP},
+            </if>
+        </trim>
+        WHERE sw.ID = #{id}
+    </update>
+
+    <!--查询开关-->
+    <select id="selectSwitch" resultType="java.util.Map" parameterType="java.util.Map">
+        SELECT
+        sw.ID AS id,
+        sw.NAME AS name,
+        sw.type AS type,
+        sc.NAME AS typeName,
+        sw.IS_SWITCH AS isSwitch,
+        DATE_FORMAT(sw.CREATE_TIME,'%Y-%m-%d %H:%i:%S') AS createTime,
+        DATE_FORMAT(sw.UPDATE_TIME,'%Y-%m-%d %H:%i:%S') AS updateTime
+        FROM
+        system_switch sw
+        LEFT JOIN system_config sc on sc.KEY_WORD = sw.TYPE
+        WHERE 1=1
+        <if test="type!=null and type != ''">
+            AND sw.TYPE = #{type}
+        </if>
+        ORDER BY sw.IS_SWITCH DESC
+    </select>
+</mapper>
