@@ -1,7 +1,5 @@
 package aq.service.system.Impl;
 
-import aq.common.access.AbsAccessUser;
-import aq.common.access.Factory;
 import aq.common.annotation.DyncDataSource;
 import aq.common.other.Rtn;
 import aq.common.util.GsonHelper;

@@ -8,7 +8,6 @@ import aq.common.util.GsonHelper;
 import aq.common.util.StringUtil;
 import aq.service.system.SystemService;
 import com.google.gson.JsonArray;
-import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import org.springframework.web.method.HandlerMethod;
 
@@ -63,6 +62,19 @@ public class RequestFilter extends aq.common.interceptor.RequestFilter {
                     users = userJson.get("data").getAsJsonObject();
                 }
 
+                //判断站点
+                if (!"AD".equals(users.get("statusKey").getAsString())) {
+                    res.addProperty("type","WS");
+                    JsonObject webJson = systemService.querySwitch(res);
+                    if(webJson != null && ((JsonObject)webJson.get("data")).get("items").getAsJsonArray().size() > 0) {
+                        JsonObject item = (JsonObject) ((JsonObject)webJson.get("data")).get("items").getAsJsonArray().get(0);
+                        if("N".equals(item.get("isSwitch").getAsString())) {
+                            response.sendError(HttpServletResponse.SC_FORBIDDEN, "Web Close");
+                            return false;
+                        }
+                    }
+                }
+
                 //获取权限
                 PermissionCollection ap = null;
                 res.addProperty("administratorId", users.get("id").getAsString());
@@ -86,9 +98,10 @@ public class RequestFilter extends aq.common.interceptor.RequestFilter {
                 AccessUser accessUser = new AccessUser("",ticket, users.get("userName").getAsString(), users.get("nickName").getAsString(), ap, AuthType.ALIPAY, "");
                 Factory.getContext().login(accessUser);
             }
-            Boolean flag = false;
+
             //校验权限
             if(permission != null) {
+                Boolean flag = false;
                 AccessUser accessUser = (AccessUser) context.user();
                 PermissionCollection permissionCollection = accessUser.getPermissionCollection();
                 if (permissionCollection == null) {
@@ -96,7 +109,7 @@ public class RequestFilter extends aq.common.interceptor.RequestFilter {
                 }else {
                     List<aq.common.access.Permission> allPermission = permissionCollection.getAllPermission();
                     for (aq.common.access.Permission obj : allPermission) {
-                        if("AM".equals(obj.getModule()))      {
+                        if("AM".equals(obj.getModule())) {
                             flag = true;
                             break;
                         }
@@ -118,17 +131,6 @@ public class RequestFilter extends aq.common.interceptor.RequestFilter {
                     }
                 }
                 request.setAttribute("AM",flag);
-            }
-            if(!flag) {
-                res.addProperty("type","WS");
-                JsonObject webJson = systemService.querySwitch(res);
-                if(webJson != null && ((JsonObject)webJson.get("data")).get("items").getAsJsonArray().size() > 0) {
-                    JsonObject item = (JsonObject) ((JsonObject)webJson.get("data")).get("items").getAsJsonArray().get(0);
-                    if("N".equals(item.get("isSwitch").getAsString())) {
-                        response.sendError(HttpServletResponse.SC_HTTP_VERSION_NOT_SUPPORTED, "Web Close");
-                        return false;
-                    }
-                }
             }
         }
         return isAccessed;

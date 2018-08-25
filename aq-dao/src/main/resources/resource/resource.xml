@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="aq.dao.resource.ResourceDao">
+
+    <!--查询附件-->
+    <select id="selectResource" resultType="java.util.Map" parameterType="java.util.Map">
+        SELECT
+        sa.ID AS id,
+        sa.FD_NAME AS name,
+        sa.FD_TYPE AS type,
+        sc. NAME AS typeName,
+        sa.FD_REF_ID AS refId,
+        sa.FD_URL AS url,
+        sa.FD_EXTEND AS extend,
+        sa.FD_SIZE AS size,
+        sa.CREATE_USER AS createUserId,
+        cu.NICK_NAME AS createUserName,
+        sa.LAST_CREATE_USER AS lastCreateUserId,
+        lcu.NICK_NAME AS lastCreateUserName,
+        DATE_FORMAT(
+        sa.CREATE_TIME,
+        '%Y-%m-%d %H:%i:%S'
+        ) AS createTime,
+        DATE_FORMAT(
+        sa.LAST_CREATE_TIME,
+        '%Y-%m-%d %H:%i:%S'
+        ) AS lastcreateTime
+        FROM
+        system_attachment sa
+        LEFT JOIN system_config sc ON sc.KEY_WORD = sa.FD_TYPE
+        LEFT JOIN system_administrator cu ON cu.ID = sa.CREATE_USER
+        LEFT JOIN system_administrator lcu ON lcu.ID = sa.LAST_CREATE_USER
+        WHERE 1=1
+        <if test="type != null">
+            AND sa.FD_TYPE = #{type}
+        </if>
+        <if test="id != null">
+            AND sa.ID = #{id}
+        </if>
+        <if test="refId != null">
+            AND sa.FD_REF_ID = #{refId}
+        </if>
+        ORDER BY sa.FD_TYPE DESC,sa.LAST_CREATE_TIME DESC
+    </select>
+
+</mapper>

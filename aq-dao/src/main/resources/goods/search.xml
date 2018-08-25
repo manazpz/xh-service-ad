@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="aq.dao.goods.SearchDao">
+
+    <!--搜索型号-->
+    <select id="selectSearchSpec" resultType="java.util.Map" parameterType="java.util.Map">
+        SELECT
+        XSP. NAME AS name,
+        XSP.VALUE AS value
+        FROM
+        (
+        SELECT
+        XSM.BASIC_ID AS basicId,
+        SUM(XSO.NUM) AS num
+        FROM
+        XH_STOCK_OUT XSO
+        INNER JOIN XH_STOCK_MAIN XSM ON XSM.ID = XSO.ID
+        GROUP BY XSO.ID
+        ) AS A
+        INNER JOIN XH_GOODS_SPEC XGS ON XGS.GOODS_ID = A.basicId
+        LEFT JOIN XH_SPEC_P XSP ON XSP.VALUE = XGS.GOODS_SPEC_VALUE
+        INNER JOIN XH_SPEC_H XSH ON XSH.ID = XSP.ID AND XSH.BRAND_ID IS NOT NULL AND XSH.BRAND_ID != ''
+        ORDER BY A.num DESC
+    </select>
+
+</mapper>

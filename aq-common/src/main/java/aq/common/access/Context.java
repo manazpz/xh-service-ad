@@ -1,13 +1,9 @@
 package aq.common.access;
 
-import aq.common.util.DES;
-import aq.common.util.StringUtil;
+
 import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
-
-import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
-import java.net.URLDecoder;
 
 /**
  * 上下文对象 建议放到各自项目的Web层（如果每个Web层处理逻辑有差异的话）

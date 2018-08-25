@@ -53,6 +53,9 @@
         <if test="type != null">
             AND sc.TYPE in (${type})
         </if>
+        <if test="keyWord != null">
+            AND sc.KEY_WORD = #{keyWord}
+        </if>
     </select>
 
 </mapper>

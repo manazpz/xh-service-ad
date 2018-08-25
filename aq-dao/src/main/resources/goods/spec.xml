@@ -1,0 +1,91 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="aq.dao.goods.SpecDao">
+
+    <!--查询规格视图-->
+    <select id="selectGoodsSpec" resultType="java.util.Map" parameterType="java.util.Map">
+        SELECT
+        XGS.ID AS id,
+        XGS.GOODS_SPEC_NAME AS specName,
+        XGS.GOODS_SPEC_VALUE AS specValue,
+        XGS.GOODS_WEIGHT AS weight,
+        XGS.GOODS_BAN_PRICE AS banPrice,
+        XGS.GOODS_CORRENT_PRICE AS correntPrice,
+        XGS.GOODS_MIN_PRICE AS minPrice,
+        XGS.GOODS_CAPPED_PRICE AS cappedPrice,
+        XGS.GOODS_PRICE AS price,
+        XGS.REMARKS AS remarks
+        FROM
+        XH_GOODS_SPEC XGS
+        WHERE 1=1
+        <if test="goodsId != null">
+            AND XGS.GOODS_ID = #{goodsId}
+        </if>
+        <if test="id != null">
+            AND XGS.ID = #{id}
+        </if>
+    </select>
+
+    <!--查询规格主数据-->
+    <select id="selectSpecH" resultType="java.util.Map" parameterType="java.util.Map">
+        SELECT
+        XSH.ID AS id,
+        XSH.GROU_NAME AS grouName,
+        XSH.SPEC_NAME AS specName,
+        XSH.BRAND_ID AS brandId,
+        XSH.TYPE AS type,
+        XSH.REMARKS AS remarks,
+        XB.CREATE_USER AS createUserId,
+        cu.NICK_NAME AS createUserName,
+        XB.LAST_CREATE_USER AS lastCreateUserId,
+        lcu.NICK_NAME AS lastCreateUserName,
+        DATE_FORMAT(
+        XB.CREATE_TIME,
+        '%Y-%m-%d %H:%i:%S'
+        ) AS createTime,
+        DATE_FORMAT(
+        XB.LAST_CREATE_TIME,
+        '%Y-%m-%d %H:%i:%S'
+        ) AS lastcreateTime
+        FROM
+        XH_SPEC_H XSH
+        LEFT JOIN XH_BRAND XB ON XB.ID = XSH.BRAND_ID
+        LEFT JOIN system_administrator cu ON cu.ID = XB.CREATE_USER
+        LEFT JOIN system_administrator lcu ON lcu.ID = XB.LAST_CREATE_USER
+        WHERE 1=1
+        <if test="id != null">
+            AND XSH.ID = #{id}
+        </if>
+        <if test="brandId != null">
+            AND XSH.BRAND_ID = #{brandId}
+        </if>
+        ORDER BY XSH.GROU_NAME DESC,XSH.LAST_CREATE_TIME DESC
+    </select>
+
+    <!--查询规格主数据明细-->
+    <select id="selectSpecP" resultType="java.util.Map" parameterType="java.util.Map">
+        SELECT
+        XSH.ID AS grouid,
+        XSH.GROU_NAME AS grouName,
+        XSP.ID AS id,
+        XSP. NO AS NO,
+        XSP. NAME AS name,
+        XSP. VALUE AS value,
+        XSP.REMARKS AS remarks
+        FROM
+        XH_SPEC_H XSH
+        LEFT JOIN XH_SPEC_P XSP ON XSP.ID = XSH.ID
+        WHERE 1=1
+        <if test="brandId != null">
+            AND XSH.BRAND_ID = #{brandId}
+        </if>
+        <if test="id != null">
+            AND XSH.ID = #{id}
+        </if>
+        <if test="name != null">
+            AND XSP.NAME = #{name}
+        </if>
+    </select>
+
+</mapper>
