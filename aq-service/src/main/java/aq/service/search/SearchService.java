@@ -1,4 +1,4 @@
-package aq.service.goods;
+package aq.service.search;
 
 import aq.service.base.BaseService;
 import com.google.gson.JsonObject;

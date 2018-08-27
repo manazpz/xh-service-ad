@@ -11,6 +11,13 @@ public interface GoodsService extends BaseService {
     //查询商品
     JsonObject queryGoods(JsonObject jsonObject);
 
-    //查询机型
-    JsonObject queryModel(JsonObject jsonObject);
+    //查询商品选择
+    JsonObject queryChoices(JsonObject jsonObject);
+
+    //获取商品规格列表
+    JsonObject querygoodsSpecs(JsonObject jsonObject);
+
+    //商品估价
+    JsonObject evaluates(JsonObject jsonObject);
+
 }

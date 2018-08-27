@@ -15,5 +15,4 @@ public interface GoodsDao {
     List<Map<String,Object>> selectBrand(Map<String,Object> map);
 
 
-
 }

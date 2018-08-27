@@ -1,10 +1,10 @@
-package aq.service.goods.Impl;
+package aq.service.search.Impl;
 
 import aq.common.annotation.DyncDataSource;
 import aq.dao.config.ConfigDao;
 import aq.dao.goods.SearchDao;
 import aq.service.base.Impl.BaseServiceImpl;
-import aq.service.goods.SearchService;
+import aq.service.search.SearchService;
 import com.google.gson.JsonObject;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;

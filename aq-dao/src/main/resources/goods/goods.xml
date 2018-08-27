@@ -8,10 +8,10 @@
         SELECT
         XGM.ID AS id,
         XGM. CODE AS CODE,
-        XGM.OUT_CODE AS outCode,
         XGM.SHOP_ID AS shopId,
         XSM. NAME AS shopName,
         XGM. NAME AS name,
+        XGM.BAN_PRICE AS banPrice,
         XGM.BRAND_ID AS brandId,
         XB. NAME AS brandName,
         XGM.CLASSIFY_ID AS classifyId,
@@ -20,9 +20,24 @@
         XGM.UNIT AS unit,
         sc. NAME AS unitName,
         XGM.LOGISTCS AS logistcs,
-        XGM. STATUS AS STATUS,
-        SK.CURRENT_STOCK AS currentStock,
-        SK.USEABLE_STOCK AS useableStock,
+        XGM. STATUS AS status,
+        XGM.SPEC_PARAMETER AS specParameter,
+        (
+        CASE
+        WHEN SK.CURRENT_STOCK IS NULL THEN
+        0
+        ELSE
+        SK.CURRENT_STOCK
+        END
+        ) AS currentStock,
+        (
+        CASE
+        WHEN SK.USEABLE_STOCK IS NULL THEN
+        0
+        ELSE
+        SK.USEABLE_STOCK
+        END
+        ) AS useableStock,
         XGM.REMARKS AS remarks,
         XGM.CREATE_USER AS createUserId,
         cu.NICK_NAME AS createUserName,
@@ -38,13 +53,10 @@
         ) AS lastcreateTime
         FROM
         XH_GOODS_MAIN XGM
-        INNER JOIN XH_STOCK_MAIN SK ON SK.BASIC_ID = XGM.ID
-        AND SK.CURRENT_STOCK > 0
-        AND SK.USEABLE_STOCK > 0
+        LEFT JOIN XH_STOCK_MAIN SK ON SK.BASIC_ID = XGM.ID
         LEFT JOIN XH_SHOPS_MAIN XSM ON XSM.ID = XGM.SHOP_ID
         LEFT JOIN XH_BRAND XB ON XB.ID = XGM.BRAND_ID
         LEFT JOIN XH_CLASSIFY XC ON XC.ID = XGM.CLASSIFY_ID
-        LEFT JOIN XH_GOODS_SPEC XGS ON XGS.GOODS_ID = XGM.ID
         LEFT JOIN system_config sc ON sc.KEY_WORD = XGM.UNIT
         LEFT JOIN system_administrator cu ON cu.ID = XGM.CREATE_USER
         LEFT JOIN system_administrator lcu ON lcu.ID = XGM.LAST_CREATE_USER
@@ -55,8 +67,11 @@
         <if test="id != null">
             AND XGM.ID = #{id}
         </if>
-        <if test="specValue != null">
-            AND XGS.GOODS_SPEC_VALUE = #{specValue}
+        <if test="brandId != null">
+            AND XGM.BRAND_ID = #{brandId}
+        </if>
+        <if test="name != null">
+            AND XGM. NAME = #{name}
         </if>
         ORDER BY XB.NAME DESC,XGM.LAST_CREATE_TIME DESC,XGM.MODEL DESC
     </select>

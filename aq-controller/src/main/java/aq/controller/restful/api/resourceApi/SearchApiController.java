@@ -2,7 +2,7 @@ package aq.controller.restful.api.resourceApi;
 
 import aq.common.util.HttpUtil;
 import aq.common.util.StringUtil;
-import aq.service.goods.SearchService;
+import aq.service.search.SearchService;
 import com.google.gson.JsonObject;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
