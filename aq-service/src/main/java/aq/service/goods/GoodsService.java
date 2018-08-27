@@ -20,4 +20,15 @@ public interface GoodsService extends BaseService {
     //商品估价
     JsonObject evaluates(JsonObject jsonObject);
 
+    //添加置换车
+    JsonObject insertReplacementCar(JsonObject jsonObject);
+
+    //添加置换车
+    JsonObject updateReplacementCar(JsonObject jsonObject);
+
+    //查询置换车
+    JsonObject queryReplacementCar(JsonObject jsonObject);
+
+    //删除置换车
+    JsonObject deleteReplacementCar(JsonObject jsonObject);
 }

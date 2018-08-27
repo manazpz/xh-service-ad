@@ -106,4 +106,72 @@
         ORDER BY XB.NAME DESC,XB.LAST_CREATE_TIME DESC
     </select>
 
+    <!--添加置换车-->
+    <insert id="insertReplacementCar" >
+        INSERT INTO XH_REPLACEMENT_CAR
+        VALUES(#{id},#{goodsId},#{parameter},#{price},#{tips},#{createUser},#{createTime,jdbcType=TIMESTAMP},#{lastCreateTime,jdbcType=TIMESTAMP})
+    </insert>
+
+    <!--查询置换车-->
+    <select id="selectReplacementCar" resultType="java.util.Map" parameterType="java.util.Map">
+        SELECT
+        XAB.ID AS bllId,
+        XAB.PARAMETER AS bllParameter,
+        XAB.PRICE AS bllPrice,
+        XAB.TIPS AS bllTips,
+        XGM.ID AS goodsId,
+        XGM. NAME AS goodsName,
+        XGM.MODEL AS model,
+        XGM.SPEC_PARAMETER AS goodsParameter,
+        su.ID AS userId,
+        su.NICK_NAME AS nickName,
+        DATE_FORMAT(
+        XAB.CREATE_TIME,
+        '%Y-%m-%d %H:%i:%S'
+        ) AS createTime,
+        DATE_FORMAT(
+        XAB.LAST_CREATE_TIME,
+        '%Y-%m-%d %H:%i:%S'
+        ) AS lastcreateTime
+        FROM
+        XH_REPLACEMENT_CAR XAB
+        LEFT JOIN XH_GOODS_MAIN XGM ON XGM.ID = XAB.GOODS_ID
+        LEFT JOIN system_user su ON su.OPENID = XAB.CREATE_USER
+        <if test="id != null">
+            AND XAB.ID = #{id}
+        </if>
+        <if test="openId != null">
+            AND XAB.CREATE_USER = #{openId}
+        </if>
+        <if test="model != null">
+            AND XGM.MODEL = #{model}
+        </if>
+        ORDER BY XAB.LAST_CREATE_TIME DESC
+    </select>
+
+    <!--更新置换车-->
+    <update id="updateReplacementCar" parameterType="java.util.Map">
+        UPDATE XH_REPLACEMENT_CAR XAB
+        <trim prefix="set" suffixOverrides=",">
+            <if test="parameter!=null and parameter != ''">
+                XAB.PARAMETER = #{parameter},
+            </if>
+            <if test="price!=null and price != ''">
+                XAB.PRICE = #{price},
+            </if>
+            <if test="tips!=null and tips != ''">
+                XAB.TIPS = #{tips},
+            </if>
+            <if test="lastCreateTime!=null and lastCreateTime != ''">
+                XAB.LAST_CREATE_TIME = #{lastCreateTime,jdbcType=TIMESTAMP},
+            </if>
+        </trim>
+        WHERE XAB.ID = #{id}
+    </update>
+
+    <!--删除置换车-->
+    <delete id="deleteReplacementCar"  parameterType="java.util.Map" >
+        DELETE FROM XH_REPLACEMENT_CAR WHERE ID = #{id}
+    </delete>
+
 </mapper>

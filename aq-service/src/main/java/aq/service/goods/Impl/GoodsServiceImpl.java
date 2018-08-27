@@ -151,6 +151,8 @@ public class GoodsServiceImpl extends BaseServiceImpl  implements GoodsService {
                             }
                         }
                     }
+                    JsonArray jsonArray =  GsonHelper.getInstanceJsonparser().parse(GsonHelper.getInstance().toJson(specParameter)).getAsJsonArray();
+                    jsonObject.add("allParameter", jsonArray);
                     jsonObject.addProperty("price",sum + banPrice);
                     rtn.setCode(200);
                     rtn.setMessage("success");
@@ -164,6 +166,85 @@ public class GoodsServiceImpl extends BaseServiceImpl  implements GoodsService {
             }
         }
         rtn.setData(jsonObject);
+        return  Func.functionRtnToJsonObject.apply(rtn);
+    }
+
+    @Transactional(rollbackFor = {RuntimeException.class, Exception.class})
+    @Override
+    public JsonObject insertReplacementCar(JsonObject jsonObject) {
+        Rtn rtn = new Rtn("Goods");
+        Map<String,Object> res = new HashMap<>();
+        res.clear();
+        res.put("id",UUIDUtil.getUUID());
+        res.put("goodsId",jsonObject.get("goodsId").getAsString());
+        res.put("parameter",jsonObject.get("parameter").getAsJsonArray().toString());
+        res.put("price",jsonObject.get("price").getAsString());
+        res.put("tips",jsonObject.get("tips").getAsString());
+        res.put("createUser",jsonObject.get("openId").getAsString());
+        res.put("createTime",new Date());
+        res.put("lastCreateTime",new Date());
+        goodsDao.insertReplacementCar(res);
+        rtn.setCode(200);
+        rtn.setMessage("success");
+        return  Func.functionRtnToJsonObject.apply(rtn);
+    }
+
+    @Transactional(rollbackFor = {RuntimeException.class, Exception.class})
+    @Override
+    public JsonObject updateReplacementCar(JsonObject jsonObject) {
+        Rtn rtn = new Rtn("Goods");
+        Map<String,Object> res = new HashMap<>();
+        res.clear();
+        res.put("id",jsonObject.get("id").getAsString());
+        res.put("parameter",jsonObject.get("parameter").getAsJsonArray().toString());
+        res.put("price",jsonObject.get("price").getAsString());
+        res.put("tips",jsonObject.get("tips").getAsString());
+        res.put("lastCreateTime",new Date());
+        goodsDao.updateReplacementCar(res);
+        rtn.setCode(200);
+        rtn.setMessage("success");
+        return  Func.functionRtnToJsonObject.apply(rtn);
+    }
+
+    @Transactional(rollbackFor = {RuntimeException.class, Exception.class})
+    @Override
+    public JsonObject queryReplacementCar(JsonObject jsonObject) {
+        Rtn rtn = new Rtn("Goods");
+        Map<String,Object> res = new HashMap<>();
+        JsonObject data = new JsonObject();
+        JsonArray jsonArray = new JsonArray();
+        res.clear();
+        res = GsonHelper.getInstance().fromJson(jsonObject,Map.class);
+        List<Map<String, Object>> blls = goodsDao.selectReplacementCar(res);
+        blls.forEach(obj->{
+            if(!StringUtil.isEmpty(obj.get("goodsParameter"))) {
+                List goodsParameter = GsonHelper.getInstance().fromJson(obj.get("goodsParameter").toString(), List.class);
+                obj.put("goodsParameter",goodsParameter);
+            }
+            if(!StringUtil.isEmpty(obj.get("bllParameter"))) {
+                List bllParameter = GsonHelper.getInstance().fromJson(obj.get("bllParameter").toString(), List.class);
+                obj.put("bllParameter",bllParameter);
+            }
+        });
+        jsonArray =  GsonHelper.getInstanceJsonparser().parse(GsonHelper.getInstance().toJson(blls)).getAsJsonArray();
+        data.addProperty("total",jsonArray.size());
+        data.add("items",jsonArray);
+        rtn.setCode(200);
+        rtn.setMessage("success");
+        rtn.setData(data);
+        return  Func.functionRtnToJsonObject.apply(rtn);
+    }
+
+    @Transactional(rollbackFor = {RuntimeException.class, Exception.class})
+    @Override
+    public JsonObject deleteReplacementCar(JsonObject jsonObject) {
+        Rtn rtn = new Rtn("Goods");
+        Map<String,Object> res = new HashMap<>();
+        res.clear();
+        res = GsonHelper.getInstance().fromJson(jsonObject,Map.class);
+        goodsDao.deleteReplacementCar(res);
+        rtn.setCode(200);
+        rtn.setMessage("success");
         return  Func.functionRtnToJsonObject.apply(rtn);
     }
 

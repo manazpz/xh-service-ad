@@ -14,5 +14,17 @@ public interface GoodsDao {
     //查询品牌
     List<Map<String,Object>> selectBrand(Map<String,Object> map);
 
+    //添加置换车
+    int insertReplacementCar(Map<String,Object> map);
+
+    //查询置换车
+    List<Map<String,Object>> selectReplacementCar(Map<String,Object> map);
+
+    //更新置换车
+    int updateReplacementCar(Map<String,Object> map);
+
+    //删除置换车
+    int deleteReplacementCar(Map<String,Object> map);
+
 
 }
