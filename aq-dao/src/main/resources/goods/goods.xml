@@ -64,6 +64,9 @@
         <if test="model != null">
             AND XGM.MODEL = #{model}
         </if>
+        <if test="isDel != null">
+            AND XGM.IS_DELETE = #{isDel}
+        </if>
         <if test="id != null">
             AND XGM.ID = #{id}
         </if>

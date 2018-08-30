@@ -4,10 +4,8 @@ import aq.common.annotation.DyncDataSource;
 import aq.common.other.Rtn;
 import aq.common.util.*;
 import aq.dao.goods.GoodsDao;
-import aq.dao.goods.SpecDao;
-import aq.dao.resource.ResourceDao;
 import aq.service.base.Impl.BaseServiceImpl;
-import aq.service.goods.GoodsService;
+import aq.service.goods.GoodsApiService;
 import aq.service.system.Func;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
@@ -15,25 +13,17 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.annotation.Resource;
-import java.math.BigDecimal;
-import java.text.DecimalFormat;
 import java.util.*;
 
 /**
  * Created by ywb on 2017-02-23.
  */
-@Service("serviceGoods")
+@Service("serviceGoodsApi")
 @DyncDataSource
-public class GoodsServiceImpl extends BaseServiceImpl  implements GoodsService {
+public class GoodsApiServiceImpl extends BaseServiceImpl  implements GoodsApiService {
 
     @Resource
     private GoodsDao goodsDao;
-
-    @Resource
-    private SpecDao specDao;
-
-    @Resource
-    private ResourceDao resourceDao;
 
     @Transactional(rollbackFor = {RuntimeException.class, Exception.class})
     @Override
