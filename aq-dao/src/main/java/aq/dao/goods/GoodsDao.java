@@ -11,6 +11,12 @@ public interface GoodsDao {
     //查询商品
     List<Map<String,Object>> selectGoods(Map<String,Object> map);
 
+    //查询商品
+    int updateGoods(Map<String,Object> map);
+
+    //查询商品
+    int deleteGoods(Map<String,Object> map);
+
     //查询品牌
     List<Map<String,Object>> selectBrand(Map<String,Object> map);
 

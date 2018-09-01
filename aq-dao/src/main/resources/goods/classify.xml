@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="aq.dao.goods.ClassifyDao">
+
+    <!--查询分类-->
+    <select id="selectClassify" resultType="java.util.Map" parameterType="java.util.Map">
+        SELECT
+            XC.ID AS id,
+            XC.PARENT_ID AS parentId,
+            XC. NAME AS name,
+            XC.PARAMETER AS parameter,
+            XC.REMARKS AS remarks,
+            XC.CREATE_USER AS createUserId,
+            cu.NICK_NAME AS createUserName,
+            XC.LAST_CREATE_USER AS lastCreateUserId,
+            lcu.NICK_NAME AS lastCreateUserName,
+            DATE_FORMAT(
+                XC.CREATE_TIME,
+                '%Y-%m-%d %H:%i:%S'
+            ) AS createTime,
+            DATE_FORMAT(
+                XC.LAST_CREATE_TIME,
+                '%Y-%m-%d %H:%i:%S'
+            ) AS lastcreateTime
+        FROM
+            XH_CLASSIFY XC
+        LEFT JOIN system_administrator cu ON cu.ID = XC.CREATE_USER
+        LEFT JOIN system_administrator lcu ON lcu.ID = XC.LAST_CREATE_USER
+        WHERE 1=1
+        <if test="id != null">
+            AND XC.ID = #{id}
+        </if>
+        <if test="parentId != null">
+            AND XC.PARENT_ID = #{parentId}
+        </if>
+        <if test="cascade == 'Y'">
+            AND (XC.PARENT_ID IS NULL or XC.PARENT_ID = '')
+        </if>
+    </select>
+
+
+</mapper>

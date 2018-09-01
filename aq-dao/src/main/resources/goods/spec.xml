@@ -3,5 +3,38 @@
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="aq.dao.goods.SpecDao">
 
+    <!--查询规格表-->
+    <select id="selectSpec" resultType="java.util.Map" parameterType="java.util.Map">
+        SELECT
+        XSM.ID AS id,
+        XSM.GROU_NAME AS grouName,
+        XSM.SPEC_NAME AS specName,
+        XSM.TIPS_TYPE AS tipsType,
+        XSM.TIPS_TEXT AS tipsText,
+        XSM.TIPS_IMG AS tipsImg,
+        XSM.PX AS px,
+        XSM.PARAMETER AS parameter,
+        XSM.REMARKS AS remarks,
+        XSM.CREATE_USER AS createUserId,
+        cu.NICK_NAME AS createUserName,
+        XSM.LAST_CREATE_USER AS lastCreateUserId,
+        lcu.NICK_NAME AS lastCreateUserName,
+        DATE_FORMAT(
+        XSM.CREATE_TIME,
+        '%Y-%m-%d %H:%i:%S'
+        ) AS createTime,
+        DATE_FORMAT(
+        XSM.LAST_CREATE_TIME,
+        '%Y-%m-%d %H:%i:%S'
+        ) AS lastcreateTime
+        FROM
+        XH_SPEC_MAIN XSM
+        LEFT JOIN system_administrator cu ON cu.ID = XSM.CREATE_USER
+        LEFT JOIN system_administrator lcu ON lcu.ID = XSM.LAST_CREATE_USER
+        WHERE 1=1
+        <if test="id != null">
+            AND XSM.ID = #{id}
+        </if>
+    </select>
 
 </mapper>

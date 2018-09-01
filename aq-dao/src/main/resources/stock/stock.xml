@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="aq.dao.stock.StockDao">
+
+    <!--添加库存-->
+    <insert id="insertStock" >
+        INSERT INTO XH_STOCK_MAIN
+        VALUES(#{id},#{shopId},#{type},#{basicId},#{currentStock},#{useableStock},#{remarks},null,null,null,#{createUserId},#{createTime,jdbcType=TIMESTAMP},#{lastCreateUserId},#{lastCreateTime,jdbcType=TIMESTAMP})
+    </insert>
+
+    <!--更新库存-->
+    <update id="updateStock" parameterType="java.util.Map">
+        UPDATE XH_STOCK_MAIN
+        <trim prefix="set" suffixOverrides=",">
+            <if test="currentStock!=null and currentStock!=''">
+                CURRENT_STOCK = #{currentStock},
+            </if>
+            <if test="useableStock!=null and useableStock!=''">
+                USEABLE_STOCK = #{useableStock},
+            </if>
+            <if test="lastCreateUserId!=null and lastCreateUserId!=''">
+                LAST_CREATE_USER = #{lastCreateUserId},
+            </if>
+            <if test="lastCreateTime!=null and lastCreateTime!=''">
+                LAST_CREATE_TIME = #{lastCreateTime,jdbcType=TIMESTAMP},
+            </if>
+        </trim>
+        WHERE ID = #{id}
+    </update>
+
+    <!--删除库存-->
+    <delete id="deleteStock"  parameterType="java.util.Map" >
+        DELETE FROM XH_STOCK_MAIN WHERE
+        <if test="basicId!=null">
+            BASIC_ID = #{basicId}
+        </if>
+        <if test="id!=null">
+            ID = #{id}
+        </if>
+    </delete>
+
+    <!--删除出库-->
+    <delete id="deleteStockOut"  parameterType="java.util.Map" >
+        DELETE FROM XH_STOCK_OUT WHERE
+        <if test="stockMainId!=null">
+            STOCK_MAIN_ID = #{stockMainId}
+        </if>
+        <if test="id!=null">
+            ID = #{id}
+        </if>
+    </delete>
+</mapper>

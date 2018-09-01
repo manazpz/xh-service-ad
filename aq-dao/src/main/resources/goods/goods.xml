@@ -7,7 +7,7 @@
     <select id="selectGoods" resultType="java.util.Map" parameterType="java.util.Map">
         SELECT
         XGM.ID AS id,
-        XGM. CODE AS CODE,
+        XGM. CODE AS code,
         XGM.SHOP_ID AS shopId,
         XSM. NAME AS shopName,
         XGM. NAME AS name,
@@ -22,6 +22,8 @@
         XGM.LOGISTCS AS logistcs,
         XGM. STATUS AS status,
         XGM.SPEC_PARAMETER AS specParameter,
+        SK.ID AS stockId,
+        XGM.IS_HOT AS isHot,
         (
         CASE
         WHEN SK.CURRENT_STOCK IS NULL THEN
@@ -61,8 +63,11 @@
         LEFT JOIN system_administrator cu ON cu.ID = XGM.CREATE_USER
         LEFT JOIN system_administrator lcu ON lcu.ID = XGM.LAST_CREATE_USER
         WHERE 1=1
-        <if test="model != null">
+        <if test="model != null and model != ''">
             AND XGM.MODEL = #{model}
+        </if>
+        <if test="status != null and status != ''">
+            AND XGM.STATUS = #{status}
         </if>
         <if test="isDel != null">
             AND XGM.IS_DELETE = #{isDel}
@@ -73,11 +78,75 @@
         <if test="brandId != null">
             AND XGM.BRAND_ID = #{brandId}
         </if>
-        <if test="name != null">
-            AND XGM. NAME = #{name}
+        <if test="isHot != null">
+            AND XGM.IS_HOT = #{isHot}
+        </if>
+        <if test="shopId != null">
+            AND XGM.SHOP_ID = #{shopId}
+        </if>
+        <if test="name != null and name != ''">
+            AND XGM. NAME LIKE CONCAT('%', #{name}, '%')
         </if>
         ORDER BY XB.NAME DESC,XGM.LAST_CREATE_TIME DESC,XGM.MODEL DESC
     </select>
+
+    <!--更新商品-->
+    <update id="updateGoods" parameterType="java.util.Map">
+        UPDATE XH_GOODS_MAIN
+        <trim prefix="set" suffixOverrides=",">
+            <if test="code!=null and code!=''">
+                CODE = #{code},
+            </if>
+            <if test="outCode!=null and outCode!=''">
+                OUT_CODE = #{outCode},
+            </if>
+            <if test="name!=null and name!=''">
+                NAME = #{name},
+            </if>
+            <if test="banPrice!=null and banPrice!=''">
+                BAN_PRICE = #{banPrice},
+            </if>
+            <if test="brandId!=null and brandId!=''">
+                BRAND_ID = #{brandId},
+            </if>
+            <if test="classifyId!=null and classifyId!=''">
+                CLASSIFY_ID = #{classifyId},
+            </if>
+            <if test="model!=null and model!=''">
+                MODEL_ID = #{model},
+            </if>
+            <if test="unit!=null and unit!=''">
+                UNIT = #{unit},
+            </if>
+            <if test="logistcs!=null and logistcs!=''">
+                LOGISTCS = #{logistcs},
+            </if>
+            <if test="status!=null and status!=''">
+                STATUS = #{status},
+            </if>
+            <if test="specParameter!=null and specParameter!=''">
+                SPEC_PARAMETER = #{specParameter},
+            </if>
+            <if test="remarks!=null and remarks!=''">
+                REMARKS = #{remarks},
+            </if>
+            <if test="lastCreateUserId!=null and lastCreateUserId!=''">
+                LAST_CREATE_USER = #{lastCreateUserId},
+            </if>
+            <if test="lastCreateTime!=null and lastCreateTime!=''">
+                LAST_CREATE_TIME = #{lastCreateTime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="isDelete!=null and isDelete!=''">
+                IS_DELETE = #{isDelete},
+            </if>
+        </trim>
+        WHERE ID = #{id}
+    </update>
+
+    <!--删除商品-->
+    <delete id="deleteGoods"  parameterType="java.util.Map" >
+        DELETE FROM XH_GOODS_MAIN WHERE ID = #{id}
+    </delete>
 
     <!--查询品牌-->
     <select id="selectBrand" resultType="java.util.Map" parameterType="java.util.Map">

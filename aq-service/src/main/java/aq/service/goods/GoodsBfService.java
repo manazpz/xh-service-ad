@@ -10,4 +10,26 @@ public interface GoodsBfService extends BaseService {
 
     //查询商品
     JsonObject queryGoods(JsonObject jsonObject);
+
+    //更新商品
+    JsonObject updateGoods(JsonObject jsonObject);
+
+    //删除商品
+    JsonObject deleteGoods(JsonObject jsonObject);
+
+    //更新库存
+    JsonObject updateStock(JsonObject jsonObject);
+
+    //查询分类，返回级联
+    JsonObject selectClassifyCascade(JsonObject jsonObject);
+
+    //查询分类规格
+    JsonObject selectClassifySpec(JsonObject jsonObject);
+
+    //查询分类规格参数
+    JsonObject selectClassifySpecParam(JsonObject jsonObject);
+
+    //查询品牌
+    JsonObject selectBrand(JsonObject jsonObject);
+
 }

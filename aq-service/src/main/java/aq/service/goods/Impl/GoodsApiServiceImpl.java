@@ -4,6 +4,7 @@ import aq.common.annotation.DyncDataSource;
 import aq.common.other.Rtn;
 import aq.common.util.*;
 import aq.dao.goods.GoodsDao;
+import aq.dao.resource.ResourceDao;
 import aq.service.base.Impl.BaseServiceImpl;
 import aq.service.goods.GoodsApiService;
 import aq.service.system.Func;
@@ -25,6 +26,9 @@ public class GoodsApiServiceImpl extends BaseServiceImpl  implements GoodsApiSer
     @Resource
     private GoodsDao goodsDao;
 
+    @Resource
+    private ResourceDao resourceDao;
+
     @Transactional(rollbackFor = {RuntimeException.class, Exception.class})
     @Override
     public JsonObject queryGoods(JsonObject jsonObject) {
@@ -39,6 +43,13 @@ public class GoodsApiServiceImpl extends BaseServiceImpl  implements GoodsApiSer
             if(!StringUtil.isEmpty(obj.get("specParameter"))) {
                 List specParameter = GsonHelper.getInstance().fromJson(obj.get("specParameter").toString(), List.class);
                 obj.put("specParameter",specParameter);
+            }
+            if(!StringUtil.isEmpty(obj.get("id"))) {
+                Map<String,Object> ress = new HashMap<>();
+                ress.put("type","GI");
+                ress.put("refId",obj.get("id"));
+                List imgs = resourceDao.selectResource(ress);
+                obj.put("imgs",imgs);
             }
         });
         rtn.setCode(200);

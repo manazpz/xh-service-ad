@@ -44,4 +44,9 @@
         ORDER BY sa.FD_TYPE DESC,sa.LAST_CREATE_TIME DESC
     </select>
 
+    <!--删除附件-->
+    <delete id="deleteResource"  parameterType="java.util.Map" >
+        DELETE FROM system_attachment WHERE ID = #{id}
+    </delete>
+
 </mapper>

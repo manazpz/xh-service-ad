@@ -11,4 +11,7 @@ public interface ResourceDao {
     //查询附件
     List<Map<String,Object>> selectResource(Map<String,Object> map);
 
+    //删除附件
+    List<Map<String,Object>> deleteResource(Map<String,Object> map);
+
 }
