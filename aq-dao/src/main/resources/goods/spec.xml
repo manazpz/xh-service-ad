@@ -37,4 +37,64 @@
         </if>
     </select>
 
+    <!--新增规格-->
+    <insert id="insertSpec" >
+        INSERT INTO XH_SPEC_MAIN
+        VALUES(#{id},
+        #{group_name},
+        #{spec_name},
+        #{tip_type},
+        #{tips_text},
+        #{tips_img},
+        #{px},
+        #{parameter},
+        #{remarks},
+        #{obligate},
+        #{obligate1},
+        #{obligate2},
+        #{createUser},
+        #{createTime,jdbcType=TIMESTAMP},
+        #{lastCreateUser},
+        #{lastCreateTime,jdbcType=TIMESTAMP})
+    </insert>
+
+
+    <!--更新品牌-->
+    <update id="updateSpec" parameterType="java.util.Map">
+        UPDATE XH_SPEC_MAIN XB
+        <trim prefix="set" suffixOverrides=",">
+            <if test="group_name!=null and group_name != ''">
+                XB.GROU_NAME = #{group_name},
+            </if>
+            <if test="spec_name!=null and spec_name != ''">
+                XB.SPEC_NAME = #{spec_name},
+            </if>
+            <if test="tip_type!=null and tip_type != ''">
+                XB.TIPS_TYPE = #{tip_type},
+            </if>
+            <if test="tips_text!=null and tips_text != ''">
+                XB.TIPS_TEXT = #{tips_text},
+            </if>
+            <if test="tips_img!=null and tips_img != ''">
+                XB.TIPS_IMG = #{tips_img},
+            </if>
+            <if test="parameter!=null and parameter != ''">
+                XB.PARAMETER = #{parameter},
+            </if>
+            <if test="updateTime!=null and updateTime != ''">
+                XB.LAST_CREATE_TIME = #{updateTime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="lastCreateUser!=null and lastCreateUser != ''">
+                XB.LAST_CREATE_USER = #{lastCreateUser},
+            </if>
+        </trim>
+        WHERE XB.ID = #{id}
+    </update>
+
+
+
+    <!--删除商品品牌-->
+    <delete id="deleteSpec"  parameterType="java.util.Map" >
+        DELETE FROM XH_SPEC_MAIN WHERE ID = #{id}
+    </delete>
 </mapper>

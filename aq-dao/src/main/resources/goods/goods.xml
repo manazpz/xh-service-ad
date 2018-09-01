@@ -246,4 +246,98 @@
         DELETE FROM XH_REPLACEMENT_CAR WHERE ID = #{id}
     </delete>
 
+
+    <!--查询一级分类-->
+    <select id="selectClassifyFrist" resultType="java.util.Map" parameterType="java.util.Map">
+        SELECT
+            XC.ID AS id,
+            XC.NAME AS name,
+            XC.REMARKS AS remarks
+        FROM
+            XH_CLASSIFY XC
+        WHERE
+            XC.PARENT_ID IS NULL
+    </select>
+
+
+    <!--查询二三级分类-->
+    <select id="selectClassify" resultType="java.util.Map" parameterType="java.util.Map">
+        SELECT
+            XC.ID AS id,
+            XC.PARENT_ID AS parent_id,
+            XC.NAME AS name,
+            XC.REMARKS AS remarks
+        FROM
+            XH_CLASSIFY XC
+        WHERE
+            XC.PARENT_ID = #{parent_id}
+        ORDER BY XC.CREATE_TIME ASC
+    </select>
+
+
+
+    <!--新增品牌-->
+    <insert id="insertBrand" >
+        INSERT INTO XH_BRAND
+        VALUES(#{id},
+        #{name},
+        #{official},
+        #{remarks},
+        #{obligate},
+        #{obligate1},
+        #{obligate2},
+        #{createUser},
+        #{createTime,jdbcType=TIMESTAMP},
+        #{lastCreateUser},
+        #{lastCreateTime,jdbcType=TIMESTAMP})
+    </insert>
+
+
+    <!--查询商品品牌-->
+    <select id="selectBrandList" resultType="java.util.Map" parameterType="java.util.Map">
+        SELECT
+            XB.ID AS id,
+            XB.NAME AS name,
+            XB.OFFICIAL_WEBSITE AS official,
+            XB.REMARKS AS remarks
+        FROM
+            XH_BRAND XB
+        WHERE 1=1
+        <if test="name!=null and name != ''">
+            AND XB.NAME = #{name}
+        </if>
+        ORDER BY XB.CREATE_TIME ASC
+    </select>
+
+
+    <!--更新品牌-->
+    <update id="updateBrand" parameterType="java.util.Map">
+        UPDATE XH_BRAND XB
+        <trim prefix="set" suffixOverrides=",">
+            <if test="name!=null and name != ''">
+                XB.NAME = #{name},
+            </if>
+            <if test="official!=null and official != ''">
+                XB.OFFICIAL_WEBSITE = #{official},
+            </if>
+            <if test="remarks!=null and remarks != ''">
+                XB.REMARKS = #{remarks},
+            </if>
+            <if test="updateTime!=null and updateTime != ''">
+                XB.LAST_CREATE_TIME = #{updateTime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="lastCreateUser!=null and lastCreateUser != ''">
+                XB.LAST_CREATE_USER = #{lastCreateUser},
+            </if>
+        </trim>
+        WHERE XB.ID = #{id}
+    </update>
+
+
+    <!--删除商品品牌-->
+    <delete id="deleteBrand"  parameterType="java.util.Map" >
+        DELETE FROM XH_BRAND WHERE ID = #{id}
+    </delete>
+
+
 </mapper>

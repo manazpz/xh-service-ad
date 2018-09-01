@@ -11,4 +11,14 @@ public interface SpecDao {
     //查询规格表
     List<Map<String,Object>> selectSpec(Map<String,Object> map);
 
+    //添加规格
+    int insertSpec(Map<String,Object> map);
+
+    //添加规格
+    int updateSpec(Map<String,Object> map);
+
+    //删除规格
+    int deleteSpec(Map<String,Object> map);
+
+
 }
