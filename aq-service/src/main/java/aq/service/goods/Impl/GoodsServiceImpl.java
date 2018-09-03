@@ -263,9 +263,9 @@ public class GoodsServiceImpl extends BaseServiceImpl  implements GoodsService {
         rest.put("correntPrice","0");
         rest.put("minPrice","0");
         rest.put("cappedPrice","2147483647");
-        rest.put("tipsImg","".equals(res.get("tipsImg")) ? "" :res.get("tipsImg"));
-        rest.put("tipsText","".equals(res.get("tipsText")) ? "" :res.get("tipsText"));
-        rest.put("tipsType","".equals(res.get("tipsType")) ? "" :res.get("tipsType"));
+        rest.put("tipsImg","");
+        rest.put("tipsText","");
+        rest.put("tipsType","");
 
         List<Map<String, Object>> maps = specDao.selectSpec(res);
         if(maps.size()>0){
@@ -344,9 +344,9 @@ public class GoodsServiceImpl extends BaseServiceImpl  implements GoodsService {
                     specmap.put("correntPrice","0");
                     specmap.put("minPrice","0");
                     specmap.put("cappedPrice","2147483647");
-                    specmap.put("tipsImg",jsonObject.get("tipsImg")==null || jsonObject.get("tipsImg").isJsonNull() ||("".equals(jsonObject.get("tipsImg"))) ? "" : jsonObject.get("tipsImg"));
-                    specmap.put("tipsText",jsonObject.get("tipsText")==null || jsonObject.get("tipsText").isJsonNull() ||("".equals(jsonObject.get("tipsText"))) ? "" : jsonObject.get("tipsText"));
-                    specmap.put("tipsType",jsonObject.get("tipsType")==null || jsonObject.get("tipsType").isJsonNull() ||("".equals(jsonObject.get("tipsType"))) ? "" : jsonObject.get("tipsType"));
+                    specmap.put("tipsImg","");
+                    specmap.put("tipsText","");
+                    specmap.put("tipsType","");
                 }
                 jsonArray =  GsonHelper.getInstanceJsonparser().parse(GsonHelper.getInstance().toJson(specParameter)).getAsJsonArray();
             }
@@ -370,6 +370,7 @@ public class GoodsServiceImpl extends BaseServiceImpl  implements GoodsService {
         JsonObject jsonObjects = new JsonObject();
         Map<String,Object> res = new HashMap<>();
         Map<String,Object> rest = new HashMap<>();
+        Map parameter = new HashMap();
         List<Map<String, Object>> listbrand = new ArrayList<>();
         List<Map<String, Object>> listspec = new ArrayList<>();
         res = GsonHelper.getInstance().fromJson(jsonObject,Map.class);
@@ -377,9 +378,11 @@ public class GoodsServiceImpl extends BaseServiceImpl  implements GoodsService {
         List<Map<String, Object>> maps = classifyDao.selectClassify(rest);
         rest.clear();
         if(maps.size()>0){
-            Map parameter = GsonHelper.getInstance().fromJson(maps.get(0).get("parameter").toString(), Map.class);
-            if(res.get("brandId") != null ){
-                List brandid = GsonHelper.getInstance().fromJson(res.get("brandId").toString(), List.class);
+            if(maps.get(0).get("parameter")!= null){
+                parameter = GsonHelper.getInstance().fromJson(maps.get(0).get("parameter").toString(), Map.class);
+            }
+            if(res.get("name") != null ){
+                List brandid = GsonHelper.getInstance().fromJson(res.get("name").toString(), List.class);
                 brandid.forEach(obj->{
                     Map<String,Object> rests = new HashMap<>();
                     rest.put("id",obj);

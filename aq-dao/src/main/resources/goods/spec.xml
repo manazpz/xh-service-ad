@@ -35,6 +35,9 @@
         <if test="id!=null and id != ''">
             AND XSM.ID = #{id}
         </if>
+        <if test="name!=null and name != ''">
+            AND XSM.GROU_NAME = #{name}
+        </if>
         ORDER BY XSM.GROU_NAME
     </select>
 
