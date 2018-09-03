@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="aq.dao.goods.OrderDao">
+
+    <!--查询商品-->
+    <select id="selectorderList" resultType="java.util.Map" parameterType="java.util.Map">
+        SELECT
+            XO.ID AS id,
+            XO.NUMBER AS number,
+            XO.PAY_STATUS AS payStatus,
+            XO.ORDER_STATUS AS orderStatus,
+            XO.DELIVERY_STATUS AS deliveryStatus,
+            XO.PRICE AS price,
+            XO.CREATE_TIME AS createTime
+        FROM
+        XH_ORDER_H XO
+        WHERE 1=1
+        <if test="number!=null and number != ''">
+            AND XO.NUMBER = #{number}
+        </if>
+        <if test="payStatus!=null and payStatus != ''">
+            AND XO.PAY_STATUS = #{payStatus}
+        </if>
+        <if test="orderStatus!=null and orderStatus != ''">
+            AND XO.ORDER_STATUS = #{orderStatus}
+        </if>
+    </select>
+
+
+</mapper>

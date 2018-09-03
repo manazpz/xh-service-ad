@@ -32,20 +32,21 @@
         LEFT JOIN system_administrator cu ON cu.ID = XSM.CREATE_USER
         LEFT JOIN system_administrator lcu ON lcu.ID = XSM.LAST_CREATE_USER
         WHERE 1=1
-        <if test="id != null">
+        <if test="id!=null and id != ''">
             AND XSM.ID = #{id}
         </if>
+        ORDER BY XSM.GROU_NAME
     </select>
 
     <!--新增规格-->
     <insert id="insertSpec" >
         INSERT INTO XH_SPEC_MAIN
         VALUES(#{id},
-        #{group_name},
-        #{spec_name},
-        #{tip_type},
-        #{tips_text},
-        #{tips_img},
+        #{grouName},
+        #{specName},
+        #{tipsType},
+        #{tipsText},
+        #{tipsImg},
         #{px},
         #{parameter},
         #{remarks},
@@ -63,20 +64,23 @@
     <update id="updateSpec" parameterType="java.util.Map">
         UPDATE XH_SPEC_MAIN XB
         <trim prefix="set" suffixOverrides=",">
-            <if test="group_name!=null and group_name != ''">
-                XB.GROU_NAME = #{group_name},
+            <if test="grouName!=null and grouName != ''">
+                XB.GROU_NAME = #{grouName},
             </if>
-            <if test="spec_name!=null and spec_name != ''">
-                XB.SPEC_NAME = #{spec_name},
+            <if test="specName!=null and specName != ''">
+                XB.SPEC_NAME = #{specName},
             </if>
-            <if test="tip_type!=null and tip_type != ''">
-                XB.TIPS_TYPE = #{tip_type},
+            <if test="tipsType!=null and tipsType != ''">
+                XB.TIPS_TYPE = #{tipsType},
             </if>
-            <if test="tips_text!=null and tips_text != ''">
-                XB.TIPS_TEXT = #{tips_text},
+            <if test="tipsText!=null and tipsText != ''">
+                XB.TIPS_TEXT = #{tipsText},
             </if>
-            <if test="tips_img!=null and tips_img != ''">
-                XB.TIPS_IMG = #{tips_img},
+            <if test="tipsImg!=null and tipsImg != ''">
+                XB.TIPS_IMG = #{tipsImg},
+            </if>
+            <if test="px!=null and px != ''">
+                XB.PX = #{px},
             </if>
             <if test="parameter!=null and parameter != ''">
                 XB.PARAMETER = #{parameter},
@@ -97,4 +101,5 @@
     <delete id="deleteSpec"  parameterType="java.util.Map" >
         DELETE FROM XH_SPEC_MAIN WHERE ID = #{id}
     </delete>
+
 </mapper>

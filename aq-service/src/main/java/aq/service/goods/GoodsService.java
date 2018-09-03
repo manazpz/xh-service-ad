@@ -14,6 +14,9 @@ public interface GoodsService extends BaseService {
     //查询商品分类
     JsonObject queryclassify(JsonObject jsonObject);
 
+    //查询商品分类
+    JsonObject updateClassify(JsonObject jsonObject);
+
     //查询商品品牌分类
     JsonObject querybrandList(JsonObject jsonObject);
 
@@ -44,5 +47,13 @@ public interface GoodsService extends BaseService {
     //查询规格值列表
     JsonObject queryspecValue(JsonObject jsonObject);
 
+    //更新商品规格值
+    JsonObject updateSpecValue(JsonObject jsonObject);
+
+    //更新后台品牌
+    JsonObject updateClassifyBrand(JsonObject jsonObject);
+
+    //更新后台品牌
+    JsonObject deleteClassify(JsonObject jsonObject);
 
 }

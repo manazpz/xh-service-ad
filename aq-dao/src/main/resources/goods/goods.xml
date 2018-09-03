@@ -100,6 +100,7 @@
         ORDER BY XB.NAME DESC,XGM.LAST_CREATE_TIME DESC,XGM.MODEL DESC
     </select>
 
+
     <!--更新商品-->
     <update id="updateGoods" parameterType="java.util.Map">
         UPDATE XH_GOODS_MAIN
@@ -272,35 +273,6 @@
     </delete>
 
 
-    <!--查询一级分类-->
-    <select id="selectClassifyFrist" resultType="java.util.Map" parameterType="java.util.Map">
-        SELECT
-            XC.ID AS id,
-            XC.NAME AS name,
-            XC.REMARKS AS remarks
-        FROM
-            XH_CLASSIFY XC
-        WHERE
-            XC.PARENT_ID IS NULL
-    </select>
-
-
-    <!--查询二三级分类-->
-    <select id="selectClassify" resultType="java.util.Map" parameterType="java.util.Map">
-        SELECT
-            XC.ID AS id,
-            XC.PARENT_ID AS parent_id,
-            XC.NAME AS name,
-            XC.REMARKS AS remarks
-        FROM
-            XH_CLASSIFY XC
-        WHERE
-            XC.PARENT_ID = #{parent_id}
-        ORDER BY XC.CREATE_TIME ASC
-    </select>
-
-
-
     <!--新增品牌-->
     <insert id="insertBrand" >
         INSERT INTO XH_BRAND
@@ -363,6 +335,7 @@
         DELETE FROM XH_BRAND WHERE ID = #{id}
     </delete>
 
+
     <!--查询置换车-->
     <select id="selectLable" resultType="java.util.Map" parameterType="java.util.Map">
         SELECT
@@ -383,5 +356,45 @@
         </if>
     </select>
 
+    <!--新增分类-->
+    <insert id="insertGoodsClassify" >
+        INSERT INTO XH_CLASSIFY
+        VALUES(#{id},
+        #{parentId},
+        #{name},
+        #{px},
+        #{parameter},
+        #{remarks},
+        #{obligate},
+        #{obligate1},
+        #{obligate2},
+        #{createUser},
+        #{createTime,jdbcType=TIMESTAMP},
+        #{lastCreateUser},
+        #{lastCreateTime,jdbcType=TIMESTAMP})
+    </insert>
+
+    <!--更新分类-->
+    <update id="updateClassify" parameterType="java.util.Map">
+        UPDATE XH_CLASSIFY
+        <trim prefix="set" suffixOverrides=",">
+            <if test="name!=null and name!=''">
+                NAME = #{name},
+            </if>
+            <if test="parameter!=null and parameter!=''">
+                PARAMETER = #{parameter},
+            </if>
+            <if test="remarks!=null and remarks!=''">
+                REMARKS = #{remarks},
+            </if>
+            <if test="lastCreateUserId!=null and lastCreateUserId!=''">
+                LAST_CREATE_USER = #{lastCreateUserId},
+            </if>
+            <if test="lastCreateTime!=null and lastCreateTime!=''">
+                LAST_CREATE_TIME = #{lastCreateTime,jdbcType=TIMESTAMP},
+            </if>
+        </trim>
+        WHERE ID = #{id}
+    </update>
 
 </mapper>

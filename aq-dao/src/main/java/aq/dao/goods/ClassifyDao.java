@@ -14,4 +14,8 @@ public interface ClassifyDao {
     //一级分类
     List<Map<String,Object>> selectGoodsClassify123(Map<String,Object> map);
 
+    //删除规格
+    int deleteClassify(Map<String,Object> map);
+
+
 }

@@ -35,12 +35,6 @@ public interface GoodsDao {
     //删除置换车
     int deleteReplacementCar(Map<String,Object> map);
 
-    //查询商品一级分类
-    List<Map<String,Object>> selectClassifyFrist(Map<String,Object> map);
-
-    //查询商品二、三级分类
-    List<Map<String,Object>> selectClassify(Map<String,Object> map);
-
     //查询商品品牌
     List<Map<String,Object>> selectBrandList(Map<String,Object> map);
 
@@ -56,5 +50,10 @@ public interface GoodsDao {
     //查询标签
     List<Map<String,Object>> selectLable(Map<String,Object> map);
 
+    //新增分类
+    int insertGoodsClassify(Map<String,Object> map);
+
+    //更新分类
+    int updateClassify(Map<String,Object> map);
 
 }

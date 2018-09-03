@@ -50,5 +50,10 @@
         WHERE XGM.ID = #{goodsId}
     </select>
 
+    <!--删除商品分类-->
+    <delete id="deleteClassify"  parameterType="java.util.Map" >
+        DELETE FROM XH_CLASSIFY WHERE ID = #{id}
+    </delete>
+
 
 </mapper>
