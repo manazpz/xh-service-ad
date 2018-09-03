@@ -89,7 +89,7 @@ public class GoodsBfServiceImpl extends BaseServiceImpl  implements GoodsBfServi
                                 parameters = new ArrayList();
                                 data.put("id",obj.get("id"));
                                 data.put("name",obj.get("name"));
-                                data.put("px",obj.get("px").toString());
+                                data.put("px",obj.get("px"));
                                 parameters.add(setParameter(obj));
                                 data.put("parameter",parameters);
                                 datas.add(data);
@@ -99,7 +99,7 @@ public class GoodsBfServiceImpl extends BaseServiceImpl  implements GoodsBfServi
                             List parameters = new ArrayList();
                             data.put("id",obj.get("id"));
                             data.put("name",obj.get("name"));
-                            data.put("px",obj.get("px").toString());
+                            data.put("px",obj.get("px"));
                             parameters.add(setParameter(obj));
                             data.put("parameter",parameters);
                             datas.add(data);
