@@ -8,6 +8,8 @@ import aq.dao.resource.ResourceDao;
 import aq.service.base.Impl.BaseServiceImpl;
 import aq.service.goods.GoodsApiService;
 import aq.service.system.Func;
+import com.github.pagehelper.PageHelper;
+import com.github.pagehelper.PageInfo;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 import org.springframework.stereotype.Service;
@@ -38,11 +40,16 @@ public class GoodsApiServiceImpl extends BaseServiceImpl  implements GoodsApiSer
         Map<String,Object> res = new HashMap<>();
         res.clear();
         res = GsonHelper.getInstance().fromJson(jsonObject,Map.class);
+        res.put("status","01");
         List<Map<String, Object>> goods = goodsDao.selectGoods(res);
         goods.forEach(obj->{
             if(!StringUtil.isEmpty(obj.get("specParameter"))) {
                 List specParameter = GsonHelper.getInstance().fromJson(obj.get("specParameter").toString(), List.class);
                 obj.put("specParameter",specParameter);
+            }
+            if(!StringUtil.isEmpty(obj.get("parameter"))) {
+                List parameter = GsonHelper.getInstance().fromJson(obj.get("parameter").toString(), List.class);
+                obj.put("parameter",parameter);
             }
             if(!StringUtil.isEmpty(obj.get("id"))) {
                 Map<String,Object> ress = new HashMap<>();
@@ -61,6 +68,30 @@ public class GoodsApiServiceImpl extends BaseServiceImpl  implements GoodsApiSer
         return  Func.functionRtnToJsonObject.apply(rtn);
     }
 
+    @Override
+    public JsonObject queryHotGoods(JsonObject jsonObject) {
+        jsonObject.addProperty("service","goods");
+        return query(jsonObject,(map)->{
+            Map res = new HashMap();
+            if(StringUtil.isEmpty(map.get("model"))) {
+                ArrayList req = new ArrayList();
+                map.put("model","01");
+                List<Map<String, Object>> newGoods = goodsDao.selectGoods(map);
+                map.put("model","02");
+                PageHelper.startPage(1,1);
+                PageInfo oldPageInfo = new PageInfo(goodsDao.selectGoods(map));
+                res.clear();
+                res.put("oldGoods",oldPageInfo.getList());
+                res.put("newGoods",newGoods);
+                req.add(res);
+                return req;
+
+            }else {
+                return goodsDao.selectGoods(map);
+            }
+        });
+    }
+
     @Transactional(rollbackFor = {RuntimeException.class, Exception.class})
     @Override
     public JsonObject queryChoices(JsonObject jsonObject) {
@@ -73,6 +104,7 @@ public class GoodsApiServiceImpl extends BaseServiceImpl  implements GoodsApiSer
         brands.forEach(obj->{
             res.clear();
             res.put("brandId",obj.get("id"));
+            res.put("status",obj.get("01"));
             List<Map<String, Object>> goods = goodsDao.selectGoods(res);
             obj.put("goods",goods);
         });

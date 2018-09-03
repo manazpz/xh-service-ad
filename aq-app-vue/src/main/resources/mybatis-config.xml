@@ -36,6 +36,8 @@
         <mapper resource="goods/search.xml"/>
         <mapper resource="goods/classify.xml"/>
         <mapper resource="stock/stock.xml"/>
+
+        <mapper resource="shop/shop.xml"/>
     </mappers>
 
 </configuration> 

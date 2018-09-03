@@ -21,11 +21,28 @@ public class GoodsBfController extends aq.controller.restful.System {
     @Resource
     protected GoodsBfService goodsBfService;
 
+    //发布商品
+    @RequestMapping(value = "/push",method = RequestMethod.POST)
+    @ResponseBody
+    public void goodsPush(@RequestBody JsonObject requestJson,HttpServletRequest request, HttpServletResponse response, PrintWriter out) throws Exception {
+        writerJson(response,out,goodsBfService.insertGoods(requestJson));
+    }
+
     //查询商品
     @RequestMapping(value = "/list",method = RequestMethod.GET)
     public void goodsList(HttpServletRequest request, HttpServletResponse response, PrintWriter out) throws Exception {
         JsonObject jsonObject = HttpUtil.getParameterMap(request);
         writerJson(response,out,goodsBfService.queryGoods(jsonObject));
+    }
+
+    //批量更新
+    @RequestMapping(value = "/batchUpdate",method = RequestMethod.POST)
+    @ResponseBody
+    public void batchUpdateGoods(@RequestBody JsonObject requestJson,HttpServletRequest request, HttpServletResponse response, PrintWriter out) throws Exception {
+        if(StringUtil.isEmpty(requestJson.get("ids"))) {
+            response.sendError(HttpServletResponse.SC_NOT_FOUND,"ids is no null!");
+        }
+        writerJson(response,out,goodsBfService.batchUpdateGoods(requestJson));
     }
 
     //删除商品（硬删除）
@@ -75,10 +92,10 @@ public class GoodsBfController extends aq.controller.restful.System {
         writerJson(response,out,goodsBfService.selectClassifyCascade(jsonObject));
     }
 
-    //分类规格
-    @RequestMapping(value = "/classify/specs/{id}",method = RequestMethod.GET)
-    public void selectClassifySpec(@PathVariable(value = "id") String id,HttpServletRequest request, HttpServletResponse response, PrintWriter out) throws Exception {
-        writerJson(response,out,goodsBfService.selectClassifySpec(StringUtil.toJsonObject("id",id)));
+    //商品分类级联数据
+    @RequestMapping(value = "/classify/cascade/{goodsId}",method = RequestMethod.GET)
+    public void classifyCascade(@PathVariable(value = "goodsId") String goodsId,HttpServletRequest request, HttpServletResponse response, PrintWriter out) throws Exception {
+        writerJson(response,out,goodsBfService.selectGoodsClassifyCascade(StringUtil.toJsonObject("goodsId",goodsId)));
     }
 
     //分类规格参数
@@ -92,6 +109,13 @@ public class GoodsBfController extends aq.controller.restful.System {
     public void brandList(HttpServletRequest request, HttpServletResponse response, PrintWriter out) throws Exception {
         JsonObject jsonObject = HttpUtil.getParameterMap(request);
         writerJson(response,out,goodsBfService.selectBrand(jsonObject));
+    }
+
+    //查询标签列表
+    @RequestMapping(value = "/lables",method = RequestMethod.GET)
+    public void lableList(HttpServletRequest request, HttpServletResponse response, PrintWriter out) throws Exception {
+        JsonObject jsonObject = HttpUtil.getParameterMap(request);
+        writerJson(response,out,goodsBfService.queryLable(jsonObject));
     }
 
 }

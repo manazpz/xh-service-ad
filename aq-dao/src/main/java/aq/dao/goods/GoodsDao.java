@@ -8,6 +8,9 @@ import java.util.Map;
 @MapperScan("daoGoods")
 public interface GoodsDao {
 
+    //添加商品
+    int insertGoods(Map<String,Object> map);
+
     //查询商品
     List<Map<String,Object>> selectGoods(Map<String,Object> map);
 
@@ -50,7 +53,8 @@ public interface GoodsDao {
     //删除品牌
     int deleteBrand(Map<String,Object> map);
 
-
+    //查询标签
+    List<Map<String,Object>> selectLable(Map<String,Object> map);
 
 
 }

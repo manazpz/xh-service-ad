@@ -8,11 +8,17 @@ import com.google.gson.JsonObject;
  */
 public interface GoodsBfService extends BaseService {
 
+    //插入商品
+    JsonObject insertGoods(JsonObject jsonObject);
+
     //查询商品
     JsonObject queryGoods(JsonObject jsonObject);
 
     //更新商品
     JsonObject updateGoods(JsonObject jsonObject);
+
+    //批量更新商品
+    JsonObject batchUpdateGoods(JsonObject jsonObject);
 
     //删除商品
     JsonObject deleteGoods(JsonObject jsonObject);
@@ -23,13 +29,16 @@ public interface GoodsBfService extends BaseService {
     //查询分类，返回级联
     JsonObject selectClassifyCascade(JsonObject jsonObject);
 
-    //查询分类规格
-    JsonObject selectClassifySpec(JsonObject jsonObject);
-
     //查询分类规格参数
     JsonObject selectClassifySpecParam(JsonObject jsonObject);
 
+    //查询商品分类规格参数
+    JsonObject selectGoodsClassifyCascade(JsonObject jsonObject);
+
     //查询品牌
     JsonObject selectBrand(JsonObject jsonObject);
+
+    //查询标签
+    JsonObject queryLable(JsonObject jsonObject);
 
 }

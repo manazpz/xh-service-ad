@@ -27,6 +27,13 @@ public class GoodsApiController extends aq.controller.restful.System {
         writerJson(response,out,goodsService.queryGoods(jsonObject));
     }
 
+    //查询热门商品
+    @RequestMapping(value = "/hotList",method = RequestMethod.GET)
+    public void goodsHotList(HttpServletRequest request, HttpServletResponse response, PrintWriter out) throws Exception {
+        JsonObject jsonObject = HttpUtil.getParameterMap(request);
+        writerJson(response,out,goodsService.queryHotGoods(jsonObject));
+    }
+
     //查询商品详情
     @RequestMapping(value = "/{id}",method = RequestMethod.GET)
     public void goodsDetail(@PathVariable(value = "id") String id,HttpServletRequest request, HttpServletResponse response, PrintWriter out) throws Exception {

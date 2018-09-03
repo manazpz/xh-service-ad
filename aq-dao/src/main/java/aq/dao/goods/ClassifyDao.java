@@ -11,4 +11,7 @@ public interface ClassifyDao {
     //查询分类
     List<Map<String,Object>> selectClassify(Map<String,Object> map);
 
+    //一级分类
+    List<Map<String,Object>> selectGoodsClassify123(Map<String,Object> map);
+
 }

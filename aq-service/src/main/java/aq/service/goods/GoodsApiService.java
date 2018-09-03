@@ -11,6 +11,9 @@ public interface GoodsApiService extends BaseService {
     //查询商品
     JsonObject queryGoods(JsonObject jsonObject);
 
+    //查询热门商品
+    JsonObject queryHotGoods(JsonObject jsonObject);
+
     //查询商品选择
     JsonObject queryChoices(JsonObject jsonObject);
 
@@ -31,4 +34,5 @@ public interface GoodsApiService extends BaseService {
 
     //删除置换车
     JsonObject deleteReplacementCar(JsonObject jsonObject);
+
 }

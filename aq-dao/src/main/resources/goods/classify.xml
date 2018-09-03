@@ -12,6 +12,7 @@
             XC.PARAMETER AS parameter,
             XC.REMARKS AS remarks,
             XC.CREATE_USER AS createUserId,
+            XC.PX AS px,
             cu.NICK_NAME AS createUserName,
             XC.LAST_CREATE_USER AS lastCreateUserId,
             lcu.NICK_NAME AS lastCreateUserName,
@@ -22,7 +23,7 @@
             DATE_FORMAT(
                 XC.LAST_CREATE_TIME,
                 '%Y-%m-%d %H:%i:%S'
-            ) AS lastcreateTime
+            ) AS lastCreateTime
         FROM
             XH_CLASSIFY XC
         LEFT JOIN system_administrator cu ON cu.ID = XC.CREATE_USER
@@ -37,6 +38,16 @@
         <if test="cascade == 'Y'">
             AND (XC.PARENT_ID IS NULL or XC.PARENT_ID = '')
         </if>
+        ORDER BY XC.PX ASC
+    </select>
+
+    <!--查询商品一级分类（勿修改此sql）-->
+    <select id="selectGoodsClassify123" resultType="java.util.Map" parameterType="java.util.Map">
+        SELECT XC1.ID AS id1,XC2.ID AS id2,XC3.ID AS id3 FROM XH_CLASSIFY XC1
+        LEFT JOIN XH_CLASSIFY XC2 ON XC2.PARENT_ID = XC1.ID
+        LEFT JOIN XH_CLASSIFY XC3 ON XC3.PARENT_ID = XC2.ID
+        INNER JOIN XH_GOODS_MAIN XGM ON (XGM.CLASSIFY_ID = XC3.ID OR XGM.CLASSIFY_ID = XC2.ID OR XGM.CLASSIFY_ID = XC1.ID)
+        WHERE XGM.ID = #{goodsId}
     </select>
 
 
