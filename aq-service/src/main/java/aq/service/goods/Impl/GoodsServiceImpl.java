@@ -120,12 +120,36 @@ public class GoodsServiceImpl extends BaseServiceImpl  implements GoodsService {
         AbsAccessUser user = Factory.getContext().user();
         Rtn rtn = new Rtn("goods");
         Map<String,Object> res = new HashMap<>();
+        Map<String,Object> rest = new HashMap<>();
+        Map<String,Object> rests = new HashMap<>();
         res = GsonHelper.getInstance().fromJson(jsonObject,Map.class);
         res.put("id", res.get("id"));
         res.put("model", res.get("model"));
         res.put("updateTime",new Date());
         res.put("lastCreateUser",user.getUserId());
         classifyDao.updateClassify(res);
+        if(res.get("parentId") == null){
+            rest.put("parentId",res.get("parentId"));
+            List<Map<String, Object>> maps = classifyDao.selectClassify(rest);
+            if(maps.size()>0){
+                for(Map obj:maps) {
+                    rests.put("id",obj.get("id"));
+                    rests.put("model",res.get("model"));
+                    classifyDao.updateClassify(rests);
+                    rest.clear();
+                    rest.put("parentId",rests.get("id"));
+                    List<Map<String, Object>> maps1 = classifyDao.selectClassify(rest);
+                    if(maps1.size()>0){
+                        for(Map obj1:maps1) {
+                            rests.clear();
+                            rests.put("id",obj1.get("id"));
+                            rests.put("model",res.get("model"));
+                            classifyDao.updateClassify(rests);
+                        }
+                    }
+                }
+            }
+        }
         rtn.setCode(200);
         rtn.setMessage("success");
         return Func.functionRtnToJsonObject.apply(rtn);
