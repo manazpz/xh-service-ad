@@ -356,45 +356,5 @@
         </if>
     </select>
 
-    <!--新增分类-->
-    <insert id="insertGoodsClassify" >
-        INSERT INTO XH_CLASSIFY
-        VALUES(#{id},
-        #{parentId},
-        #{name},
-        #{px},
-        #{parameter},
-        #{remarks},
-        #{obligate},
-        #{obligate1},
-        #{obligate2},
-        #{createUser},
-        #{createTime,jdbcType=TIMESTAMP},
-        #{lastCreateUser},
-        #{lastCreateTime,jdbcType=TIMESTAMP})
-    </insert>
-
-    <!--更新分类-->
-    <update id="updateClassify" parameterType="java.util.Map">
-        UPDATE XH_CLASSIFY
-        <trim prefix="set" suffixOverrides=",">
-            <if test="name!=null and name!=''">
-                NAME = #{name},
-            </if>
-            <if test="parameter!=null and parameter!=''">
-                PARAMETER = #{parameter},
-            </if>
-            <if test="remarks!=null and remarks!=''">
-                REMARKS = #{remarks},
-            </if>
-            <if test="lastCreateUserId!=null and lastCreateUserId!=''">
-                LAST_CREATE_USER = #{lastCreateUserId},
-            </if>
-            <if test="lastCreateTime!=null and lastCreateTime!=''">
-                LAST_CREATE_TIME = #{lastCreateTime,jdbcType=TIMESTAMP},
-            </if>
-        </trim>
-        WHERE ID = #{id}
-    </update>
 
 </mapper>

@@ -17,5 +17,11 @@ public interface ClassifyDao {
     //删除规格
     int deleteClassify(Map<String,Object> map);
 
+    //更新规格
+    int updateClassify(Map<String,Object> map);
+
+    //新增规格
+    int insertClassify(Map<String,Object> map);
+
 
 }

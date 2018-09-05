@@ -55,13 +55,14 @@ public class GoodsServiceImpl extends BaseServiceImpl  implements GoodsService {
         }
         rest.put("id", UUIDUtil.getUUID());
         rest.put("name", res.get("name"));
+        rest.put("model", res.get("model"));
         rest.put("px", res.get("px"));
         rest.put("remarks", res.get("remarks"));
         rest.put("createTime",new Date());
         rest.put("lastCreateTime",new Date());
         rest.put("createUser",user.getUserId());
         rest.put("lastCreateUser",user.getUserId());
-        goodsDao.insertGoodsClassify(rest);
+        classifyDao.insertClassify(rest);
         rtn.setCode(200);
         rtn.setMessage("success");
         return Func.functionRtnToJsonObject.apply(rtn);
@@ -121,9 +122,10 @@ public class GoodsServiceImpl extends BaseServiceImpl  implements GoodsService {
         Map<String,Object> res = new HashMap<>();
         res = GsonHelper.getInstance().fromJson(jsonObject,Map.class);
         res.put("id", res.get("id"));
+        res.put("model", res.get("model"));
         res.put("updateTime",new Date());
         res.put("lastCreateUser",user.getUserId());
-        goodsDao.updateClassify(res);
+        classifyDao.updateClassify(res);
         rtn.setCode(200);
         rtn.setMessage("success");
         return Func.functionRtnToJsonObject.apply(rtn);
@@ -415,7 +417,7 @@ public class GoodsServiceImpl extends BaseServiceImpl  implements GoodsService {
             rest.put("id", res.get("id"));
             rest.put("lastCreateTime",new Date());
             rest.put("lastCreateUser",user.getUserId());
-            goodsDao.updateClassify(rest);
+            classifyDao.updateClassify(rest);
             rtn.setCode(200);
             rtn.setMessage("success");
         }else{

@@ -50,10 +50,4 @@ public interface GoodsDao {
     //查询标签
     List<Map<String,Object>> selectLable(Map<String,Object> map);
 
-    //新增分类
-    int insertGoodsClassify(Map<String,Object> map);
-
-    //更新分类
-    int updateClassify(Map<String,Object> map);
-
 }
