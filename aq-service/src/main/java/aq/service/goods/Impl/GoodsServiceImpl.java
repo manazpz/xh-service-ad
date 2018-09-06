@@ -129,7 +129,7 @@ public class GoodsServiceImpl extends BaseServiceImpl  implements GoodsService {
         res.put("lastCreateUser",user.getUserId());
         classifyDao.updateClassify(res);
         if(res.get("parentId") == null){
-            rest.put("parentId",res.get("parentId"));
+            rest.put("parentId",res.get("id"));
             List<Map<String, Object>> maps = classifyDao.selectClassify(rest);
             if(maps.size()>0){
                 for(Map obj:maps) {
