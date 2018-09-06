@@ -4,6 +4,7 @@ import aq.common.annotation.DyncDataSource;
 import aq.common.other.Rtn;
 import aq.common.util.*;
 import aq.dao.goods.GoodsDao;
+import aq.dao.goods.SpecDao;
 import aq.dao.resource.ResourceDao;
 import aq.service.base.Impl.BaseServiceImpl;
 import aq.service.goods.GoodsApiService;
@@ -27,6 +28,9 @@ public class GoodsApiServiceImpl extends BaseServiceImpl  implements GoodsApiSer
 
     @Resource
     private GoodsDao goodsDao;
+
+    @Resource
+    private SpecDao specDao;
 
     @Resource
     private ResourceDao resourceDao;
@@ -106,7 +110,7 @@ public class GoodsApiServiceImpl extends BaseServiceImpl  implements GoodsApiSer
             if(!StringUtil.isEmpty(jsonObject.get("model")) && "01".equals(jsonObject.get("model").getAsString())) {
                 res.put("status","01");
             }
-            res.put("model",jsonObject.get("model").getAsString());
+            res.put("model",StringUtil.isEmpty(jsonObject.get("model"))?"":jsonObject.get("model").getAsString());
             List<Map<String, Object>> goods = goodsDao.selectGoods(res);
             obj.put("goods",goods);
         });
@@ -126,13 +130,23 @@ public class GoodsApiServiceImpl extends BaseServiceImpl  implements GoodsApiSer
         JsonObject data = new JsonObject();
         JsonArray jsonArray = new JsonArray();
         Map<String,Object> res = new HashMap<>();
-        List specParameter = new ArrayList();
+        List<Map> specParameter = new ArrayList();
         res.clear();
         res = GsonHelper.getInstance().fromJson(jsonObject,Map.class);
         List<Map<String, Object>> goods = goodsDao.selectGoods(res);
         for(Map obj : goods) {
             if(!StringUtil.isEmpty(obj.get("specParameter"))) {
                 specParameter = GsonHelper.getInstance().fromJson(obj.get("specParameter").toString(), List.class);
+                for(Map spec : specParameter) {
+                    res.clear();
+                    res.put("id",spec.get("id"));
+                    List<Map<String, Object>> ls = specDao.selectSpec(res);
+                    if(ls.size() > 0) {
+                        spec.put("tipsType", StringUtil.isEmpty(ls.get(0).get("tipsType"))?"":ls.get(0).get("tipsType"));
+                        spec.put("tipsText", StringUtil.isEmpty(ls.get(0).get("tipsText"))?"":ls.get(0).get("tipsText"));
+                        spec.put("tipsImg", StringUtil.isEmpty(ls.get(0).get("tipsImg"))?"":ls.get(0).get("tipsImg"));
+                    }
+                }
             }
         }
         if(goods.size() > 0 && "02".equals(goods.get(0).get("model"))) {

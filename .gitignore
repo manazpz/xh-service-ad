@@ -12,6 +12,7 @@ target/
 rebel.xml
 .idea/workspace.xml
 depot/
+dist/
 
 
 
