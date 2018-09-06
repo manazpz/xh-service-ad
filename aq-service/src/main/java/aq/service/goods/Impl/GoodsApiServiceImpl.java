@@ -145,6 +145,7 @@ public class GoodsApiServiceImpl extends BaseServiceImpl  implements GoodsApiSer
                         spec.put("tipsType", StringUtil.isEmpty(ls.get(0).get("tipsType"))?"":ls.get(0).get("tipsType"));
                         spec.put("tipsText", StringUtil.isEmpty(ls.get(0).get("tipsText"))?"":ls.get(0).get("tipsText"));
                         spec.put("tipsImg", StringUtil.isEmpty(ls.get(0).get("tipsImg"))?"":ls.get(0).get("tipsImg"));
+                        spec.put("obligate", StringUtil.isEmpty(ls.get(0).get("obligate"))?"01":ls.get(0).get("obligate"));
                     }
                 }
             }

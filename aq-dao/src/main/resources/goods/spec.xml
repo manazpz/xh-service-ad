@@ -19,6 +19,7 @@
         cu.NICK_NAME AS createUserName,
         XSM.LAST_CREATE_USER AS lastCreateUserId,
         lcu.NICK_NAME AS lastCreateUserName,
+        XSM.OBLIGATE AS obligate,
         DATE_FORMAT(
         XSM.CREATE_TIME,
         '%Y-%m-%d %H:%i:%S'
@@ -78,6 +79,9 @@
             </if>
             <if test="tipsText!=null and tipsText != ''">
                 XB.TIPS_TEXT = #{tipsText},
+            </if>
+            <if test="obligate!=null and obligate != ''">
+                XB.OBLIGATE = #{obligate},
             </if>
             <if test="tipsImg!=null and tipsImg != ''">
                 XB.TIPS_IMG = #{tipsImg},
