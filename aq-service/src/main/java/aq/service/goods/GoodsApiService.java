@@ -12,7 +12,7 @@ public interface GoodsApiService extends BaseService {
     JsonObject queryGoods(JsonObject jsonObject);
 
     //查询热门商品
-    JsonObject queryHotGoods(JsonObject jsonObject);
+    JsonObject queryLableGoods(JsonObject jsonObject);
 
     //查询商品选择
     JsonObject queryChoices(JsonObject jsonObject);

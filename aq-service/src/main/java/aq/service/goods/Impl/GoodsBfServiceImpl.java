@@ -49,7 +49,7 @@ public class GoodsBfServiceImpl extends BaseServiceImpl  implements GoodsBfServi
 
     @Transactional(rollbackFor = {RuntimeException.class, Exception.class})
     @Override
-    public JsonObject insertGoods(JsonObject jsonObject) {
+    public JsonObject insertOldGoods(JsonObject jsonObject) {
         AbsAccessUser user = Factory.getContext().user();
         Rtn rtn = new Rtn("Goods");
         if (user == null) {
@@ -111,6 +111,45 @@ public class GoodsBfServiceImpl extends BaseServiceImpl  implements GoodsBfServi
                 res.put("shopId",((Map)maps.get(0)).get("id"));
                 if(StringUtil.isEmpty(jsonObject.get("id"))) {
                     goodsDao.insertGoods(res);
+                }else {
+                    goodsDao.updateGoods(res);
+                }
+                rtn.setCode(200);
+                rtn.setMessage("success");
+            }else {
+                rtn.setCode(404);
+                rtn.setMessage("用户下无店铺！");
+            }
+        }
+        return Func.functionRtnToJsonObject.apply(rtn);
+    }
+
+    @Override
+    public JsonObject insertNewGoods(JsonObject jsonObject) {
+        AbsAccessUser user = Factory.getContext().user();
+        Rtn rtn = new Rtn("Goods");
+        if (user == null) {
+            rtn.setCode(10000);
+            rtn.setMessage("未登录！");
+        }else {
+            Map<String,Object> res = new HashMap<>();
+            res.clear();
+            res.put("userId",user.getUserId());
+            List<Map<String, Object>> maps = shopDao.selectShop(res);
+            if(maps.size() > 0) {
+                res.clear();
+                String uuid = StringUtil.isEmpty(jsonObject.get("id"))?UUIDUtil.getUUID():jsonObject.get("id").getAsString();
+                res = GsonHelper.getInstance().fromJson(jsonObject,Map.class);
+                res.put("id",uuid);
+                res.put("createUserId", user.getUserId());
+                res.put("createTime",new Date());
+                res.put("lastCreateUserId", user.getUserId());
+                res.put("lastCreateTime",new Date());
+                res.put("specParameter", jsonObject.get("goodsSpec").getAsJsonArray().toString());
+                res.put("shopId",((Map)maps.get(0)).get("id"));
+                res.put("banPrice",0);
+                if(StringUtil.isEmpty(jsonObject.get("id"))) {
+                    goodsDao.insertGoods(res);
                     HashMap stockMap = new HashMap();
                     stockMap.put("id",UUIDUtil.getUUID());
                     stockMap.put("createUserId", user.getUserId());
@@ -138,8 +177,8 @@ public class GoodsBfServiceImpl extends BaseServiceImpl  implements GoodsBfServi
 
     public Map setParameter(Map map) {
         Map<String,Object> parameter = new HashMap<>();
-        parameter.put("name",map.get("spec_value_name"));
-        parameter.put("value",map.get("spec_sort"));
+        parameter.put("spec_value_name",map.get("spec_value_name"));
+        parameter.put("spec_sort",map.get("spec_sort"));
         parameter.put("correntPrice",map.get("correntPrice"));
         parameter.put("minPrice",map.get("minPrice"));
         parameter.put("cappedPrice",map.get("cappedPrice"));

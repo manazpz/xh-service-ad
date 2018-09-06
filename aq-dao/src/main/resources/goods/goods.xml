@@ -6,7 +6,7 @@
     <!--添加商品-->
     <insert id="insertGoods" >
         INSERT INTO XH_GOODS_MAIN
-        VALUES(#{id},#{code},#{outCode},#{shopId},#{name},#{alias},#{banPrice},#{brandId},#{classifyId},#{model},#{unit},
+        VALUES(#{id},#{code},#{outCode},#{shopId},#{name},#{alias},#{banPrice},#{brandId},#{classifyId},#{unit},
         #{logistcs},'02',#{specParameter},#{parameter},#{detail},#{remarks},'Y','','','','',
         #{createUserId},#{createTime,jdbcType=TIMESTAMP},#{lastCreateUserId},#{lastCreateTime,jdbcType=TIMESTAMP})
     </insert>
@@ -24,7 +24,7 @@
         XB. NAME AS brandName,
         XGM.CLASSIFY_ID AS classifyId,
         XC. NAME AS classifyName,
-        XGM.MODEL AS model,
+        XC.MODEL AS model,
         XGM.UNIT AS unit,
         sc. NAME AS unitName,
         XGM.LOGISTCS AS logistcs,
@@ -74,7 +74,7 @@
         LEFT JOIN system_administrator lcu ON lcu.ID = XGM.LAST_CREATE_USER
         WHERE 1=1
         <if test="model != null and model != ''">
-            AND XGM.MODEL = #{model}
+            AND XC.MODEL = #{model}
         </if>
         <if test="status != null and status != ''">
             AND XGM.STATUS = #{status}
@@ -97,7 +97,7 @@
         <if test="name != null and name != ''">
             AND XGM. NAME LIKE CONCAT('%', #{name}, '%')
         </if>
-        ORDER BY XB.NAME DESC,XGM.LAST_CREATE_TIME DESC,XGM.MODEL DESC
+        ORDER BY XB.NAME DESC,XGM.LAST_CREATE_TIME DESC,XC.MODEL DESC
     </select>
 
 
@@ -119,9 +119,6 @@
             </if>
             <if test="classifyId!=null and classifyId!=''">
                 CLASSIFY_ID = #{classifyId},
-            </if>
-            <if test="model!=null and model!=''">
-                MODEL = #{model},
             </if>
             <if test="lable!=null and lable!=''">
                 LABLE = #{lable},
@@ -219,7 +216,6 @@
         XAB.TIPS AS bllTips,
         XGM.ID AS goodsId,
         XGM. NAME AS goodsName,
-        XGM.MODEL AS model,
         XGM.SPEC_PARAMETER AS goodsParameter,
         su.ID AS userId,
         su.NICK_NAME AS nickName,
@@ -240,9 +236,6 @@
         </if>
         <if test="openId != null">
             AND XAB.CREATE_USER = #{openId}
-        </if>
-        <if test="model != null">
-            AND XGM.MODEL = #{model}
         </if>
         ORDER BY XAB.LAST_CREATE_TIME DESC
     </select>

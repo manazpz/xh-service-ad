@@ -40,7 +40,6 @@ public class GoodsApiServiceImpl extends BaseServiceImpl  implements GoodsApiSer
         Map<String,Object> res = new HashMap<>();
         res.clear();
         res = GsonHelper.getInstance().fromJson(jsonObject,Map.class);
-        res.put("status","01");
         List<Map<String, Object>> goods = goodsDao.selectGoods(res);
         goods.forEach(obj->{
             if(!StringUtil.isEmpty(obj.get("specParameter"))) {
@@ -69,7 +68,7 @@ public class GoodsApiServiceImpl extends BaseServiceImpl  implements GoodsApiSer
     }
 
     @Override
-    public JsonObject queryHotGoods(JsonObject jsonObject) {
+    public JsonObject queryLableGoods(JsonObject jsonObject) {
         jsonObject.addProperty("service","goods");
         return query(jsonObject,(map)->{
             Map res = new HashMap();
@@ -104,7 +103,10 @@ public class GoodsApiServiceImpl extends BaseServiceImpl  implements GoodsApiSer
         brands.forEach(obj->{
             res.clear();
             res.put("brandId",obj.get("id"));
-            res.put("status",obj.get("01"));
+            if(!StringUtil.isEmpty(jsonObject.get("model")) && "01".equals(jsonObject.get("model").getAsString())) {
+                res.put("status","01");
+            }
+            res.put("model",jsonObject.get("model").getAsString());
             List<Map<String, Object>> goods = goodsDao.selectGoods(res);
             obj.put("goods",goods);
         });
@@ -133,8 +135,10 @@ public class GoodsApiServiceImpl extends BaseServiceImpl  implements GoodsApiSer
                 specParameter = GsonHelper.getInstance().fromJson(obj.get("specParameter").toString(), List.class);
             }
         }
-        if(specParameter.size() > 0) {
-            CollectionsUtil.listMapSort(specParameter,"px");
+        if(goods.size() > 0 && "02".equals(goods.get(0).get("model"))) {
+            if(specParameter.size() > 0) {
+                CollectionsUtil.listMapSort(specParameter,"px");
+            }
         }
         rtn.setCode(200);
         rtn.setMessage("success");

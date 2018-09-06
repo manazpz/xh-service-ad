@@ -21,11 +21,18 @@ public class GoodsBfController extends aq.controller.restful.System {
     @Resource
     protected GoodsBfService goodsBfService;
 
-    //发布商品
-    @RequestMapping(value = "/push",method = RequestMethod.POST)
+    //发布旧商品
+    @RequestMapping(value = "/old/push",method = RequestMethod.POST)
     @ResponseBody
-    public void goodsPush(@RequestBody JsonObject requestJson,HttpServletRequest request, HttpServletResponse response, PrintWriter out) throws Exception {
-        writerJson(response,out,goodsBfService.insertGoods(requestJson));
+    public void oldGoodsPush(@RequestBody JsonObject requestJson,HttpServletRequest request, HttpServletResponse response, PrintWriter out) throws Exception {
+        writerJson(response,out,goodsBfService.insertOldGoods(requestJson));
+    }
+
+    //发布新商品
+    @RequestMapping(value = "/new/push",method = RequestMethod.POST)
+    @ResponseBody
+    public void newGoodsPush(@RequestBody JsonObject requestJson,HttpServletRequest request, HttpServletResponse response, PrintWriter out) throws Exception {
+        writerJson(response,out,goodsBfService.insertNewGoods(requestJson));
     }
 
     //查询商品
