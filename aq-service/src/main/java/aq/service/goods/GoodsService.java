@@ -56,4 +56,5 @@ public interface GoodsService extends BaseService {
     //更新后台品牌
     JsonObject deleteClassify(JsonObject jsonObject);
 
+
 }

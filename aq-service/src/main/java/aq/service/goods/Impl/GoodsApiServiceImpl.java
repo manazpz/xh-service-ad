@@ -228,11 +228,14 @@ public class GoodsApiServiceImpl extends BaseServiceImpl  implements GoodsApiSer
         Map<String,Object> res = new HashMap<>();
         res.clear();
         res.put("id",UUIDUtil.getUUID());
+        res.put("userId",jsonObject.get("userId").getAsString());
         res.put("goodsId",jsonObject.get("goodsId").getAsString());
+        res.put("model",jsonObject.get("model").getAsString());
         res.put("parameter",jsonObject.get("parameter").getAsJsonArray().toString());
         res.put("price",jsonObject.get("price").getAsString());
         res.put("tips",jsonObject.get("tips").getAsString());
         res.put("createUser",jsonObject.get("openId").getAsString());
+        res.put("lastCreateUser",jsonObject.get("openId").getAsString());
         res.put("createTime",new Date());
         res.put("lastCreateTime",new Date());
         goodsDao.insertReplacementCar(res);

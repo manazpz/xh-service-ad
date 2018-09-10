@@ -204,7 +204,7 @@
     <!--添加置换车-->
     <insert id="insertReplacementCar" >
         INSERT INTO XH_REPLACEMENT_CAR
-        VALUES(#{id},#{goodsId},#{parameter},#{price},#{tips},#{createUser},#{createTime,jdbcType=TIMESTAMP},#{lastCreateTime,jdbcType=TIMESTAMP})
+        VALUES(#{id},#{userId},#{goodsId},#{model},#{parameter},#{price},#{tips},#{createUser},#{createTime,jdbcType=TIMESTAMP},#{lastCreateUser},#{lastCreateTime,jdbcType=TIMESTAMP})
     </insert>
 
     <!--查询置换车-->
