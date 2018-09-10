@@ -2,11 +2,7 @@ package aq.service.system.Impl;
 
 import aq.common.annotation.DyncDataSource;
 import aq.common.other.Rtn;
-import aq.common.util.GsonHelper;
-import aq.common.util.MD5;
-import aq.common.util.StringUtil;
-import aq.common.util.UUIDUtil;
-import aq.dao.system.SystemDao;
+import aq.common.util.*;
 import aq.dao.user.UserDao;
 import aq.service.base.Impl.BaseServiceImpl;
 import aq.service.system.Func;
@@ -28,9 +24,6 @@ public class UserServiceImpl extends BaseServiceImpl implements UserService {
 
     @Resource
     private UserDao userDao;
-
-    @Resource
-    private SystemDao sysDao;
 
     @Transactional(rollbackFor = {RuntimeException.class, Exception.class})
     @Override
@@ -232,4 +225,5 @@ public class UserServiceImpl extends BaseServiceImpl implements UserService {
         rtn.setMessage("success");
         return Func.functionRtnToJsonObject.apply(rtn);
     }
+
 }

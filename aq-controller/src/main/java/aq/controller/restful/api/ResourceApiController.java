@@ -2,7 +2,7 @@ package aq.controller.restful.api;
 
 import aq.common.util.HttpUtil;
 import aq.common.util.StringUtil;
-import aq.service.resource.ResourceService;
+import aq.service.resource.ResourceApiService;
 import com.google.gson.JsonObject;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
@@ -18,7 +18,7 @@ import java.io.PrintWriter;
 public class ResourceApiController extends aq.controller.restful.System {
 
     @Resource
-    protected ResourceService resourceService;
+    protected ResourceApiService resourceApiService;
 
     //查询资源
     @RequestMapping(value = "/list",method = RequestMethod.GET)
@@ -27,8 +27,7 @@ public class ResourceApiController extends aq.controller.restful.System {
         if(StringUtil.isEmpty(jsonObject.get("type"))) {
             response.sendError(HttpServletResponse.SC_NOT_FOUND,"type is no null!");
         }
-        jsonObject.addProperty("way","API");
-        writerJson(response,out,resourceService.queryaResource(jsonObject));
+        writerJson(response,out,resourceApiService.queryaResource(jsonObject));
     }
 
 

@@ -21,4 +21,7 @@ public interface ConfigDao {
 
     //删除配置表
     int deleteConfig(Map<String,Object> map);
+
+    //查询第三方配置表
+    List<Map<String,Object>> selectTppConfig(Map<String,Object> map);
 }

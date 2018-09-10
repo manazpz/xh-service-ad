@@ -1,0 +1,76 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="aq.dao.statement.StatementDao">
+
+    <!--添加声明-->
+    <insert id="insertStatement" >
+        INSERT INTO system_statement
+        VALUES(#{id},#{title},#{content},#{type},#{createUserId},#{createTime,jdbcType=TIMESTAMP},#{updateTime,jdbcType=TIMESTAMP})
+    </insert>
+
+    <!--更新声明-->
+    <update id="updateStatement" parameterType="java.util.Map">
+        UPDATE system_statement
+        <trim prefix="set" suffixOverrides=",">
+            <if test="title!=null and title!=''">
+                TITLE = #{title},
+            </if>
+            <if test="content!=null and content!=''">
+                CONTENT = #{content},
+            </if>
+            <if test="type!=null and type!=''">
+                TYPE = #{type},
+            </if>
+            <if test="createUserId!=null and createUserId!=''">
+                CREATE_USER_ID = #{createUserId},
+            </if>
+            <if test="updateTime!=null and updateTime!=''">
+                UPDATE_TIME = #{updateTime,jdbcType=TIMESTAMP},
+            </if>
+        </trim>
+        WHERE ID = #{id}
+    </update>
+
+    <!--查询声明-->
+    <select id="selectStatement" resultType="java.util.Map" parameterType="java.util.Map">
+        SELECT
+        ss.ID AS id,
+        ss.TITLE AS title,
+        ss.CONTENT AS content,
+        ss.TYPE AS type,
+        sc. NAME AS typeName,
+        sat.FD_URL AS imgUrl,
+        sat.ID AS imgId,
+        sat.FD_EXTEND AS imgExtend,
+        ss.CREATE_USER_ID AS createUserId,
+        sa.NICK_NAME AS createUserName,
+        DATE_FORMAT(
+        ss.CREATE_TIME,
+        '%Y-%m-%d %H:%i:%S'
+        ) AS createTime,
+        DATE_FORMAT(
+        ss.UPDATE_TIME,
+        '%Y-%m-%d %H:%i:%S'
+        ) AS updateTime
+        FROM
+        system_statement ss
+        LEFT JOIN system_config sc ON sc.KEY_WORD = ss.TYPE
+        LEFT JOIN system_administrator sa ON sa.ID = ss.CREATE_USER_ID
+        LEFT JOIN system_attachment sat ON sat.FD_REF_ID = ss.ID
+        WHERE
+        1 = 1
+        <if test="id != null">
+            AND ss.ID = #{id}
+        </if>
+        <if test="type != null and type!=''">
+            AND ss.TYPE = #{type}
+        </if>
+    </select>
+
+    <!--删除声明-->
+    <delete id="deleteStatement"  parameterType="java.util.Map" >
+        DELETE FROM system_statement WHERE ID = #{id}
+    </delete>
+
+</mapper>

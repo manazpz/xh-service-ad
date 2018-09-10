@@ -58,4 +58,30 @@
         </if>
     </select>
 
+    <!--查询第三方配置表-->
+    <select id="selectTppConfig" resultType="java.util.Map" parameterType="java.util.Map">
+        SELECT
+        stc.ID AS id,
+        stc.NAME AS name,
+        stc.PLATFORM AS platform,
+        stc.ACCESS_KEY_ID AS accessKeyId,
+        stc.ACCESS_KEY_SECRET AS accessKeySecret,
+        stc.ENDPOINT AS endpoint,
+        stc.BACKET_NAME AS backetName,
+        stc.ACCESS_TOKEN AS accessToken,
+        DATE_FORMAT(
+        stc.UPDATE_TIME,
+        '%Y-%m-%d %H:%i:%S'
+        ) AS updateTime,
+        stc.RETURN_URL AS returnUrl
+        FROM system_tpp_config stc
+        WHERE 1=1
+        <if test="platform != null">
+            AND stc.PLATFORM = #{platform}
+        </if>
+        <if test="id != null">
+            AND stc.ID = #{id}
+        </if>
+    </select>
+
 </mapper>

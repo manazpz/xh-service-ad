@@ -3,6 +3,13 @@
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="aq.dao.resource.ResourceDao">
 
+    <!--添加附件-->
+    <insert id="insertResourcet" >
+        INSERT INTO system_attachment
+        VALUES(#{id},#{name},#{type},#{refId},#{url},#{extend},#{size},#{createUserId},#{lastCreateUserId},
+        #{createTime,jdbcType=TIMESTAMP},#{lastCreateTime,jdbcType=TIMESTAMP},#{remarks})
+    </insert>
+
     <!--查询附件-->
     <select id="selectResource" resultType="java.util.Map" parameterType="java.util.Map">
         SELECT
@@ -48,5 +55,40 @@
     <delete id="deleteResource"  parameterType="java.util.Map" >
         DELETE FROM system_attachment WHERE ID = #{id}
     </delete>
+
+    <!--更新附件-->
+    <update id="updateResource" parameterType="java.util.Map">
+        UPDATE system_attachment
+        <trim prefix="set" suffixOverrides=",">
+            <if test="name!=null and name!=''">
+                FD_NAME = #{name},
+            </if>
+            <if test="type!=null and type!=''">
+                FD_TYPE = #{type},
+            </if>
+            <if test="refId!=null and refId!=''">
+                FD_REF_ID = #{refId},
+            </if>
+            <if test="url!=null and url!=''">
+                FD_URL = #{url},
+            </if>
+            <if test="extend!=null and extend!=''">
+                FD_EXTEND = #{extend},
+            </if>
+            <if test="size!=null and size!=''">
+                FD_SIZE = #{size},
+            </if>
+            <if test="lastCreateUserId!=null and lastCreateUserId!=''">
+                LAST_CREATE_USER_ID = #{lastCreateUserId},
+            </if>
+            <if test="lastCreateTime!=null and lastCreateTime!=''">
+                LAST_CREATE_TIME = #{lastCreateTime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="remarks!=null and remarks!=''">
+                REMARKS = #{remarks},
+            </if>
+        </trim>
+        WHERE ID = #{id}
+    </update>
 
 </mapper>

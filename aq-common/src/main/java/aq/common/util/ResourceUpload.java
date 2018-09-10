@@ -74,6 +74,17 @@ public class ResourceUpload {
     }
 
     /**
+     * 删除文件
+     * @param bucketName
+     * @param key
+     */
+    public void deleteFileToOSS(String bucketName, String path, String key) {
+        ObjectListing ObjectListing = ossClient.listObjects(bucketName);
+        List<OSSObjectSummary> listDeletes = ObjectListing.getObjectSummaries();
+        ossClient.deleteObject(bucketName, path+"/"+key);
+    }
+
+    /**
      * 上传文件
      * @param file  文件名
      * @throws OSSException
@@ -95,7 +106,7 @@ public class ResourceUpload {
         String fileName = name+"."+file.getOriginalFilename().split("\\.")[1];
         //文件大小
         Long fileSize = file.getSize();
-        String key = path+fileName;
+        String key = path+"/"+fileName;
 
         try {
             InputStream is = file.getInputStream();

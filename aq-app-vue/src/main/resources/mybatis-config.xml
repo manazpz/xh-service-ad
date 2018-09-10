@@ -29,6 +29,7 @@
         <mapper resource="sys/system.xml"/>
         <mapper resource="config/config.xml"/>
         <mapper resource="user/user.xml"/>
+        <mapper resource="statement/statement.xml"/>
 
         <mapper resource="resource/resource.xml"/>
         <mapper resource="goods/goods.xml"/>
