@@ -16,6 +16,7 @@
         sa.ID AS id,
         sa.FD_NAME AS name,
         sa.FD_TYPE AS type,
+        sa.FD_LINK AS link,
         sc. NAME AS typeName,
         sa.FD_REF_ID AS refId,
         sa.FD_URL AS url,
