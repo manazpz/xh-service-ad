@@ -33,6 +33,9 @@
         <if test="id != null">
             AND XC.ID = #{id}
         </if>
+        <if test="model != null">
+            AND XC.MODEL = #{model}
+        </if>
         <if test="parentId != null">
             AND XC.PARENT_ID = #{parentId}
         </if>

@@ -88,6 +88,9 @@
         <if test="brandId != null">
             AND XGM.BRAND_ID = #{brandId}
         </if>
+        <if test="classifyId != null">
+            AND XGM.CLASSIFY_ID = #{classifyId}
+        </if>
         <if test="lable != null">
             AND XGM.Lable ${lable}
         </if>

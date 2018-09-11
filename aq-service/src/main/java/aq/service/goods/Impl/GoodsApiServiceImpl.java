@@ -3,6 +3,7 @@ package aq.service.goods.Impl;
 import aq.common.annotation.DyncDataSource;
 import aq.common.other.Rtn;
 import aq.common.util.*;
+import aq.dao.goods.ClassifyDao;
 import aq.dao.goods.GoodsDao;
 import aq.dao.goods.SpecDao;
 import aq.dao.resource.ResourceDao;
@@ -31,6 +32,9 @@ public class GoodsApiServiceImpl extends BaseServiceImpl  implements GoodsApiSer
 
     @Resource
     private SpecDao specDao;
+
+    @Resource
+    private ClassifyDao classifyDao;
 
     @Resource
     private ResourceDao resourceDao;
@@ -102,22 +106,49 @@ public class GoodsApiServiceImpl extends BaseServiceImpl  implements GoodsApiSer
         JsonObject data = new JsonObject();
         JsonArray jsonArray = new JsonArray();
         Map<String,Object> res = new HashMap<>();
-        //查询品牌
-        List<Map<String, Object>> brands = goodsDao.selectBrand(res);
-        brands.forEach(obj->{
-            res.clear();
-            res.put("brandId",obj.get("id"));
-            if(!StringUtil.isEmpty(jsonObject.get("model")) && "01".equals(jsonObject.get("model").getAsString())) {
-                res.put("status","01");
+        Map<String,Object> rest = new HashMap<>();
+        List<Map<String, Object>> req3 =new ArrayList<>();
+        res = GsonHelper.getInstance().fromJson(jsonObject,Map.class);
+        //查询分类信息
+        rest.put("model",res.get("model"));
+        rest.put("cascade",'Y');
+        List<Map<String, Object>> maps = classifyDao.selectClassify(rest);
+        for(Map obj1:maps) {
+            rest.clear();
+            rest.put("parentId",obj1.get("id"));
+            List<Map<String, Object>> req2 = classifyDao.selectClassify(rest);
+            for(Map obj2:req2) {
+                rest.clear();
+                rest.put("parentId",obj2.get("id"));
+                req3 = classifyDao.selectClassify(rest);
+                for(Map obj3:req3) {
+                    rest.clear();
+                    rest.put("classifyId",obj3.get("id"));
+                    if(!StringUtil.isEmpty(jsonObject.get("model")) && "01".equals(jsonObject.get("model").getAsString())) {
+                        rest.put("status","01");
+                    }
+                    rest.put("model",StringUtil.isEmpty(jsonObject.get("model"))?"":jsonObject.get("model").getAsString());
+                    List<Map<String, Object>> goods = goodsDao.selectGoods(rest);
+                    obj3.put("goods",goods);
+                }
+
             }
-            res.put("model",StringUtil.isEmpty(jsonObject.get("model"))?"":jsonObject.get("model").getAsString());
-            List<Map<String, Object>> goods = goodsDao.selectGoods(res);
-            obj.put("goods",goods);
-        });
+            obj1.put("detail",req3);
+        }
+//        maps.forEach(obj->{
+//            resa.clear();
+//            resa.put("brandId",obj.get("id"));
+//            if(!StringUtil.isEmpty(jsonObject.get("model")) && "01".equals(jsonObject.get("model").getAsString())) {
+//                resa.put("status","01");
+//            }
+//            resa.put("model",StringUtil.isEmpty(jsonObject.get("model"))?"":jsonObject.get("model").getAsString());
+//            List<Map<String, Object>> goods = goodsDao.selectGoods(resa);
+//            obj.put("goods",goods);
+//        });
         rtn.setCode(200);
         rtn.setMessage("success");
-        jsonArray =  GsonHelper.getInstanceJsonparser().parse(GsonHelper.getInstance().toJson(brands)).getAsJsonArray();
-        data.addProperty("total",brands.size());
+        jsonArray =  GsonHelper.getInstanceJsonparser().parse(GsonHelper.getInstance().toJson(maps)).getAsJsonArray();
+        data.addProperty("total",maps.size());
         data.add("items",jsonArray);
         rtn.setData(data);
         return  Func.functionRtnToJsonObject.apply(rtn);
