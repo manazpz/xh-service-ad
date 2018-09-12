@@ -108,16 +108,17 @@ public class ResourceBfServiceImpl extends BaseServiceImpl  implements ResourceB
             if (!StringUtil.isEmpty(res.get("fileList"))) {
                 fileList.addAll(GsonHelper.getInstance().fromJson(res.get("fileList").toString(),List.class));
             }
-
-            for (Map obj1 : afileList) {
-                Boolean flag = true;
-                for (Map obj2 : fileList) {
-                    if(obj1.get("id").equals(obj2.get("id"))) {
-                        flag = false;
+            if (fileList.size() > 0) {
+                for (Map obj1 : afileList) {
+                    Boolean flag = true;
+                    for (Map obj2 : fileList) {
+                        if(obj1.get("id").equals(obj2.get("id"))) {
+                            flag = false;
+                        }
                     }
-                }
-                if (flag) {
-                    ress.add(obj1);
+                    if (flag) {
+                        ress.add(obj1);
+                    }
                 }
             }
             Map<String, Object> tppMap = tpp.get(0);
