@@ -62,7 +62,7 @@ public class GoodsBfServiceImpl extends BaseServiceImpl  implements GoodsBfServi
             List<Map<String, Object>> maps = shopDao.selectShop(res);
             if(maps.size() > 0) {
                 res.clear();
-                String uuid = StringUtil.isEmpty(jsonObject.get("id"))?UUIDUtil.getUUID():jsonObject.get("id").getAsString();
+                String uuid = StringUtil.isEmpty(jsonObject.get("id").getAsString())?UUIDUtil.getUUID():jsonObject.get("id").getAsString();
                 res = GsonHelper.getInstance().fromJson(jsonObject,Map.class);
                 res.put("id",uuid);
                 res.put("createUserId", user.getUserId());
@@ -72,7 +72,7 @@ public class GoodsBfServiceImpl extends BaseServiceImpl  implements GoodsBfServi
                 //格式化规格参数
                 if(!StringUtil.isEmpty(jsonObject.get("specParameter"))) {
                     List<Map> datas = new ArrayList();
-                    List<Map> specParameters = GsonHelper.getInstance().fromJson(jsonObject.get("specParameter").toString(), List.class);
+                    List<Map> specParameters = GsonHelper.getInstance().fromJson(jsonObject.get("specParameter").getAsString(), List.class);
                     for (Map obj : specParameters) {
                         if(datas.size() > 0) {
                             List parameters = null;
@@ -109,10 +109,38 @@ public class GoodsBfServiceImpl extends BaseServiceImpl  implements GoodsBfServi
                     res.put("specParameter",jsonArray.toString());
                 }
                 res.put("shopId",((Map)maps.get(0)).get("id"));
-                if(StringUtil.isEmpty(jsonObject.get("id"))) {
+                if(StringUtil.isEmpty(jsonObject.get("id").getAsString())) {
                     goodsDao.insertGoods(res);
                 }else {
                     goodsDao.updateGoods(res);
+                    if (res.get("delFiles") instanceof List) {
+                        HashMap resourceMap = new HashMap();
+                        List<Map> delResources = (List<Map>) res.get("delFiles");
+                        for (Map obj : delResources) {
+                            resourceMap.clear();
+                            resourceMap.put("id",obj.get("id"));
+                            resourceDao.deleteResource(resourceMap);
+                        }
+                    }
+                }
+                if (res.get("files") instanceof List) {
+                    HashMap resourceMap = new HashMap();
+                    List<Map> resources = (List<Map>) res.get("files");
+                    for (Map obj : resources) {
+                        resourceMap.clear();
+                        resourceMap.put("id",obj.get("id"));
+                        resourceMap.put("name", obj.get("name"));
+                        resourceMap.put("url",obj.get("url"));
+                        resourceMap.put("extend",obj.get("extend"));
+                        resourceMap.put("size",obj.get("size"));
+                        resourceMap.put("type","GI");
+                        resourceMap.put("refId",uuid);
+                        resourceMap.put("createUserId", user.getUserId());
+                        resourceMap.put("lastCreateUserId", user.getUserId());
+                        resourceMap.put("createTime", new Date());
+                        resourceMap.put("lastCreateTime", new Date());
+                        resourceDao.insertResourcet(resourceMap);
+                    }
                 }
                 rtn.setCode(200);
                 rtn.setMessage("success");
@@ -138,17 +166,17 @@ public class GoodsBfServiceImpl extends BaseServiceImpl  implements GoodsBfServi
             List<Map<String, Object>> maps = shopDao.selectShop(res);
             if(maps.size() > 0) {
                 res.clear();
-                String uuid = StringUtil.isEmpty(jsonObject.get("id"))?UUIDUtil.getUUID():jsonObject.get("id").getAsString();
+                String uuid = StringUtil.isEmpty(jsonObject.get("id").getAsString())?UUIDUtil.getUUID():jsonObject.get("id").getAsString();
                 res = GsonHelper.getInstance().fromJson(jsonObject,Map.class);
                 res.put("id",uuid);
                 res.put("createUserId", user.getUserId());
                 res.put("createTime",new Date());
                 res.put("lastCreateUserId", user.getUserId());
                 res.put("lastCreateTime",new Date());
-                res.put("specParameter", jsonObject.get("goodsSpec").getAsJsonArray().toString());
+                res.put("specParameter", jsonObject.get("goodsSpec").getAsString());
                 res.put("shopId",((Map)maps.get(0)).get("id"));
                 res.put("banPrice",0);
-                if(StringUtil.isEmpty(jsonObject.get("id"))) {
+                if(StringUtil.isEmpty(jsonObject.get("id").getAsString())) {
                     goodsDao.insertGoods(res);
                     HashMap stockMap = new HashMap();
                     stockMap.put("id",UUIDUtil.getUUID());
@@ -164,6 +192,34 @@ public class GoodsBfServiceImpl extends BaseServiceImpl  implements GoodsBfServi
                     stockDao.insertStock(stockMap);
                 }else {
                     goodsDao.updateGoods(res);
+                    if (res.get("delFiles") instanceof List) {
+                        HashMap resourceMap = new HashMap();
+                        List<Map> delResources = (List<Map>) res.get("delFiles");
+                        for (Map obj : delResources) {
+                            resourceMap.clear();
+                            resourceMap.put("id",obj.get("id"));
+                            resourceDao.deleteResource(resourceMap);
+                        }
+                    }
+                }
+                if (res.get("files") instanceof List) {
+                    HashMap resourceMap = new HashMap();
+                    List<Map> resources = (List<Map>) res.get("files");
+                    for (Map obj : resources) {
+                        resourceMap.clear();
+                        resourceMap.put("id",obj.get("id"));
+                        resourceMap.put("name", obj.get("name"));
+                        resourceMap.put("url",obj.get("url"));
+                        resourceMap.put("extend",obj.get("extend"));
+                        resourceMap.put("size",obj.get("size"));
+                        resourceMap.put("type","GI");
+                        resourceMap.put("refId",uuid);
+                        resourceMap.put("createUserId", user.getUserId());
+                        resourceMap.put("lastCreateUserId", user.getUserId());
+                        resourceMap.put("createTime", new Date());
+                        resourceMap.put("lastCreateTime", new Date());
+                        resourceDao.insertResourcet(resourceMap);
+                    }
                 }
                 rtn.setCode(200);
                 rtn.setMessage("success");
@@ -205,7 +261,7 @@ public class GoodsBfServiceImpl extends BaseServiceImpl  implements GoodsBfServi
                     res.put("type","GI");
                     res.put("refId",obj.get("id"));
                     List imgs = resourceDao.selectResource(res);
-                    obj.put("imgs",imgs);
+                    obj.put("afileList",imgs);
                 }
             });
             return goods;

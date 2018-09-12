@@ -6,7 +6,7 @@
     <!--添加附件-->
     <insert id="insertResourcet" >
         INSERT INTO system_attachment
-        VALUES(#{id},#{name},#{type},#{refId},#{url},#{extend},#{size},#{createUserId},#{lastCreateUserId},
+        VALUES(#{id},#{name},#{type},#{refId},#{link},#{url},#{extend},#{size},#{createUserId},#{lastCreateUserId},
         #{createTime,jdbcType=TIMESTAMP},#{lastCreateTime,jdbcType=TIMESTAMP},#{remarks})
     </insert>
 
@@ -72,6 +72,9 @@
             </if>
             <if test="url!=null and url!=''">
                 FD_URL = #{url},
+            </if>
+            <if test="link!=null and link!=''">
+                FD_LINK = #{link},
             </if>
             <if test="extend!=null and extend!=''">
                 FD_EXTEND = #{extend},

@@ -49,7 +49,7 @@ public class StringUtil {
 
     // is Empty Or Not
     public static boolean isEmpty(Object o) {
-        if (null == o || "".equals(o.toString())) {
+        if (null == o || "".equals(o.toString()) || "undefined".equals(o.toString())) {
             return true;
         } else {
             return false;

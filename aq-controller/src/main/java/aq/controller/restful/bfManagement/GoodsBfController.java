@@ -4,9 +4,11 @@ import aq.common.util.HttpUtil;
 import aq.common.util.StringUtil;
 import aq.service.goods.GoodsApiService;
 import aq.service.goods.GoodsBfService;
+import aq.service.resource.ResourceBfService;
 import com.google.gson.JsonObject;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartHttpServletRequest;
 
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
@@ -21,18 +23,33 @@ public class GoodsBfController extends aq.controller.restful.System {
     @Resource
     protected GoodsBfService goodsBfService;
 
+    @Resource
+    protected ResourceBfService resourceBfService;
+
     //发布旧商品
     @RequestMapping(value = "/old/push",method = RequestMethod.POST)
-    @ResponseBody
-    public void oldGoodsPush(@RequestBody JsonObject requestJson,HttpServletRequest request, HttpServletResponse response, PrintWriter out) throws Exception {
-        writerJson(response,out,goodsBfService.insertOldGoods(requestJson));
+    public void oldGoodsPush(HttpServletRequest request, HttpServletResponse response, PrintWriter out) throws Exception {
+        JsonObject jsonObject = HttpUtil.getParameterMap(request);
+        JsonObject fileObject = resourceBfService.uploadFiles(request, response);
+        if (fileObject.get("data").getAsJsonObject().get("files") != null)
+            jsonObject.add("files",fileObject.get("data").getAsJsonObject().get("files").getAsJsonArray());
+        JsonObject delFileObject = resourceBfService.deleteFiles(jsonObject);
+        if (delFileObject.get("data").getAsJsonObject().get("delFiles") != null)
+            jsonObject.add("delFiles",delFileObject.get("data").getAsJsonObject().get("delFiles").getAsJsonArray());
+        writerJson(response,out,goodsBfService.insertOldGoods(jsonObject));
     }
 
     //发布新商品
     @RequestMapping(value = "/new/push",method = RequestMethod.POST)
-    @ResponseBody
-    public void newGoodsPush(@RequestBody JsonObject requestJson,HttpServletRequest request, HttpServletResponse response, PrintWriter out) throws Exception {
-        writerJson(response,out,goodsBfService.insertNewGoods(requestJson));
+    public void newGoodsPush(HttpServletRequest request, HttpServletResponse response, PrintWriter out) throws Exception {
+        JsonObject jsonObject = HttpUtil.getParameterMap(request);
+        JsonObject fileObject = resourceBfService.uploadFiles(request, response);
+        if (fileObject.get("data").getAsJsonObject().get("files") != null)
+            jsonObject.add("files",fileObject.get("data").getAsJsonObject().get("files").getAsJsonArray());
+        JsonObject delFileObject = resourceBfService.deleteFiles(jsonObject);
+        if (delFileObject.get("data").getAsJsonObject().get("delFiles") != null)
+            jsonObject.add("delFiles",delFileObject.get("data").getAsJsonObject().get("delFiles").getAsJsonArray());
+        writerJson(response,out,goodsBfService.insertNewGoods(jsonObject));
     }
 
     //查询商品

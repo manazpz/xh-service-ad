@@ -29,5 +29,4 @@ public class Resources extends Base {
     public void deleteFile(@RequestBody JsonObject requestJson, HttpServletRequest request, HttpServletResponse response, PrintWriter out){
         writerJson(response,out,resourceService.deleteFile(requestJson));
     }
-
 }

@@ -21,6 +21,7 @@ import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -61,6 +62,7 @@ public class ResourceServiceImpl extends BaseServiceImpl  implements ResourceSer
                 res.put("name", StringUtil.isEmpty(split[0])?"":split[0]);
                 res.put("url",fileurl);
                 res.put("extend",StringUtil.isEmpty(split[1])?"":split[1]);
+                res.put("link",StringUtil.isEmpty(request.getParameter("link"))?"":request.getParameter("link"));
                 res.put("size",file.getSize());
                 rtn.setCode(200);
                 rtn.setMessage("success");
