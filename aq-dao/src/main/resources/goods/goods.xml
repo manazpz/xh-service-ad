@@ -214,12 +214,16 @@
     <select id="selectReplacementCar" resultType="java.util.Map" parameterType="java.util.Map">
         SELECT
         XAB.ID AS bllId,
+        XAB.FD_MODEL AS model,
         XAB.PARAMETER AS bllParameter,
         XAB.PRICE AS bllPrice,
         XAB.TIPS AS bllTips,
+        XGM.LOGISTCS AS logIstcs,
+        XGM.IS_DELETE AS del,
         XGM.ID AS goodsId,
         XGM. NAME AS goodsName,
         XGM.SPEC_PARAMETER AS goodsParameter,
+        sa.FD_URL AS url,
         su.ID AS userId,
         su.NICK_NAME AS nickName,
         DATE_FORMAT(
@@ -234,6 +238,7 @@
         XH_REPLACEMENT_CAR XAB
         LEFT JOIN XH_GOODS_MAIN XGM ON XGM.ID = XAB.GOODS_ID
         LEFT JOIN system_user su ON su.OPENID = XAB.CREATE_USER
+        LEFT JOIN system_attachment sa ON sa.FD_REF_ID = XGM.ID
         <if test="id != null">
             AND XAB.ID = #{id}
         </if>

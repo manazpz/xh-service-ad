@@ -26,7 +26,7 @@ public interface GoodsApiService extends BaseService {
     //添加置换车
     JsonObject insertReplacementCar(JsonObject jsonObject);
 
-    //添加置换车
+    //更新置换车
     JsonObject updateReplacementCar(JsonObject jsonObject);
 
     //查询置换车
