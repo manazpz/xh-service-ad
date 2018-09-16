@@ -124,9 +124,7 @@ public class GoodsApiServiceImpl extends BaseServiceImpl  implements GoodsApiSer
                 for(Map obj3:req3) {
                     rest.clear();
                     rest.put("classifyId",obj3.get("id"));
-                    if(!StringUtil.isEmpty(jsonObject.get("model")) && "01".equals(jsonObject.get("model").getAsString())) {
-                        rest.put("status","01");
-                    }
+                    rest.put("status","01");
                     rest.put("model",StringUtil.isEmpty(jsonObject.get("model"))?"":jsonObject.get("model").getAsString());
                     List<Map<String, Object>> goods = goodsDao.selectGoods(rest);
                     obj3.put("goods",goods);
@@ -259,14 +257,12 @@ public class GoodsApiServiceImpl extends BaseServiceImpl  implements GoodsApiSer
         Map<String,Object> res = new HashMap<>();
         res.clear();
         res.put("id",UUIDUtil.getUUID());
-        res.put("userId",jsonObject.get("userId").getAsString());
+        res.put("userId",jsonObject.get("openId").getAsString());
         res.put("goodsId",jsonObject.get("goodsId").getAsString());
         res.put("model",jsonObject.get("model").getAsString());
         res.put("parameter",jsonObject.get("parameter").toString());
         res.put("price",jsonObject.get("price").getAsString());
-        res.put("tips",jsonObject.get("tips").getAsString());
         res.put("createUser",jsonObject.get("openId").getAsString());
-        res.put("lastCreateUser",jsonObject.get("openId").getAsString());
         res.put("createTime",new Date());
         res.put("lastCreateTime",new Date());
         goodsDao.insertReplacementCar(res);
