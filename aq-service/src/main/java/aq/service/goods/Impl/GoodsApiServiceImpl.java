@@ -54,10 +54,6 @@ public class GoodsApiServiceImpl extends BaseServiceImpl  implements GoodsApiSer
                 List specParameter = GsonHelper.getInstance().fromJson(obj.get("specParameter").toString(), List.class);
                 obj.put("specParameter",specParameter);
             }
-            if(!StringUtil.isEmpty(obj.get("parameter"))) {
-                List parameter = GsonHelper.getInstance().fromJson(obj.get("parameter").toString(), List.class);
-                obj.put("parameter",parameter);
-            }
             if(!StringUtil.isEmpty(obj.get("id"))) {
                 Map<String,Object> ress = new HashMap<>();
                 ress.put("type","GI");
@@ -293,10 +289,17 @@ public class GoodsApiServiceImpl extends BaseServiceImpl  implements GoodsApiSer
     public JsonObject queryReplacementCar(JsonObject jsonObject) {
         Rtn rtn = new Rtn("Goods");
         Map<String,Object> res = new HashMap<>();
-        JsonObject data = new JsonObject();
-        JsonArray jsonArray = new JsonArray();
+        List newGoods = new ArrayList();
+        List oldGoods = new ArrayList();
+//        JsonObject data = new JsonObject();
+//        JsonArray jsonArray = new JsonArray();
         res.clear();
         res = GsonHelper.getInstance().fromJson(jsonObject,Map.class);
+        if(!StringUtil.isEmpty(res.get("ids"))) {
+            String[] ids = res.get("ids").toString().split(",");
+            res.clear();
+            res.put("ids",ids);
+        }
         List<Map<String, Object>> blls = goodsDao.selectReplacementCar(res);
         blls.forEach(obj->{
             if(!StringUtil.isEmpty(obj.get("goodsParameter"))) {
@@ -304,16 +307,37 @@ public class GoodsApiServiceImpl extends BaseServiceImpl  implements GoodsApiSer
                 obj.put("goodsParameter",goodsParameter);
             }
             if(!StringUtil.isEmpty(obj.get("bllParameter"))) {
-                List bllParameter = GsonHelper.getInstance().fromJson(obj.get("bllParameter").toString(), List.class);
+                String str = "";
+                List<Map> bllParameter = GsonHelper.getInstance().fromJson(obj.get("bllParameter").toString(), List.class);
+                for(Map map:bllParameter){
+                    List<Map> parameter = (List) map.get("parameter");
+                    if(parameter != null)
+                        str += parameter.get(0).get("name").toString() + " ";
+                }
+                obj.put("bllParameterStr",str);
                 obj.put("bllParameter",bllParameter);
             }
+            Map<String,Object> ress = new HashMap<>();
+            ress.put("type","GI");
+            ress.put("refId",obj.get("goodsId"));
+            List imgs = resourceDao.selectResource(ress);
+            obj.put("imgs",imgs);
+            if("01".equals(obj.get("model"))){
+                newGoods.add(obj);
+            }
+            if("02".equals(obj.get("model"))){
+                oldGoods.add(obj);
+            }
         });
-        jsonArray =  GsonHelper.getInstanceJsonparser().parse(GsonHelper.getInstance().toJson(blls)).getAsJsonArray();
-        data.addProperty("total",jsonArray.size());
-        data.add("items",jsonArray);
+        res.clear();
+        res.put("newGoods",newGoods);
+        res.put("oldGoods",oldGoods);
+//        jsonArray =  GsonHelper.getInstanceJsonparser().parse(GsonHelper.getInstance().toJson(blls)).getAsJsonArray();
+//        data.addProperty("total",jsonArray.size());
+//        data.add("items",jsonArray);
         rtn.setCode(200);
         rtn.setMessage("success");
-        rtn.setData(data);
+        rtn.setData(GsonHelper.getInstanceJsonparser().parse(GsonHelper.getInstance().toJson(res)).getAsJsonObject());
         return  Func.functionRtnToJsonObject.apply(rtn);
     }
 

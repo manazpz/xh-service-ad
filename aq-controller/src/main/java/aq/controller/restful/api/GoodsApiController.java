@@ -94,8 +94,10 @@ public class GoodsApiController extends aq.controller.restful.System {
     @RequestMapping(value = "/replacementCarList",method = RequestMethod.GET)
     public void replacementCarList(HttpServletRequest request, HttpServletResponse response, PrintWriter out) throws Exception {
         JsonObject jsonObject = HttpUtil.getParameterMap(request);
-        if(StringUtil.isEmpty(jsonObject.get("openId"))) {
-            response.sendError(HttpServletResponse.SC_NOT_FOUND,"openId is no null!");
+        if(StringUtil.isEmpty(jsonObject.get("ids"))) {
+            if(StringUtil.isEmpty(jsonObject.get("openId"))) {
+                response.sendError(HttpServletResponse.SC_NOT_FOUND,"openId is no null!");
+            }
         }
         writerJson(response,out,goodsService.queryReplacementCar(jsonObject));
     }

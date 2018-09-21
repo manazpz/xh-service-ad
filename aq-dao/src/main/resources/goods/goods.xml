@@ -246,6 +246,12 @@
         <if test="openId != null">
             AND XAB.CREATE_USER = #{openId}
         </if>
+        <if test="ids != null">
+            AND XAB.ID in
+            <foreach collection="ids" index="index" item="item" open="(" separator="," close=")">
+                #{item}
+            </foreach>
+        </if>
         ORDER BY XAB.LAST_CREATE_TIME DESC
     </select>
 
