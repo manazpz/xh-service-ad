@@ -90,6 +90,7 @@ public class GoodsBfServiceImpl extends BaseServiceImpl  implements GoodsBfServi
                                 data.put("id",obj.get("id"));
                                 data.put("name",obj.get("name"));
                                 data.put("px",obj.get("px"));
+                                data.put("obligate",obj.get("obligate"));
                                 parameters.add(setParameter(obj));
                                 data.put("parameter",parameters);
                                 datas.add(data);
@@ -100,6 +101,7 @@ public class GoodsBfServiceImpl extends BaseServiceImpl  implements GoodsBfServi
                             data.put("id",obj.get("id"));
                             data.put("name",obj.get("name"));
                             data.put("px",obj.get("px"));
+                            data.put("obligate",obj.get("obligate"));
                             parameters.add(setParameter(obj));
                             data.put("parameter",parameters);
                             datas.add(data);

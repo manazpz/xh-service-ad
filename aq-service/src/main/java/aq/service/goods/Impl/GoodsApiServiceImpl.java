@@ -257,7 +257,24 @@ public class GoodsApiServiceImpl extends BaseServiceImpl  implements GoodsApiSer
         res.put("goodsId",jsonObject.get("goodsId").getAsString());
         res.put("model",jsonObject.get("model").getAsString());
         res.put("parameter",jsonObject.get("parameter").toString());
-        res.put("price",jsonObject.get("price").getAsString());
+        if("01".equals(jsonObject.get("model").getAsString())) {
+            res.put("price",jsonObject.get("price").getAsString());
+        }
+        if("02".equals(jsonObject.get("model").getAsString())) {
+            Double sum = 0.0;
+            Double banPrice = Double.parseDouble(jsonObject.get("banPrice").getAsString());
+            for (int i=0;i<jsonObject.get("parameter").getAsJsonArray().size();i++) {
+                JsonArray asJsonArray = jsonObject.get("parameter").getAsJsonArray().get(i).getAsJsonObject().get("spec").getAsJsonArray();
+                for (int j=0;j<asJsonArray.size();j++) {
+                    Double correntPrice = Double.parseDouble(asJsonArray.get(j).getAsJsonObject().get("correntPrice").getAsString());
+                    Double minPrice = Double.parseDouble(asJsonArray.get(j).getAsJsonObject().get("minPrice").getAsString());
+                    Double cappedPrice = Double.parseDouble(asJsonArray.get(j).getAsJsonObject().get("cappedPrice").getAsString());
+                    Double price = banPrice + correntPrice;
+                    sum = sum + NumUtil.compareDouble(price,minPrice,cappedPrice)-banPrice;
+                }
+            }
+            res.put("price",sum + banPrice);
+        }
         res.put("createUser",jsonObject.get("openId").getAsString());
         res.put("createTime",new Date());
         res.put("lastCreateTime",new Date());
@@ -275,7 +292,24 @@ public class GoodsApiServiceImpl extends BaseServiceImpl  implements GoodsApiSer
         res.clear();
         res.put("id",jsonObject.get("id").getAsString());
         res.put("parameter",jsonObject.get("parameter").toString());
-        res.put("price",jsonObject.get("price").getAsString());
+        if("01".equals(jsonObject.get("model").getAsString())) {
+            res.put("price",jsonObject.get("price").getAsString());
+        }
+        if("02".equals(jsonObject.get("model").getAsString())) {
+            Double sum = 0.0;
+            Double banPrice = Double.parseDouble(jsonObject.get("banPrice").getAsString());
+            for (int i=0;i<jsonObject.get("parameter").getAsJsonArray().size();i++) {
+                JsonArray asJsonArray = jsonObject.get("parameter").getAsJsonArray().get(i).getAsJsonObject().get("spec").getAsJsonArray();
+                for (int j=0;j<asJsonArray.size();j++) {
+                    Double correntPrice = Double.parseDouble(asJsonArray.get(j).getAsJsonObject().get("correntPrice").getAsString());
+                    Double minPrice = Double.parseDouble(asJsonArray.get(j).getAsJsonObject().get("minPrice").getAsString());
+                    Double cappedPrice = Double.parseDouble(asJsonArray.get(j).getAsJsonObject().get("cappedPrice").getAsString());
+                    Double price = banPrice + correntPrice;
+                    sum = sum + NumUtil.compareDouble(price,minPrice,cappedPrice)-banPrice;
+                }
+            }
+            res.put("price",sum + banPrice);
+        }
         res.put("tips",jsonObject.get("tips").getAsString());
         res.put("lastCreateTime",new Date());
         goodsDao.updateReplacementCar(res);
@@ -310,9 +344,9 @@ public class GoodsApiServiceImpl extends BaseServiceImpl  implements GoodsApiSer
                 String str = "";
                 List<Map> bllParameter = GsonHelper.getInstance().fromJson(obj.get("bllParameter").toString(), List.class);
                 for(Map map:bllParameter){
-                    List<Map> parameter = (List) map.get("parameter");
+                    List<Map> parameter = (List) map.get("spec");
                     if(parameter != null)
-                        str += parameter.get(0).get("name").toString() + " ";
+                        str += parameter.get(0).get("spec_value_name").toString() + " ";
                 }
                 obj.put("bllParameterStr",str);
                 obj.put("bllParameter",bllParameter);

@@ -223,6 +223,7 @@
         XGM.ID AS goodsId,
         XGM. NAME AS goodsName,
         XGM.SPEC_PARAMETER AS goodsParameter,
+        XGM.BAN_PRICE AS banPrice,
         sa.FD_URL AS url,
         su.ID AS userId,
         su.NICK_NAME AS nickName,
