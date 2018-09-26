@@ -424,10 +424,12 @@ public class GoodsBfServiceImpl extends BaseServiceImpl  implements GoodsBfServi
                                     reqMap.put("name",obj2.get("specName"));
                                     reqMap.put("id",obj2.get("id"));
                                     reqMap.put("px",obj2.get("px"));
+                                    reqMap.put("obligate",obj2.get("obligate"));
                                     for (Map obj3:specParamList) {
                                         obj3.put("name",obj2.get("specName"));
                                         obj3.put("id",obj2.get("id"));
                                         obj3.put("px",obj2.get("px"));
+                                        obj3.put("obligate",obj2.get("obligate"));
                                     }
                                     reqMap.put("param",specParamList);
                                     reqList.add(reqMap);

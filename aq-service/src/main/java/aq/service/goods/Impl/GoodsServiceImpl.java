@@ -57,6 +57,7 @@ public class GoodsServiceImpl extends BaseServiceImpl  implements GoodsService {
         rest.put("name", res.get("name"));
         rest.put("model", res.get("model"));
         rest.put("px", res.get("px"));
+        rest.put("obligate",res.get("obligate"));
         rest.put("remarks", res.get("remarks"));
         rest.put("createTime",new Date());
         rest.put("lastCreateTime",new Date());

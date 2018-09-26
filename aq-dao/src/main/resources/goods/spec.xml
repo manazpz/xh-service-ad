@@ -36,6 +36,9 @@
         <if test="id!=null and id != ''">
             AND XSM.ID = #{id}
         </if>
+        <if test="model!=null and model != ''">
+            AND XSM.OBLIGATE1 = #{model}
+        </if>
         <if test="name!=null and name != ''">
             AND XSM.GROU_NAME = #{name}
         </if>
@@ -54,7 +57,7 @@
         #{px},
         #{parameter},
         #{remarks},
-        #{obligate},
+        #{multi},
         #{obligate1},
         #{obligate2},
         #{createUser},
