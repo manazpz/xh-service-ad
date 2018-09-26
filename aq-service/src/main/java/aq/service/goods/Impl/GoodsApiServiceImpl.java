@@ -123,11 +123,11 @@ public class GoodsApiServiceImpl extends BaseServiceImpl  implements GoodsApiSer
                     rest.put("status","01");
                     rest.put("model",StringUtil.isEmpty(jsonObject.get("model"))?"":jsonObject.get("model").getAsString());
                     List<Map<String, Object>> goods = goodsDao.selectGoods(rest);
-                    obj3.put("goods",goods);
+                    obj2.put("goods",goods);
                 }
 
             }
-            obj1.put("detail",req3);
+            obj1.put("detail",req2);
         }
 //        maps.forEach(obj->{
 //            resa.clear();
@@ -341,15 +341,17 @@ public class GoodsApiServiceImpl extends BaseServiceImpl  implements GoodsApiSer
                 obj.put("goodsParameter",goodsParameter);
             }
             if(!StringUtil.isEmpty(obj.get("bllParameter"))) {
-                String str = "";
                 List<Map> bllParameter = GsonHelper.getInstance().fromJson(obj.get("bllParameter").toString(), List.class);
+                String str = "";
                 for(Map map:bllParameter){
                     List<Map> parameter = (List) map.get("spec");
-                    if(parameter != null)
-                        str += parameter.get(0).get("spec_value_name").toString() + " ";
+                    for(Map map1:parameter){
+                        if(map1 != null)
+                            str += map1.get("spec_value_name").toString() + " ";
+                    }
                 }
                 obj.put("bllParameterStr",str);
-                obj.put("bllParameter",bllParameter);
+//                obj.put("bllParameter",bllParameter);
             }
             Map<String,Object> ress = new HashMap<>();
             ress.put("type","GI");

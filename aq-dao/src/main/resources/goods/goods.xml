@@ -253,6 +253,7 @@
                 #{item}
             </foreach>
         </if>
+        GROUP BY XAB.ID
         ORDER BY XAB.LAST_CREATE_TIME DESC
     </select>
 
