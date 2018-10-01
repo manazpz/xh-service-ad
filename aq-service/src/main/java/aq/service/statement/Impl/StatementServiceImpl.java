@@ -155,7 +155,9 @@ public class StatementServiceImpl extends BaseServiceImpl implements StatementSe
             res.clear();
             res.put("id", jsonObject.get("imgId").getAsString());
             resourceDao.deleteResource(res);
+            rtn.setCode(200);
+            rtn.setMessage("success");
         }
-        return null;
+        return Func.functionRtnToJsonObject.apply(rtn);
     }
 }

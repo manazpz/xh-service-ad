@@ -6,7 +6,7 @@
     <!--插入配置表-->
     <insert id="insertConfig" >
         INSERT INTO system_config
-        VALUES(#{id},#{name},#{keyWord},#{num},#{type})
+        VALUES(#{id},#{name},#{keyWord},#{num},#{type},#{flag})
     </insert>
 
     <!--更新配置表-->
@@ -25,6 +25,9 @@
             <if test="type!=null">
                 sc.TYPE = #{type}
             </if>
+            <if test="flag!=null">
+                sc.FLAG = #{flag}
+            </if>
         </trim>
         WHERE sc.ID = #{id}
     </update>
@@ -41,7 +44,8 @@
           sc.NAME AS name,
           sc.KEY_WORD AS keyWord,
           sc.NUM AS num,
-          sc.TYPE AS type
+          sc.TYPE AS type,
+          sc.FLAG AS flag
         FROM system_config sc
         WHERE 1=1
         <if test="name != null">
@@ -52,6 +56,9 @@
         </if>
         <if test="type != null">
             AND sc.TYPE in (${type})
+        </if>
+        <if test="flag != null">
+            AND sc.FLAG = ${flag}
         </if>
         <if test="keyWord != null">
             AND sc.KEY_WORD = #{keyWord}

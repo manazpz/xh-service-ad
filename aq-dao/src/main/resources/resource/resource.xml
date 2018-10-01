@@ -40,14 +40,14 @@
         LEFT JOIN system_administrator cu ON cu.ID = sa.CREATE_USER
         LEFT JOIN system_administrator lcu ON lcu.ID = sa.LAST_CREATE_USER
         WHERE 1=1
-        <if test="type != null">
+        <if test="type != null and type != ''">
             AND sa.FD_TYPE = #{type}
         </if>
         <if test="id != null">
             AND sa.ID = #{id}
         </if>
-        <if test="refId != null">
-            AND sa.FD_REF_ID = #{refId}
+        <if test="flag != null">
+            AND sc.FLAG = #{flag}
         </if>
         ORDER BY sa.FD_TYPE DESC,sa.LAST_CREATE_TIME DESC
     </select>

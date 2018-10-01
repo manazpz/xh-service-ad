@@ -18,4 +18,15 @@ public interface ResourceService extends BaseService {
     //单文件删除
     JsonObject deleteFile(JsonObject jsonObject);
 
+    //查询资源
+    JsonObject queryaResource(JsonObject jsonObject);
+
+    //新增资源
+    JsonObject insertResource(JsonObject jsonObject);
+
+    //更新资源
+    JsonObject updateResource(JsonObject jsonObject);
+
+    //删除资源
+    JsonObject deleteResource(JsonObject jsonObject);
 }
