@@ -35,4 +35,13 @@ public interface UserService extends BaseService {
     //用户权限分配
     JsonObject updateUserPermission(JsonObject jsonObject);
 
+    //回收方式
+    JsonObject selectRecoveryList(JsonObject jsonObject);
+
+    //回收方式
+    JsonObject insertRecovery(JsonObject jsonObject);
+
+    //回收方式
+    JsonObject updateRecovery(JsonObject jsonObject);
+
 }

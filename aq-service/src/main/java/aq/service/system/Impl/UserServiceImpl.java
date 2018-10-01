@@ -1,5 +1,7 @@
 package aq.service.system.Impl;
 
+import aq.common.access.AbsAccessUser;
+import aq.common.access.Factory;
 import aq.common.annotation.DyncDataSource;
 import aq.common.other.Rtn;
 import aq.common.util.*;
@@ -221,6 +223,48 @@ public class UserServiceImpl extends BaseServiceImpl implements UserService {
                 }
             }
         }
+        rtn.setCode(200);
+        rtn.setMessage("success");
+        return Func.functionRtnToJsonObject.apply(rtn);
+    }
+
+
+    @Transactional(rollbackFor = {RuntimeException.class, Exception.class})
+    @Override
+    public JsonObject selectRecoveryList(JsonObject jsonObject) {
+        jsonObject.addProperty("service","User");
+        return query(jsonObject,(map)->{
+            return userDao.selectRecoveryList(map);
+        });
+    }
+
+    @Transactional(rollbackFor = {RuntimeException.class, Exception.class})
+    @Override
+    public JsonObject insertRecovery(JsonObject jsonObject) {
+        AbsAccessUser user = Factory.getContext().user();
+        Rtn rtn = new Rtn("User");
+        Map<String,Object> res = new HashMap<>();
+        res = GsonHelper.getInstance().fromJson(jsonObject,Map.class);
+        res.put("id", UUIDUtil.getUUID());
+        res.put("createUserId", user.getUserId());
+        res.put("createTime",new Date());
+        res.put("lastCreateUserId", user.getUserId());
+        res.put("lastCreateTime",new Date());
+        userDao.insertRecovery(res);
+        rtn.setCode(200);
+        rtn.setMessage("success");
+        return Func.functionRtnToJsonObject.apply(rtn);
+    }
+
+
+    @Transactional(rollbackFor = {RuntimeException.class, Exception.class})
+    @Override
+    public JsonObject updateRecovery(JsonObject jsonObject) {
+        Rtn rtn = new Rtn("User");
+        Map<String,Object> res = new HashMap<>();
+        res.clear();
+        res = GsonHelper.getInstance().fromJson(jsonObject,Map.class);
+        userDao.updateRecovery(res);
         rtn.setCode(200);
         rtn.setMessage("success");
         return Func.functionRtnToJsonObject.apply(rtn);

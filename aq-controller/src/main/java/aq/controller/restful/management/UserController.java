@@ -95,4 +95,27 @@ public class UserController extends aq.controller.restful.System {
         writerJson(response,out,userService.updateUserPermission(requestJson));
     }
 
+    //查询回收方式列表
+    @RequestMapping(value = "/recoveryList",method = RequestMethod.GET)
+    @ResponseBody
+    public void recoveryList(HttpServletRequest request, HttpServletResponse response, PrintWriter out){
+        JsonObject jsonObject = HttpUtil.getParameterMap(request);
+        writerJson(response,out,userService.selectRecoveryList(jsonObject));
+    }
+
+
+    //新增回收方式
+    @RequestMapping(value = "/createRecovery",method = RequestMethod.POST)
+    @ResponseBody
+    public void insertRecovery(@RequestBody JsonObject requestJson, HttpServletRequest request, HttpServletResponse response, PrintWriter out){
+        writerJson(response,out,userService.insertRecovery(requestJson));
+    }
+
+    //修改回收方式
+    @RequestMapping(value = "/updateRecovery",method = RequestMethod.POST)
+    @ResponseBody
+    public void updateRecovery(@RequestBody JsonObject requestJson, HttpServletRequest request, HttpServletResponse response, PrintWriter out){
+        writerJson(response,out,userService.updateRecovery(requestJson));
+    }
+
 }

@@ -192,4 +192,41 @@
         </if>
     </delete>
 
+
+    <!--查询用户权限-->
+    <select id="selectRecoveryList" resultType="java.util.Map" parameterType="java.util.Map">
+        SELECT
+            XR.ID AS id,
+            XR.TYPE AS types,
+            XR.IS_VALID AS isValid,
+            DATE_FORMAT( XR.CREATE_TIME,'%Y-%m-%d %H:%i:%S') AS createTime
+        FROM
+            XH_RECOVERY XR
+        WHERE 1=1
+        <if test="types != null">
+            AND XR.TYPE LIKE CONCAT('%', #{types}, '%')
+        </if>
+        <if test="isValid != null">
+            AND XR.IS_VALID = #{isValid}
+        </if>
+    </select>
+
+    <!--新增回收方式-->
+    <insert id="insertRecovery" >
+        INSERT INTO XH_RECOVERY
+        VALUES(#{id},#{types},'Y',#{createUserId},#{createTime,jdbcType=TIMESTAMP},#{lastCreateUserId},#{lastCreateTime,jdbcType=TIMESTAMP})
+    </insert>
+
+
+    <!--更新回收方式-->
+    <update id="updateRecovery" parameterType="java.util.Map">
+        UPDATE XH_RECOVERY XR
+        <trim prefix="set" suffixOverrides=",">
+            <if test="types!=null and types != ''">
+                XR.TYPE = #{types},
+            </if>
+        </trim>
+        WHERE XR.ID = #{id}
+    </update>
+
 </mapper>

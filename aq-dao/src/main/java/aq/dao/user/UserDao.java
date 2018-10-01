@@ -38,4 +38,13 @@ public interface UserDao {
     //删除用户权限
     int deleteUserPermission(Map<String,Object> map);
 
+    //回收方式查询
+    List<Map<String,Object>> selectRecoveryList(Map<String,Object> map);
+
+    //新增回收方式
+    int insertRecovery(Map<String,Object> map);
+
+    //编辑回收方式
+    int updateRecovery(Map<String,Object> map);
+
 }

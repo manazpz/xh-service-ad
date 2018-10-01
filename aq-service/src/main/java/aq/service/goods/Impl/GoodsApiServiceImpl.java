@@ -7,6 +7,7 @@ import aq.dao.goods.ClassifyDao;
 import aq.dao.goods.GoodsDao;
 import aq.dao.goods.SpecDao;
 import aq.dao.resource.ResourceDao;
+import aq.dao.user.UserDao;
 import aq.service.base.Impl.BaseServiceImpl;
 import aq.service.goods.GoodsApiService;
 import aq.service.system.Func;
@@ -38,6 +39,9 @@ public class GoodsApiServiceImpl extends BaseServiceImpl  implements GoodsApiSer
 
     @Resource
     private ResourceDao resourceDao;
+
+    @Resource
+    private UserDao userDao;
 
     @Transactional(rollbackFor = {RuntimeException.class, Exception.class})
     @Override
@@ -387,6 +391,26 @@ public class GoodsApiServiceImpl extends BaseServiceImpl  implements GoodsApiSer
         goodsDao.deleteReplacementCar(res);
         rtn.setCode(200);
         rtn.setMessage("success");
+        return  Func.functionRtnToJsonObject.apply(rtn);
+    }
+
+
+    @Transactional(rollbackFor = {RuntimeException.class, Exception.class})
+    @Override
+    public JsonObject recoveryList(JsonObject jsonObject) {
+        Rtn rtn = new Rtn("Goods");
+        JsonObject data = new JsonObject();
+        JsonArray jsonArray = new JsonArray();
+        Map<String,Object> res = new HashMap<>();
+        res.clear();
+        res = GsonHelper.getInstance().fromJson(jsonObject,Map.class);
+        List<Map<String, Object>> recoveryList = userDao.selectRecoveryList(res);
+        rtn.setCode(200);
+        rtn.setMessage("success");
+        jsonArray =  GsonHelper.getInstanceJsonparser().parse(GsonHelper.getInstance().toJson(recoveryList)).getAsJsonArray();
+        data.addProperty("total",recoveryList.size());
+        data.add("items",jsonArray);
+        rtn.setData(data);
         return  Func.functionRtnToJsonObject.apply(rtn);
     }
 

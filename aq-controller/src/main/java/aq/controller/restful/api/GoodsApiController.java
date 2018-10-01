@@ -112,5 +112,12 @@ public class GoodsApiController extends aq.controller.restful.System {
         writerJson(response,out,goodsService.deleteReplacementCar(requestJson));
     }
 
+    //查询回收方式
+    @RequestMapping(value = "/recoveryList",method = RequestMethod.GET)
+    public void recoveryList(HttpServletRequest request, HttpServletResponse response, PrintWriter out) throws Exception {
+        JsonObject jsonObject = HttpUtil.getParameterMap(request);
+        writerJson(response,out,goodsService.recoveryList(jsonObject));
+    }
+
 
 }

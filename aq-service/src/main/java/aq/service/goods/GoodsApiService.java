@@ -35,4 +35,7 @@ public interface GoodsApiService extends BaseService {
     //删除置换车
     JsonObject deleteReplacementCar(JsonObject jsonObject);
 
+    //查询回收方式
+    JsonObject recoveryList(JsonObject jsonObject);
+
 }
