@@ -241,7 +241,7 @@
     <select id="selectRecoveryUserList" resultType="java.util.Map" parameterType="java.util.Map">
         SELECT
             XRU.ID AS id,
-            XR.TYPE AS type
+            XR.TYPE AS types
         FROM
           XH_RECOVERY_USER XRU
         LEFT JOIN XH_RECOVERY XR ON XR.ID = XRU.RECOVERY_ID
