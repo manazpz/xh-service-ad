@@ -241,6 +241,7 @@
     <select id="selectRecoveryUserList" resultType="java.util.Map" parameterType="java.util.Map">
         SELECT
             XRU.ID AS id,
+            XRU.RECOVERY_ID AS recoveryId,
             XR.TYPE AS types
         FROM
           XH_RECOVERY_USER XRU
