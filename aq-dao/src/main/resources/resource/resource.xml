@@ -49,6 +49,9 @@
         <if test="flag != null">
             AND sc.FLAG = #{flag}
         </if>
+        <if test="refId != null and type != ''">
+            AND sa.FD_REF_ID = #{refId}
+        </if>
         ORDER BY sa.FD_TYPE DESC,sa.LAST_CREATE_TIME DESC
     </select>
 

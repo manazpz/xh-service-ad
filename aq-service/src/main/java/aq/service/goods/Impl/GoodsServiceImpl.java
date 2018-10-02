@@ -78,6 +78,9 @@ public class GoodsServiceImpl extends BaseServiceImpl  implements GoodsService {
         JsonObject data = new JsonObject();
         JsonArray jsonArray = new JsonArray();
         res.put("cascade", 'Y');
+        if (!StringUtil.isEmpty(jsonObject.get("model"))) {
+            res.put("model", jsonObject.get("model").getAsString());
+        }
         List<Map<String, Object>> req1 = classifyDao.selectClassify(res);
         for(Map obj1:req1) {
             res.clear();
