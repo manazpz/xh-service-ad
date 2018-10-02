@@ -61,7 +61,7 @@
         SELECT
             sa.ID AS id,
             sa.NICK_NAME AS nickName,
-            sat.FD_URL AS headPortrait,
+            sa.HEAD_PORTRAIT AS headPortrait,
             sa.USER_NAME AS userName,
             sa.PHONE AS phone,
             sa.EMAIL AS email,
@@ -76,7 +76,6 @@
             system_administrator sa
         INNER JOIN system_token st on sa.ID = st.ADMINISTRATOR_ID
         LEFT JOIN system_config sc ON sc.KEY_WORD = sa.STATUS
-        LEFT JOIN system_attachment sat ON sat.ID = sa.HEAD_PORTRAIT
         WHERE sa.IS_VALID = 'Y' AND st.TOKEN = #{token}
     </select>
 

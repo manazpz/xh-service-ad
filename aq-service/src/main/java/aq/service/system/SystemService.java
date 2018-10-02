@@ -3,6 +3,10 @@ package aq.service.system;
 import aq.service.base.BaseService;
 import com.google.gson.JsonObject;
 
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import java.io.IOException;
+
 /**
  * Created by ywb on 2017-02-23.
  */
@@ -33,7 +37,7 @@ public interface SystemService extends BaseService {
     JsonObject resetPassword(JsonObject jsonObject);
 
     //上传头像
-    JsonObject uploadImg(JsonObject jsonObject);
+    JsonObject uploadImg(HttpServletRequest request, HttpServletResponse response) throws IOException;
 
     //开关操作
     JsonObject uploadSwitch(JsonObject jsonObject);

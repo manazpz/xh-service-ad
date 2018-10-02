@@ -3,8 +3,10 @@ package aq.service.system.Impl;
 import aq.common.access.AbsAccessUser;
 import aq.common.access.Factory;
 import aq.common.annotation.DyncDataSource;
+import aq.common.oss.Oss;
 import aq.common.other.Rtn;
 import aq.common.util.*;
+import aq.dao.config.ConfigDao;
 import aq.dao.system.SystemDao;
 import aq.service.base.Impl.BaseServiceImpl;
 import aq.service.system.Func;
@@ -12,8 +14,14 @@ import aq.service.system.SystemService;
 import com.google.gson.*;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.util.MultiValueMap;
+import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.multipart.MultipartHttpServletRequest;
 
 import javax.annotation.Resource;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import java.io.IOException;
 import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;
 import java.util.*;
@@ -27,6 +35,9 @@ public class SystemServiceImpl extends BaseServiceImpl  implements SystemService
 
     @Resource
     private SystemDao sysDao;
+
+    @Resource
+    private ConfigDao configDao;
 
     @Transactional(rollbackFor = {RuntimeException.class, Exception.class})
     @Override
@@ -50,7 +61,7 @@ public class SystemServiceImpl extends BaseServiceImpl  implements SystemService
                 }else {
                     //验证密码
                     String encryptPwd = MD5.getMD5String(password),
-                           okPwd = mapList.get(0).get("PASSWORD").toString();
+                            okPwd = mapList.get(0).get("PASSWORD").toString();
                     if (encryptPwd.equals(okPwd)){
                         LocalDateTime localDateTime = DateTime.addTime(new Date(), ChronoUnit.HOURS, 1);
                         String token = UUIDUtil.getUUID();
@@ -293,37 +304,47 @@ public class SystemServiceImpl extends BaseServiceImpl  implements SystemService
 
     @Transactional(rollbackFor = {RuntimeException.class, Exception.class})
     @Override
-    public JsonObject uploadImg(JsonObject jsonObject) {
+    public JsonObject uploadImg(HttpServletRequest request, HttpServletResponse response) throws IOException {
         Rtn rtn = new Rtn("System");
         AbsAccessUser user = Factory.getContext().user();
-        Map map = new HashMap();
         JsonObject data = new JsonObject();
-        map.clear();
-        map = GsonHelper.getInstance().fromJson(jsonObject,Map.class);
         if (user == null) {
             rtn.setCode(10000);
             rtn.setMessage("未登录！");
         }else {
-            String userId = user.getUserId();
-            String uuid = UUIDUtil.getUUID();
-            map.put("id",uuid);
-            map.put("type","TXA");
-            map.put("refId",userId);
-            map.put("createUser",userId);
-            map.put("lastCreateUser",userId);
-            map.put("createTime",new Date());
-            map.put("lastCreateTime",new Date());
-            sysDao.insertAttachment(map);
-            data.addProperty("headImg",map.get("url").toString());
-            map.clear();
-            map.put("id",userId);
-            map.put("updateTime",new Date());
-            map.put("headPortrait",uuid);
-            sysDao.updateUser(map);
-            rtn.setCode(200);
-            rtn.setMessage("success");
+            MultipartHttpServletRequest multipartRequest = (MultipartHttpServletRequest) request;
+            MultiValueMap<String, MultipartFile> multiFileMap = multipartRequest.getMultiFileMap();
+            List<MultipartFile> files = multiFileMap.get("avatar");
+            Map<String,Object> res = new HashMap<>();
+            res.clear();
+            res.put("platform","OSS");
+            List<Map<String, Object>> tpp = configDao.selectTppConfig(res);
+            if(tpp.size() < 1) {
+                response.sendError(HttpServletResponse.SC_NOT_FOUND);
+            }else {
+                if(files != null) {
+                    Map<String, Object> tppMap = tpp.get(0);
+                    ResourceUpload resourceUpload = new ResourceUpload(tppMap.get("endpoint").toString(),tppMap.get("accessKeyId").toString(),tppMap.get("accessKeySecret").toString());
+                    for (MultipartFile obj : files) {
+                        Oss oss = resourceUpload.uploadFile(obj,"head",user.getUserId(),tppMap.get("backetName").toString());
+                        if("success".equals(oss.getCode())){
+                            Map<String,Object> ress = new HashMap<>();
+                            String fileurl = resourceUpload.getFileUrl(oss.getResult().get("FILEURL").toString(),tppMap.get("backetName").toString());
+                            ress.clear();
+                            ress.put("id",user.getUserId());
+                            ress.put("headPortrait",fileurl);
+                            data.addProperty("headPortrait",fileurl);
+                            sysDao.updateUser(ress);
+                        }else {
+                            response.sendError(HttpServletResponse.SC_NOT_FOUND);
+                        }
+                    }
+                }
+                rtn.setCode(200);
+                rtn.setMessage("success");
+                rtn.setData(data);
+            }
         }
-        rtn.setData(data);
         return Func.functionRtnToJsonObject.apply(rtn);
     }
 

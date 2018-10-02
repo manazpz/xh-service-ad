@@ -80,16 +80,16 @@ public class System extends Base {
     @RequestMapping(value = "/uploadHead",method = RequestMethod.POST)
     @ResponseBody
     public void uploadHead(HttpServletRequest request, HttpServletResponse response, PrintWriter out) throws Exception {
-        MultipartHttpServletRequest multipartRequest = (MultipartHttpServletRequest) request;
-        MultipartFile haedImg = multipartRequest.getFile("avatar");
-        FileUpload fileUpload = new FileUpload();
-        String suffix = haedImg.getOriginalFilename().substring(haedImg.getOriginalFilename().lastIndexOf(".") + 1);
-        String url = fileUpload.upload(haedImg, "","","/head", request);
-        JsonObject jsonObject = new JsonObject();
-        jsonObject.addProperty("size",haedImg.getSize());
-        jsonObject.addProperty("extend",suffix);
-        jsonObject.addProperty("url",url);
-        writerJson(response,out,systemService.uploadImg(jsonObject));
+//        MultipartHttpServletRequest multipartRequest = (MultipartHttpServletRequest) request;
+//        MultipartFile haedImg = multipartRequest.getFile("avatar");
+//        FileUpload fileUpload = new FileUpload();
+//        String suffix = haedImg.getOriginalFilename().substring(haedImg.getOriginalFilename().lastIndexOf(".") + 1);
+//        String url = fileUpload.upload(haedImg, "","","/head", request);
+//        JsonObject jsonObject = new JsonObject();
+//        jsonObject.addProperty("size",haedImg.getSize());
+//        jsonObject.addProperty("extend",suffix);
+//        jsonObject.addProperty("url",url);
+        writerJson(response,out,systemService.uploadImg(request, response));
     }
 
     //上传Logo
