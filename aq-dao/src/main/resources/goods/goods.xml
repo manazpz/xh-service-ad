@@ -101,7 +101,7 @@
             AND XGM. NAME LIKE CONCAT('%', #{name}, '%')
         </if>
         <if test="wxQuery != null and wxQuery != ''">
-            AND (XGM. NAME LIKE CONCAT('%', #{wxQuery}, '%') OR XB.NAME LIKE CONCAT('%', #{wxQuery}, '%'))
+            AND (lower(XGM. NAME) LIKE CONCAT('%', lower(#{wxQuery}), '%') OR lower(XB.NAME) LIKE CONCAT('%', lower(#{wxQuery}), '%'))
         </if>
         ORDER BY XB.NAME DESC,XGM.LAST_CREATE_TIME DESC,XC.MODEL DESC
     </select>
