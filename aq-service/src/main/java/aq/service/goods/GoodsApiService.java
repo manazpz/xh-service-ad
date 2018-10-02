@@ -38,4 +38,10 @@ public interface GoodsApiService extends BaseService {
     //查询回收方式
     JsonObject recoveryList(JsonObject jsonObject);
 
+    //查询回收方式
+    JsonObject queryrecoveryList(JsonObject jsonObject);
+
+    //新增回收方式
+    JsonObject insertrecoveryListUser(JsonObject jsonObject);
+
 }

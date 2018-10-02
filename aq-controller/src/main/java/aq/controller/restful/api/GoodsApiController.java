@@ -112,6 +112,13 @@ public class GoodsApiController extends aq.controller.restful.System {
         writerJson(response,out,goodsService.deleteReplacementCar(requestJson));
     }
 
+    //查询默认回收方式
+    @RequestMapping(value = "/queryrecoveryList",method = RequestMethod.GET)
+    public void queryrecoveryList(HttpServletRequest request, HttpServletResponse response, PrintWriter out) throws Exception {
+        JsonObject jsonObject = HttpUtil.getParameterMap(request);
+        writerJson(response,out,goodsService.queryrecoveryList(jsonObject));
+    }
+
     //查询回收方式
     @RequestMapping(value = "/recoveryList",method = RequestMethod.GET)
     public void recoveryList(HttpServletRequest request, HttpServletResponse response, PrintWriter out) throws Exception {
@@ -119,5 +126,10 @@ public class GoodsApiController extends aq.controller.restful.System {
         writerJson(response,out,goodsService.recoveryList(jsonObject));
     }
 
-
+    //新增回收方式
+    @RequestMapping(value = "/recoveryListUser/insert",method = RequestMethod.POST)
+    @ResponseBody
+    public void insertrecoveryListUser(@RequestBody JsonObject requestJson,HttpServletRequest request, HttpServletResponse response, PrintWriter out) throws Exception {
+        writerJson(response,out,goodsService.insertrecoveryListUser(requestJson));
+    }
 }

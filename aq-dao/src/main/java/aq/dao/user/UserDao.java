@@ -47,4 +47,14 @@ public interface UserDao {
     //编辑回收方式
     int updateRecovery(Map<String,Object> map);
 
+    //新增默认回收方式
+    int insertrecoveryListUser(Map<String,Object> map);
+
+    //查询默认回收方式
+    List<Map<String,Object>> selectRecoveryUserList(Map<String,Object> map);
+
+    //更新默认回收方式
+    int updaterecoveryListUser(Map<String,Object> map);
+
+
 }

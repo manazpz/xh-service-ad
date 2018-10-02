@@ -193,7 +193,7 @@
     </delete>
 
 
-    <!--查询用户权限-->
+    <!--查询回收方式-->
     <select id="selectRecoveryList" resultType="java.util.Map" parameterType="java.util.Map">
         SELECT
             XR.ID AS id,
@@ -224,6 +224,40 @@
         <trim prefix="set" suffixOverrides=",">
             <if test="types!=null and types != ''">
                 XR.TYPE = #{types},
+            </if>
+        </trim>
+        WHERE XR.ID = #{id}
+    </update>
+
+
+    <!--新增默认回收方式-->
+    <insert id="insertrecoveryListUser" >
+        INSERT INTO XH_RECOVERY_USER
+        VALUES(#{id},#{recoveryId})
+    </insert>
+
+
+    <!--查询默认回收方式-->
+    <select id="selectRecoveryUserList" resultType="java.util.Map" parameterType="java.util.Map">
+        SELECT
+            XRU.ID AS id,
+            XR.TYPE AS type
+        FROM
+          XH_RECOVERY_USER XRU
+        LEFT JOIN XH_RECOVERY XR ON XR.ID = XRU.RECOVERY_ID
+        WHERE 1=1
+        <if test="id != null">
+            AND XRU.ID = #{id}
+        </if>
+    </select>
+
+
+    <!--更新默认回收方式-->
+    <update id="updaterecoveryListUser" parameterType="java.util.Map">
+        UPDATE XH_RECOVERY_USER XR
+        <trim prefix="set" suffixOverrides=",">
+            <if test="recoveryId!=null and recoveryId != ''">
+                XR.RECOVERY_ID = #{recoveryId},
             </if>
         </trim>
         WHERE XR.ID = #{id}

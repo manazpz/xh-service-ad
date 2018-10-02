@@ -405,6 +405,12 @@ public class GoodsApiServiceImpl extends BaseServiceImpl  implements GoodsApiSer
         res.clear();
         res = GsonHelper.getInstance().fromJson(jsonObject,Map.class);
         List<Map<String, Object>> recoveryList = userDao.selectRecoveryList(res);
+        res.put("id",jsonObject.get("openId").getAsString());
+        List<Map<String, Object>> maps = userDao.selectRecoveryUserList(res);
+        if(maps.size()>0){
+            jsonArray =  GsonHelper.getInstanceJsonparser().parse(GsonHelper.getInstance().toJson(maps)).getAsJsonArray();
+            data.add("check",jsonArray);
+        }
         rtn.setCode(200);
         rtn.setMessage("success");
         jsonArray =  GsonHelper.getInstanceJsonparser().parse(GsonHelper.getInstance().toJson(recoveryList)).getAsJsonArray();
@@ -414,4 +420,50 @@ public class GoodsApiServiceImpl extends BaseServiceImpl  implements GoodsApiSer
         return  Func.functionRtnToJsonObject.apply(rtn);
     }
 
+
+    @Transactional(rollbackFor = {RuntimeException.class, Exception.class})
+    @Override
+    public JsonObject insertrecoveryListUser(JsonObject jsonObject) {
+        Rtn rtn = new Rtn("Goods");
+        Map<String,Object> res = new HashMap<>();
+        res.clear();
+        res.put("id",jsonObject.get("openId").getAsString());
+        res.put("recoveryId",jsonObject.get("prete").getAsString());
+        List<Map<String, Object>> maps = userDao.selectRecoveryUserList(res);
+        if(maps.size()>0){
+            userDao.updaterecoveryListUser(res);
+        }else{
+            userDao.insertrecoveryListUser(res);
+        }
+        rtn.setCode(200);
+        rtn.setMessage("success");
+        return  Func.functionRtnToJsonObject.apply(rtn);
+    }
+
+    @Transactional(rollbackFor = {RuntimeException.class, Exception.class})
+    @Override
+    public JsonObject queryrecoveryList(JsonObject jsonObject) {
+        Rtn rtn = new Rtn("Goods");
+        JsonObject data = new JsonObject();
+        JsonArray jsonArray = new JsonArray();
+        Map<String,Object> res = new HashMap<>();
+        List<Map<String, Object>> mapall = null;
+        res.clear();
+        res = GsonHelper.getInstance().fromJson(jsonObject,Map.class);
+        res.put("id",jsonObject.get("openId").getAsString());
+        List<Map<String, Object>> maps = userDao.selectRecoveryUserList(res);
+        if(maps.size()>0){
+            mapall = maps;
+        }else{
+            List<Map<String, Object>> recoveryList = userDao.selectRecoveryList(res);
+            mapall = recoveryList;
+        }
+        rtn.setCode(200);
+        rtn.setMessage("success");
+        jsonArray =  GsonHelper.getInstanceJsonparser().parse(GsonHelper.getInstance().toJson(mapall)).getAsJsonArray();
+        data.addProperty("total",mapall.size());
+        data.add("items",jsonArray);
+        rtn.setData(data);
+        return  Func.functionRtnToJsonObject.apply(rtn);
+    }
 }
