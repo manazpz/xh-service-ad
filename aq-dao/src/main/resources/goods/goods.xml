@@ -7,7 +7,7 @@
     <insert id="insertGoods" >
         INSERT INTO XH_GOODS_MAIN
         VALUES(#{id},#{code},#{outCode},#{shopId},#{name},#{alias},#{banPrice},#{brandId},#{classifyId},#{unit},
-        #{logistcs},'02',#{specParameter},#{parameter},#{detail},#{remarks},'Y','','','','',
+        #{logistcs},'02',#{specParameter},#{parameter},#{detail},#{remarks},'Y','','','N','',
         #{createUserId},#{createTime,jdbcType=TIMESTAMP},#{lastCreateUserId},#{lastCreateTime,jdbcType=TIMESTAMP})
     </insert>
 
@@ -28,6 +28,7 @@
         XGM.UNIT AS unit,
         sc. NAME AS unitName,
         XGM.LOGISTCS AS logistcs,
+        XGM.OBLIGATE1 AS obligate1,
         XGM. STATUS AS status,
         XGM.SPEC_PARAMETER AS specParameter,
         XGM.PARAMETER AS parameter,
@@ -94,6 +95,9 @@
         <if test="lable != null">
             AND XGM.Lable ${lable}
         </if>
+        <if test="obligate1 != null and obligate1 != ''">
+            AND XGM.OBLIGATE1 = #{obligate1}
+        </if>
         <if test="shopId != null">
             AND XGM.SHOP_ID = #{shopId}
         </if>
@@ -134,6 +138,9 @@
             </if>
             <if test="logistcs!=null and logistcs!=''">
                 LOGISTCS = #{logistcs},
+            </if>
+            <if test="obligate1!=null and obligate1!=''">
+                OBLIGATE1 = #{obligate1},
             </if>
             <if test="status!=null and status!=''">
                 STATUS = #{status},

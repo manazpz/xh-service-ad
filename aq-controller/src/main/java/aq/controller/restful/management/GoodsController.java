@@ -1,6 +1,7 @@
 package aq.controller.restful.management;
 
 import aq.common.util.HttpUtil;
+import aq.common.util.StringUtil;
 import aq.service.goods.GoodsService;
 import com.google.gson.JsonObject;
 import org.springframework.stereotype.Controller;
@@ -17,6 +18,33 @@ import java.io.PrintWriter;
 public class GoodsController extends aq.controller.restful.System {
     @Resource
     protected GoodsService goodsService;
+
+    //查询商品
+    @RequestMapping(value = "/list",method = RequestMethod.GET)
+    public void goodsList(HttpServletRequest request, HttpServletResponse response, PrintWriter out) throws Exception {
+        JsonObject jsonObject = HttpUtil.getParameterMap(request);
+        writerJson(response,out,goodsService.queryGoods(jsonObject));
+    }
+
+    //更新商品
+    @RequestMapping(value = "/update",method = RequestMethod.POST)
+    @ResponseBody
+    public void goodsUpdate(@RequestBody JsonObject requestJson,HttpServletRequest request, HttpServletResponse response, PrintWriter out) throws Exception {
+        if(StringUtil.isEmpty(requestJson.get("id"))) {
+            response.sendError(HttpServletResponse.SC_NOT_FOUND,"id is no null!");
+        }
+        writerJson(response,out,goodsService.updateGoods(requestJson));
+    }
+
+    //删除商品
+    @RequestMapping(value = "/delete",method = RequestMethod.POST)
+    @ResponseBody
+    public void goodsDelete(@RequestBody JsonObject requestJson,HttpServletRequest request, HttpServletResponse response, PrintWriter out) throws Exception {
+        if(StringUtil.isEmpty(requestJson.get("id"))) {
+            response.sendError(HttpServletResponse.SC_NOT_FOUND,"id is no null!");
+        }
+        writerJson(response,out,goodsService.deleteGoods(requestJson));
+    }
 
     //新增商品分类
     @RequestMapping(value = "/insertClassify",method = RequestMethod.POST)

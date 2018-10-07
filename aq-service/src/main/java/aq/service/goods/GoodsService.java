@@ -8,6 +8,15 @@ import com.google.gson.JsonObject;
  */
 public interface GoodsService extends BaseService {
 
+    //查询商品
+    JsonObject queryGoods(JsonObject jsonObject);
+
+    //更新商品
+    JsonObject updateGoods(JsonObject jsonObject);
+
+    //删除商品
+    JsonObject deleteGoods(JsonObject jsonObject);
+
     //新增商品分类
     JsonObject insertGoodsClassify(JsonObject jsonObject);
 

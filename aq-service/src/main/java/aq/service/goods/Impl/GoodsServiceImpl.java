@@ -9,6 +9,7 @@ import aq.dao.goods.ClassifyDao;
 import aq.dao.goods.GoodsDao;
 import aq.dao.goods.SpecDao;
 import aq.dao.resource.ResourceDao;
+import aq.dao.stock.StockDao;
 import aq.service.base.Impl.BaseServiceImpl;
 import aq.service.goods.GoodsBfService;
 import aq.service.goods.GoodsService;
@@ -38,9 +39,77 @@ public class GoodsServiceImpl extends BaseServiceImpl  implements GoodsService {
     private GoodsDao goodsDao;
     @Resource
     private SpecDao specDao;
+    @Resource
+    private ResourceDao resourceDao;
+    @Resource
+    private StockDao stockDao;
 
     @Resource
     private ClassifyDao classifyDao;
+
+    @Transactional(rollbackFor = {RuntimeException.class, Exception.class})
+    @Override
+    public JsonObject queryGoods(JsonObject jsonObject) {
+        jsonObject.addProperty("service","goods");
+        return query(jsonObject,(map)->{
+            Map res = new HashMap();
+            List<Map<String, Object>> goods = goodsDao.selectGoods(map);
+            goods.forEach(obj->{
+                if(!StringUtil.isEmpty(obj.get("specParameter"))) {
+                    List specParameter = GsonHelper.getInstance().fromJson(obj.get("specParameter").toString(), List.class);
+                    obj.put("specParameter",specParameter);
+                }
+                if(!StringUtil.isEmpty(obj.get("id"))) {
+                    res.clear();
+                    res.put("type","GI");
+                    res.put("refId",obj.get("id"));
+                    List imgs = resourceDao.selectResource(res);
+                    obj.put("afileList",imgs);
+                }
+            });
+            return goods;
+        });
+    }
+
+    @Transactional(rollbackFor = {RuntimeException.class, Exception.class})
+    @Override
+    public JsonObject updateGoods(JsonObject jsonObject) {
+        AbsAccessUser user = Factory.getContext().user();
+        Rtn rtn = new Rtn("Goods");
+        if (user == null) {
+            rtn.setCode(10000);
+            rtn.setMessage("未登录！");
+        }else {
+            Map<String,Object> res = new HashMap<>();
+            res = GsonHelper.getInstance().fromJson(jsonObject,Map.class);
+            res.put("lastCreateUserId", user.getUserId());
+            res.put("lastCreateTime",new Date());
+            res.put("specParameter",StringUtil.isEmpty(jsonObject.get("parameter"))?"":jsonObject.get("parameter").getAsJsonArray().toString());
+            goodsDao.updateGoods(res);
+            rtn.setCode(200);
+            rtn.setMessage("success");
+        }
+        return Func.functionRtnToJsonObject.apply(rtn);
+    }
+
+    @Transactional(rollbackFor = {RuntimeException.class, Exception.class})
+    @Override
+    public JsonObject deleteGoods(JsonObject jsonObject) {
+        Rtn rtn = new Rtn("Goods");
+        Map<String,Object> res = new HashMap<>();
+        res.clear();
+        res.put("id",jsonObject.get("id").getAsString());
+        goodsDao.deleteGoods(res);
+        res.clear();
+        res.put("basicId",jsonObject.get("id").getAsString());
+        stockDao.deleteStock(res);
+        res.clear();
+        res.put("stockMainId",jsonObject.get("id").getAsString());
+        stockDao.deleteStockOut(res);
+        rtn.setCode(200);
+        rtn.setMessage("success");
+        return Func.functionRtnToJsonObject.apply(rtn);
+    }
 
     @Transactional(rollbackFor = {RuntimeException.class, Exception.class})
     @Override
