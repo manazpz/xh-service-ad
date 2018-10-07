@@ -3,12 +3,19 @@
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="aq.dao.shop.ShopDao">
 
+    <!--创建店铺-->
+    <insert id="insertShop" >
+        INSERT INTO XH_SHOPS_MAIN
+        VALUES(#{id},#{name},#{no},#{userId},#{address},#{credit},'02',#{remarks},'','',''
+        ,#{createTime,jdbcType=TIMESTAMP},#{lastCreateTime,jdbcType=TIMESTAMP})
+    </insert>
+
     <!--查询店铺-->
     <select id="selectShop" resultType="java.util.Map" parameterType="java.util.Map">
         SELECT
         XSM.ID AS id,
         XSM. NAME AS name,
-        XSM. NO AS NO,
+        XSM. NO AS no,
         XSM.USER_ID AS userID,
         sa.NICK_NAME AS nickName,
         XSM.ADDRESS AS address,
@@ -16,6 +23,7 @@
         XSM. STATUS AS statuc,
         XSM.IS_DELETE AS isDelete,
         XSM.REMARKS AS remarks,
+        XSM.OBLIGATE1 AS obligate1,
         DATE_FORMAT(
         XSM.CREATE_TIME,
         '%Y-%m-%d %H:%i:%S'
@@ -34,8 +42,54 @@
         <if test="userId != null">
             AND XSM.USER_ID = #{userId}
         </if>
+        <if test="obligate1 != null and obligate1 != ''">
+            AND XSM.OBLIGATE1 = #{obligate1}
+        </if>
         <if test="status != null">
             AND XSM.STATUS = #{status}
         </if>
     </select>
+
+    <!--更新店铺-->
+    <update id="updateShop" parameterType="java.util.Map">
+        UPDATE XH_SHOPS_MAIN
+        <trim prefix="set" suffixOverrides=",">
+            <if test="name!=null and name!=''">
+                NAME = #{name},
+            </if>
+            <if test="address!=null and address!=''">
+                ADDRESS = #{address},
+            </if>
+            <if test="credit!=null and credit!=''">
+                CREDIT = #{credit},
+            </if>
+            <if test="status!=null and status!=''">
+                STATUS = #{status},
+            </if>
+            <if test="remarks!=null and remarks!=''">
+                REMARKS = #{remarks},
+            </if>
+            <if test="lastCreateTime!=null and lastCreateTime!=''">
+                LAST_CREATE_TIME = #{lastCreateTime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="isDelete!=null and isDelete!=''">
+                IS_DELETE = #{isDelete},
+            </if>
+        </trim>
+        WHERE
+        <if test="id!=null and id!=''">
+            ID = #{id}
+        </if>
+        <if test="ids!=null and ids!=''">
+            ID in
+            <foreach collection="ids" index="index" item="item" open="(" separator="," close=")">
+                #{item}
+            </foreach>
+        </if>
+    </update>
+
+    <!--删除商品-->
+    <delete id="deleteShop"  parameterType="java.util.Map" >
+        DELETE FROM XH_SHOPS_MAIN WHERE ID = #{id}
+    </delete>
 </mapper>

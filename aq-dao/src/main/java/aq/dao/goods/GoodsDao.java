@@ -14,10 +14,10 @@ public interface GoodsDao {
     //查询商品
     List<Map<String,Object>> selectGoods(Map<String,Object> map);
 
-    //查询商品
+    //更新商品
     int updateGoods(Map<String,Object> map);
 
-    //查询商品
+    //删除商品
     int deleteGoods(Map<String,Object> map);
 
     //查询品牌
