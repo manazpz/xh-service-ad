@@ -49,4 +49,16 @@ public interface SystemDao {
     //查询开关
     List<Map<String,Object>> selectSwitch(Map<String,Object> map);
 
+    //新增地址信息
+    int insertAddress(Map<String,Object> map);
+
+    //查询地址信息
+    List<Map<String,Object>> selectAddress(Map<String,Object> map);
+
+    //修改地址信息
+    int updateAdress(Map<String,Object> map);
+
+    //删除地址信息
+    int deleteAdress(Map<String,Object> map);
+
 }

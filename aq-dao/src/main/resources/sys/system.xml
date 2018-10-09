@@ -179,4 +179,65 @@
         </if>
         ORDER BY sw.IS_SWITCH DESC
     </select>
+
+
+    <!--查询地址信息-->
+    <select id="selectAddress" resultType="java.util.Map" parameterType="java.util.Map">
+        SELECT
+            XA.ID AS id,
+            XA.NO AS no,
+            XA.CONTACTS AS name,
+            XA.PHONE AS phone,
+            XA.ADDRESS AS areaString,
+            XA.ADDRESS_DTL AS streetString,
+            XA.IS_VISIT_ADDRESS AS isVisit
+        FROM
+            XH_ADDRESS_USER XA
+        WHERE 1=1
+            <if test="isVisit!=null and isVisit != ''">
+                AND XA.IS_VISIT_ADDRESS = #{isVisit}
+            </if>
+            AND XA.ID = #{id}
+    </select>
+
+
+    <!--新增地址信息-->
+    <insert id="insertAddress" >
+        INSERT INTO XH_ADDRESS_USER
+        VALUES(#{id},#{no},#{name},#{phone},#{areaString},#{streetString},#{isVisit})
+    </insert>
+
+
+
+
+    <!--修改地址信息-->
+    <update id="updateAdress" parameterType="java.util.Map">
+        UPDATE XH_ADDRESS_USER XA
+        <trim prefix="set" suffixOverrides=",">
+            <if test="isVisit!=null and isVisit != ''">
+                XA.IS_VISIT_ADDRESS = #{isVisit},
+            </if>
+            <if test="name!=null and name != ''">
+                XA.CONTACTS = #{name},
+            </if>
+            <if test="phone!=null and phone != ''">
+                XA.PHONE = #{phone},
+            </if>
+            <if test="areaString!=null and areaString != ''">
+                XA.ADDRESS = #{areaString},
+            </if>
+            <if test="streetString!=null and streetString != ''">
+                XA.ADDRESS_DTL = #{streetString},
+            </if>
+        </trim>
+        WHERE 1=1  AND XA.ID = #{id} AND XA.NO = #{no}
+    </update>
+
+
+    <!--删除地址-->
+    <delete id="deleteAdress"  parameterType="java.util.Map" >
+        DELETE FROM XH_ADDRESS_USER WHERE ID = #{id} AND NO = #{no}
+    </delete>
+
+
 </mapper>

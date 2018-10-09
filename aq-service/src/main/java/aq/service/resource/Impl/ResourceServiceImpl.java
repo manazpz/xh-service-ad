@@ -121,6 +121,7 @@ public class ResourceServiceImpl extends BaseServiceImpl  implements ResourceSer
                 List<Map> files = (List<Map>) res.get("files");
                 for (int i=0;i<files.size();i++) {
                     files.get(i).put("type",res.get("type"));
+                    files.get(i).put("name",res.get("name"));
                     files.get(i).put("refId",StringUtil.isEmpty(res.get("refId"))?"":res.get("refId"));
                     files.get(i).put("link",StringUtil.isEmpty(res.get("link"))?"":res.get("link"));
                     files.get(i).put("createUserId", user.getUserId());
@@ -154,24 +155,18 @@ public class ResourceServiceImpl extends BaseServiceImpl  implements ResourceSer
                 ress.put("id",respurce.get("id"));
                 ress.put("type",res.get("type"));
                 List<Map<String, Object>> respurces1 = resourceDao.selectResource(ress);
-                if(respurces1.size() < 1) {
-                    ress.clear();
-                    ress.put("type",res.get("type"));
-                    List<Map<String, Object>> respurces2 = resourceDao.selectResource(ress);
-                    if(respurces2.size() > 0) {
-                        Map<String, Object> respurce2 = respurces2.get(0);
-                        ress.clear();
-                        ress.put("id",respurce2.get("id"));
-                        resourceDao.deleteResource(ress);
-                    }
+                if(respurces1.size() >0) {
+                    ress.put("id",respurces1.get(0).get("id"));
+                    resourceDao.deleteResource(ress);
                     ress.clear();
                     ress.put("id",respurce.get("id"));
-                    ress.put("name", respurce.get("name"));
+                    ress.put("name", res.get("name").toString());
                     ress.put("url",respurce.get("url"));
                     ress.put("extend",respurce.get("extend"));
                     ress.put("size",respurce.get("size"));
                     ress.put("type",res.get("type").toString());
-                    ress.put("refId",StringUtil.isEmpty(res.get("id"))?"":res.get("id").toString());
+                    ress.put("link",res.get("link").toString());
+//                    ress.put("refId",StringUtil.isEmpty(res.get("id"))?"":res.get("id").toString());
                     ress.put("createUserId", user.getUserId());
                     ress.put("lastCreateUserId", user.getUserId());
                     ress.put("createTime", new Date());
