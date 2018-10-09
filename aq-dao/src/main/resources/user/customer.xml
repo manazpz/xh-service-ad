@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="aq.dao.user.CustomerDao">
+
+    <!--查询收藏-->
+    <select id="selectCustomerInfo" resultType="java.util.Map" parameterType="java.util.Map">
+        SELECT
+        su.ID AS id,
+        su.NICK_NAME AS nickName,
+        su.HEAD_PORTRAIT AS headPortrait,
+        su.USER_NAME AS userName,
+        su.OPENID AS openId,
+        su.PHONE AS phone,
+        su.STATUS AS status,
+        DATE_FORMAT(su.CREATE_TIME,'%Y-%m-%d %H:%i:%S') AS createTime,
+        DATE_FORMAT(su.UPDATE_TIME,'%Y-%m-%d %H:%i:%S') AS updateTime,
+        su.IS_VALID AS isValid,
+        su.REMARK AS remark
+        FROM
+        system_user su
+        WHERE 1=1
+        <if test="id != null">
+            AND su.ID = #{id}
+        </if>
+        <if test="userName != null">
+            AND su.USER_NAME = #{userName}
+        </if>
+        <if test="openId != null">
+            AND su.OPENID = #{openId}
+        </if>
+    </select>
+
+</mapper>

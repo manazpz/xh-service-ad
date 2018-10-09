@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="aq.dao.collect.CollectDao">
+
+    <!--添加收藏-->
+    <insert id="insertCollect" >
+        INSERT INTO XH_COLLECT
+        VALUES(#{id},#{userId},#{basicId})
+    </insert>
+
+    <!--删除配置表-->
+    <delete id="deleteCollect"  parameterType="java.util.Map" >
+        DELETE FROM XH_COLLECT WHERE ID = #{id}
+    </delete>
+
+    <!--查询收藏-->
+    <select id="selectCollect" resultType="java.util.Map" parameterType="java.util.Map">
+        SELECT
+          XC.ID AS id,
+          XC.USER_ID AS userId,
+          XC.BASIC_ID AS basicId
+        FROM
+        XH_COLLECT XC
+        WHERE 1=1
+        <if test="id != null">
+            AND XC.ID = #{id}
+        </if>
+        <if test="userId != null">
+            AND XC.USER_ID = #{userId}
+        </if>
+        <if test="basicId != null">
+            AND XC.BASIC_ID = #{basicId}
+        </if>
+    </select>
+</mapper>

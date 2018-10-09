@@ -29,8 +29,8 @@
         <mapper resource="sys/system.xml"/>
         <mapper resource="config/config.xml"/>
         <mapper resource="user/user.xml"/>
+        <mapper resource="user/customer.xml"/>
         <mapper resource="statement/statement.xml"/>
-
         <mapper resource="resource/resource.xml"/>
         <mapper resource="goods/goods.xml"/>
         <mapper resource="goods/order.xml"/>
@@ -38,8 +38,8 @@
         <mapper resource="goods/search.xml"/>
         <mapper resource="goods/classify.xml"/>
         <mapper resource="stock/stock.xml"/>
-
         <mapper resource="shop/shop.xml"/>
+        <mapper resource="collect/collect.xml"/>
     </mappers>
 
 </configuration> 
