@@ -3,6 +3,8 @@ package aq.service.system;
 import aq.service.base.BaseService;
 import com.google.gson.JsonObject;
 
+import java.util.Map;
+
 /**
  * Created by ywb on 2017-02-23.
  */
@@ -43,5 +45,8 @@ public interface UserService extends BaseService {
 
     //回收方式
     JsonObject updateRecovery(JsonObject jsonObject);
+
+    //新增用户信息
+    void insertUserInfos(Map<String, Object> map);
 
 }

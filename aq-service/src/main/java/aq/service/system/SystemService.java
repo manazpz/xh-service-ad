@@ -6,6 +6,8 @@ import com.google.gson.JsonObject;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
+import java.util.List;
+import java.util.Map;
 
 /**
  * Created by ywb on 2017-02-23.
@@ -47,5 +49,8 @@ public interface SystemService extends BaseService {
 
     //查询客服信息
     JsonObject queryCustomService(JsonObject jsonObject);
+
+    //查询用户信息
+    List<Map<String, Object>> queryUserInfos(Map<String, Object> map);
 
 }

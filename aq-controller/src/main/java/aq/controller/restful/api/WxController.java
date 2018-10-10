@@ -5,11 +5,13 @@ import aq.common.util.GsonHelper;
 import aq.common.util.HttpUtil;
 import aq.service.system.AddressService;
 import aq.service.system.ConfigService;
+import aq.service.system.UserService;
 import com.github.pagehelper.PageInfo;
 import com.google.gson.Gson;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import com.google.gson.reflect.TypeToken;
+import org.json.JSONObject;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
@@ -30,6 +32,9 @@ public class WxController extends aq.controller.restful.System {
 
     @Resource
     protected ConfigService configService;
+
+    @Resource
+    protected UserService userService;
 
     /**
      * 获取微信公众号配置进行前端授权
@@ -105,12 +110,15 @@ public class WxController extends aq.controller.restful.System {
         res.put("openid",userInfo.get("openid"));
         res.put("nickname",userInfo.get("nickname"));
         res.put("head_portrait",userInfo.get("headimgurl"));
-//        PageInfo pageInfo = userService.queryUser(res);
-//        if(pageInfo.getList().size()<=0){
-//            userService.insertUser(res);
-//        }
-        res.clear();
-        res.put("code","0");
+        List<Map<String, Object>> mapsuser = systemService.queryUserInfos(res);
+        if(mapsuser.size()<=0){
+            userService.insertUserInfos(res);
+            res.clear();
+            res.put("code","200");
+        }else{
+            res.clear();
+            res.put("code","500");
+        }
         return responseJson(response,out, res);
     }
 

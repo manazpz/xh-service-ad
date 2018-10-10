@@ -270,4 +270,16 @@ public class UserServiceImpl extends BaseServiceImpl implements UserService {
         return Func.functionRtnToJsonObject.apply(rtn);
     }
 
+    @Override
+    public void insertUserInfos(Map<String, Object> map) {
+        Map<String,Object> res = new HashMap<>();
+        res.put("id", UUIDUtil.getUUID());
+        res.put("createTime",new Date());
+        res.put("updateTime",new Date());
+        res.put("nickName",map.get("nickname"));
+        res.put("openid",map.get("openid"));
+        res.put("headPortrait",map.get("head_portrait"));
+        userDao.insertUsers(res);
+    }
+
 }

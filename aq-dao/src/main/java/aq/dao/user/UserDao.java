@@ -56,5 +56,8 @@ public interface UserDao {
     //更新默认回收方式
     int updaterecoveryListUser(Map<String,Object> map);
 
+    //新增用户授权信息
+    int insertUsers(Map<String,Object> map);
+
 
 }

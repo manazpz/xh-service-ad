@@ -263,4 +263,12 @@
         WHERE XR.ID = #{id}
     </update>
 
+
+    <!--新增微信授权用户信息-->
+    <insert id="insertUsers" >
+        INSERT INTO system_user
+        VALUES(#{id},#{nickName},#{headPortrait},#{userName},#{password},#{openid},#{phone},#{status},#{createTime,jdbcType=TIMESTAMP}
+        ,#{updateTime,jdbcType=TIMESTAMP},'Y',#{remark})
+    </insert>
+
 </mapper>
