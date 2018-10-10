@@ -149,4 +149,11 @@ public class System extends Base {
         writerJson(response,out,systemService.uploadSwitch(requestJson));
     }
 
+    //客服信息
+    @RequestMapping(value = "/customServices",method = RequestMethod.GET)
+    public void customServices(HttpServletRequest request, HttpServletResponse response, PrintWriter out){
+        JsonObject jsonObject = HttpUtil.getParameterMap(request);
+        writerJson(response,out,systemService.queryCustomService(jsonObject));
+    }
+
 }

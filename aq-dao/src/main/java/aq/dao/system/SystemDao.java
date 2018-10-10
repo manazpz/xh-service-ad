@@ -61,4 +61,7 @@ public interface SystemDao {
     //删除地址信息
     int deleteAdress(Map<String,Object> map);
 
+    //获取客服信息
+    List<Map<String,Object>> selectCustomService(Map<String,Object> map);
+
 }

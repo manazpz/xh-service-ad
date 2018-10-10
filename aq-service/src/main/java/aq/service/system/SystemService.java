@@ -45,4 +45,7 @@ public interface SystemService extends BaseService {
     //查询开关
     JsonObject querySwitch(JsonObject jsonObject);
 
+    //查询客服信息
+    JsonObject queryCustomService(JsonObject jsonObject);
+
 }

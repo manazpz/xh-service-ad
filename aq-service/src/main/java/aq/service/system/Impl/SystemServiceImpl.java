@@ -383,4 +383,19 @@ public class SystemServiceImpl extends BaseServiceImpl  implements SystemService
         return Func.functionRtnToJsonObject.apply(rtn);
     }
 
+    @Override
+    public JsonObject queryCustomService(JsonObject jsonObject) {
+        Rtn rtn = new Rtn("System");
+        Map map = new HashMap();
+        List list = sysDao.selectCustomService(map);
+        JsonObject data = new JsonObject();
+        JsonArray jsonArray = new JsonArray();
+        jsonArray =  GsonHelper.getInstanceJsonparser().parse(GsonHelper.getInstance().toJson(list)).getAsJsonArray();
+        data.add("items",jsonArray);
+        rtn.setCode(200);
+        rtn.setMessage("success");
+        rtn.setData(data);
+        return Func.functionRtnToJsonObject.apply(rtn);
+    }
+
 }

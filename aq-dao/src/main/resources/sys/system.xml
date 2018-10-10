@@ -239,5 +239,15 @@
         DELETE FROM XH_ADDRESS_USER WHERE ID = #{id} AND NO = #{no}
     </delete>
 
+    <!--获取客服信息-->
+    <select id="selectCustomService" resultType="java.util.Map" parameterType="java.util.Map">
+        SELECT
+          scs.ID AS id,
+          scs.PHONE AS phone
+        FROM
+        system_custom_service scs
+        WHERE 1=1
+    </select>
+
 
 </mapper>

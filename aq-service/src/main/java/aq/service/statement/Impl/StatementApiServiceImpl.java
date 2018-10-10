@@ -1,6 +1,7 @@
 package aq.service.statement.Impl;
 
 import aq.common.annotation.DyncDataSource;
+import aq.common.util.StringUtil;
 import aq.dao.config.ConfigDao;
 import aq.dao.statement.StatementDao;
 import aq.service.base.Impl.BaseServiceImpl;
@@ -34,12 +35,14 @@ public class StatementApiServiceImpl extends BaseServiceImpl implements Statemen
         Map<String,Object> res = new HashMap<>();
         //获取配置参数
         res.clear();
-        res.put("keyWord",jsonObject.get("type").getAsString());
-        List<Map<String, Object>> configs = configDao.selectConfig(res);
-        if(configs.size() >= 0)
-            jsonObject.addProperty("pageSize",configs.get(0).get("num").toString());
-        else
-            jsonObject.addProperty("pageSize",4);
+        if(!StringUtil.isEmpty(jsonObject.get("type"))) {
+            res.put("keyWord",jsonObject.get("type").getAsString());
+            List<Map<String, Object>> configs = configDao.selectConfig(res);
+            if(configs.size() >= 0)
+                jsonObject.addProperty("pageSize",configs.get(0).get("num").toString());
+            else
+                jsonObject.addProperty("pageSize",4);
+        }
         return query(jsonObject,(map)->{
             return statementDao.selectStatement(map);
         });
