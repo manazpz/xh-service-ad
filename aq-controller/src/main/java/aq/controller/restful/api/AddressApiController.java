@@ -40,4 +40,11 @@ public class AddressApiController extends aq.controller.restful.System {
     public void deleteAdress(@RequestBody JsonObject requestJson, HttpServletRequest request, HttpServletResponse response, PrintWriter out){
         writerJson(response,out,addressService.deleteAdress(requestJson));
     }
+
+    //新增地址
+    @RequestMapping(value = "/update",method = RequestMethod.POST)
+    @ResponseBody
+    public void updateAdress(@RequestBody JsonObject requestJson, HttpServletRequest request, HttpServletResponse response, PrintWriter out){
+        writerJson(response,out,addressService.updateAdress(requestJson));
+    }
 }

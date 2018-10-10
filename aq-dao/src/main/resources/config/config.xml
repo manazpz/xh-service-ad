@@ -91,4 +91,19 @@
         </if>
     </select>
 
+    <!--更新配置表-->
+    <update id="updateTppConfig" parameterType="java.util.Map">
+        UPDATE system_tpp_config sc
+        <trim prefix="set" suffixOverrides=",">
+            <if test="access_token!=null">
+                sa.ACCESS_TOKEN = #{access_token},
+            </if>
+            <if test="update_time!=null">
+                sc.UPDATE_TIME= #{update_time}
+            </if>
+
+        </trim>
+        WHERE sc.ID = #{id}
+    </update>
+
 </mapper>

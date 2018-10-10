@@ -24,4 +24,8 @@ public interface ConfigDao {
 
     //查询第三方配置表
     List<Map<String,Object>> selectTppConfig(Map<String,Object> map);
+
+    //编辑第三方配置表
+    int updateTppConfig(Map<String,Object> map);
+
 }

@@ -58,4 +58,14 @@ public class ConfigServiceImpl extends BaseServiceImpl  implements ConfigService
     public JsonObject updateConfig(JsonObject jsonObject) {
         return null;
     }
+
+    @Override
+    public List<Map<String, Object>> selectTppConfig(Map<String, Object> map) {
+        return  configDao.selectTppConfig(map);
+    }
+
+    @Override
+    public void updateTppConfig(Map<String, Object> map) {
+        configDao.updateTppConfig(map);
+    }
 }

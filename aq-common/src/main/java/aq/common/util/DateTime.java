@@ -162,4 +162,13 @@ public class DateTime {
         }
         return null;
     }
+
+    public static String dateFormat(Date date, String format) {
+        if (!StringUtil.isEmpty(date)) {
+            SimpleDateFormat df = new SimpleDateFormat(format);
+            return df.format(date);
+        } else {
+            return null;
+        }
+    }
 }

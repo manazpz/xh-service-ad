@@ -47,6 +47,7 @@ public class AddressServiceImpl extends BaseServiceImpl implements AddressServic
         rest.put("areaString", res.get("areaString"));
         rest.put("streetString", res.get("streetString"));
         if("Y".equals(res.get("isVisit").toString())){
+            rests.clear();
             for (int i=0;i<maps.size();i++) {
                 if("Y".equals(maps.get(i).get("isVisit"))){
                     rests.put("id",maps.get(i).get("id"));
@@ -56,7 +57,19 @@ public class AddressServiceImpl extends BaseServiceImpl implements AddressServic
                 }
             }
         }
+        if("Y".equals(res.get("isTake").toString())){
+            rests.clear();
+            for (int i=0;i<maps.size();i++) {
+                if("Y".equals(maps.get(i).get("isTake"))){
+                    rests.put("id",maps.get(i).get("id"));
+                    rests.put("no",maps.get(i).get("no"));
+                    rests.put("isTake","N");
+                    systemDao.updateAdress(rests);
+                }
+            }
+        }
         rest.put("isVisit", res.get("isVisit").toString());
+        rest.put("isTake", res.get("isTake").toString());
         systemDao.insertAddress(rest);
         rtn.setCode(200);
         rtn.setMessage("success");
@@ -74,6 +87,7 @@ public class AddressServiceImpl extends BaseServiceImpl implements AddressServic
         res.clear();
         res.put("id",jsonObject.get("openId").getAsString());
         res.put("isVisit",jsonObject.get("isVisit")== null ? "" :jsonObject.get("isVisit").getAsString());
+        res.put("isTake",jsonObject.get("isTake")== null ? "" :jsonObject.get("isTake").getAsString());
         List<Map<String, Object>> list = systemDao.selectAddress(res);
         if(list.size()>0) {
             list.get(0).put("areaString",list.get(0).get("areaString").toString().replace(",",""));
@@ -95,6 +109,20 @@ public class AddressServiceImpl extends BaseServiceImpl implements AddressServic
         res.put("id",jsonObject.get("id").getAsString());
         res.put("no",jsonObject.get("no").getAsString());
         systemDao.deleteAdress(res);
+        rtn.setCode(200);
+        rtn.setMessage("success");
+        return  Func.functionRtnToJsonObject.apply(rtn);
+    }
+
+    @Override
+    public JsonObject updateAdress(JsonObject jsonObject) {
+        Rtn rtn = new Rtn("Address");
+        Map<String,Object> res = new HashMap<>();
+        List<Map<String, Object>> mapall = null;
+        res = GsonHelper.getInstance().fromJson(jsonObject,Map.class);
+        res.put("id",jsonObject.get("id").getAsString());
+        res.put("no",jsonObject.get("no").getAsString());
+        systemDao.updateAdress(res);
         rtn.setCode(200);
         rtn.setMessage("success");
         return  Func.functionRtnToJsonObject.apply(rtn);
