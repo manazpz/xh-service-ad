@@ -54,7 +54,7 @@ public class WxController extends aq.controller.restful.System {
         List<Map<String, Object>> map = configService.selectTppConfig(res);
         if(map.size()>0){
             //这个url的域名必须要进行再公众号中进行注册验证，这个地址是成功后的回调地址
-            String backUrl="http://m.xh.huanyibu.com/";
+            String backUrl=map.get(0).get("returnUrl")+"/index.html";
             // 第一步：用户同意授权，获取code
             url ="https://open.weixin.qq.com/connect/oauth2/authorize?appid="+map.get(0).get("accessKeyId")
                     + "&redirect_uri="+ URLEncoder.encode(backUrl)
@@ -78,7 +78,8 @@ public class WxController extends aq.controller.restful.System {
     @RequestMapping(value = "/userinfo",method =RequestMethod.GET)
     public String queryUserMsg(HttpServletRequest request, HttpServletResponse response, PrintWriter out) throws Exception {
         response.setHeader("Access-Control-Allow-Origin", "*");
-        JsonObject parameterMap = HttpUtil.getParameterMap(request);
+        Gson gson = new Gson();
+        Map parameterMap = HttpUtil.getParameterMaps(request);
         Map<String,Object> res = new HashMap<>();
         res.put("platform","wx");
         List<Map<String, Object>> maps = configService.selectTppConfig(res);
@@ -87,7 +88,6 @@ public class WxController extends aq.controller.restful.System {
                 + "&secret="+maps.get(0).get("accessKeySecret")
                 + "&code="+parameterMap.get("code")
                 + "&grant_type=authorization_code";
-        Gson gson = new Gson();
         Map<String, Object> mapInfo = gson.fromJson(new JsonParser().parse(HttpUtil.get(url)).getAsJsonObject(), new TypeToken<Map<String, Object>>() {
         }.getType());
         String openid = mapInfo.get("openid").toString();
@@ -113,12 +113,10 @@ public class WxController extends aq.controller.restful.System {
         List<Map<String, Object>> mapsuser = systemService.queryUserInfos(res);
         if(mapsuser.size()<=0){
             userService.insertUserInfos(res);
-            res.clear();
-            res.put("code","200");
-        }else{
-            res.clear();
-            res.put("code","500");
         }
+        res.clear();
+        res.put("code","200");
+        res.put("openid",userInfo.get("openid"));
         return responseJson(response,out, res);
     }
 
