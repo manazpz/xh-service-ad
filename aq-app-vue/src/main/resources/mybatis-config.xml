@@ -33,7 +33,7 @@
         <mapper resource="statement/statement.xml"/>
         <mapper resource="resource/resource.xml"/>
         <mapper resource="goods/goods.xml"/>
-        <mapper resource="goods/order.xml"/>
+        <mapper resource="order/order.xml"/>
         <mapper resource="goods/spec.xml"/>
         <mapper resource="goods/search.xml"/>
         <mapper resource="goods/classify.xml"/>

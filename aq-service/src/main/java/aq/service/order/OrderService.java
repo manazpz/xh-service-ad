@@ -1,4 +1,4 @@
-package aq.service.goods;
+package aq.service.order;
 
 import aq.service.base.BaseService;
 import com.google.gson.JsonObject;
@@ -11,5 +11,8 @@ public interface OrderService extends BaseService {
     //查询订单列表
     JsonObject queryorderList(JsonObject jsonObject);
 
+
+    //新增订单
+    JsonObject instertorderList(JsonObject jsonObject);
 
 }

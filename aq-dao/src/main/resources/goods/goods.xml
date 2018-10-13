@@ -240,6 +240,7 @@
         XGM. NAME AS goodsName,
         XGM.SPEC_PARAMETER AS goodsParameter,
         XGM.BAN_PRICE AS banPrice,
+        XGM.SHOP_ID AS shopid,
         sa.FD_URL AS url,
         su.ID AS userId,
         su.NICK_NAME AS nickName,

@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="aq.dao.order.OrderDao">
+
+    <!--查询订单-->
+    <select id="selectorderList" resultType="java.util.Map" parameterType="java.util.Map">
+        SELECT
+            XO.ID AS id,
+            XO.NUMBER AS number,
+            XO.PAY_STATUS AS payStatus,
+            XO.ORDER_STATUS AS orderStatus,
+            XO.DELIVERY_STATUS AS deliveryStatus,
+            XO.PRICE AS price,
+            XO.CREATE_TIME AS createTime
+        FROM
+        XH_ORDER_H XO
+        WHERE 1=1
+        <if test="number!=null and number != ''">
+            AND XO.NUMBER = #{number}
+        </if>
+        <if test="payStatus!=null and payStatus != ''">
+            AND XO.PAY_STATUS = #{payStatus}
+        </if>
+        <if test="orderStatus!=null and orderStatus != ''">
+            AND XO.ORDER_STATUS = #{orderStatus}
+        </if>
+    </select>
+
+
+
+    <!--添加订单-->
+    <insert id="insertOrder" >
+        INSERT INTO XH_ORDER_H
+        VALUES(#{id},#{number},#{shopid},#{buyer},#{type},#{paystatus},#{orderstatus},#{deliverystatus},#{deliveryTime,jdbcType=TIMESTAMP},#{price},'','',#{remarks},
+        '','','',#{createUserId},#{createTime,jdbcType=TIMESTAMP},#{lastCreateUserId},#{lastCreateTime,jdbcType=TIMESTAMP})
+    </insert>
+
+
+
+    <!--查询订单明细-->
+    <select id="selectorderDetailList" resultType="java.util.Map" parameterType="java.util.Map">
+        SELECT
+        XO.ID AS id,
+        XO.NO AS no,
+        XO.GOODS_ID AS goodsid,
+        XO.OLD_CHECK_ID AS oldcheck,
+        XO.REMARKS AS remarks,
+        XO.CREATE_TIME AS createTime
+        FROM
+        XH_ORDER_SALE_P XO
+        WHERE 1=1
+        <if test="id!=null and id != ''">
+            AND XO.ID = #{id}
+        </if>
+        <if test="no!=null and no != ''">
+            AND XO.NO = #{no}
+        </if>
+    </select>
+
+
+
+    <!--添加订单明细-->
+    <insert id="insertOrderDetail" >
+        INSERT INTO XH_ORDER_SALE_P
+        VALUES(#{id},#{no},#{goodsid},#{oldcheck},#{remarks},
+        '','','',#{createUserId},#{createTime,jdbcType=TIMESTAMP},#{lastCreateUserId},#{lastCreateTime,jdbcType=TIMESTAMP})
+    </insert>
+
+</mapper>

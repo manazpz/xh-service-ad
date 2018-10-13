@@ -271,4 +271,45 @@
         ,#{updateTime,jdbcType=TIMESTAMP},'Y',#{remark})
     </insert>
 
+    <!--查询微信授权用户信息-->
+    <select id="selectUserInfos" resultType="java.util.Map" parameterType="java.util.Map">
+        SELECT
+            su.ID AS id,
+            su.NICK_NAME AS nickName,
+            su.HEAD_PORTRAIT AS headPortrait,
+            su.USER_NAME AS userName,
+            su.PASSWORD AS password,
+            su.OPENID AS openid,
+            su.PHONE AS phone,
+            su.STATUS AS status,
+            DATE_FORMAT(su.CREATE_TIME,'%Y-%m-%d %H:%i:%S') AS createTime,
+            DATE_FORMAT(su.UPDATE_TIME,'%Y-%m-%d %H:%i:%S') AS updateTime,
+            su.IS_VALID AS isValid
+        FROM
+        system_user su
+        WHERE 1=1
+        <if test="id != null">
+            AND su.ID = #{id}
+        </if>
+        <if test="userName != null and userName != ''">
+            AND su.USER_NAME LIKE CONCAT('%', #{userName}, '%')
+        </if>
+        <if test="nickName != null and nickName != ''">
+            AND su.NICK_NAME LIKE CONCAT('%', #{nickName}, '%')
+        </if>
+        <if test="phone != null and phone != ''">
+            AND su.PHONE LIKE CONCAT('%', #{phone}, '%')
+        </if>
+        <if test="status != null and status != ''">
+            AND su.STATUS = #{status}
+        </if>
+        <if test="openid != null and openid != ''">
+            AND su.OPENID = #{openid}
+        </if>
+        ORDER BY su.IS_VALID ASC
+        <if test="sort != null">
+            ,#{sort}
+        </if>
+    </select>
+
 </mapper>

@@ -330,5 +330,11 @@
             <version>1.19.4</version>
         </dependency>
 
+        <dependency>
+            <groupId>cn.springboot</groupId>
+            <artifactId>best-pay-sdk</artifactId>
+            <version>1.2.0</version>
+        </dependency>
+
     </dependencies>
 </project>

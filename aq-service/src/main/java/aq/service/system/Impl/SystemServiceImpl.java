@@ -397,9 +397,4 @@ public class SystemServiceImpl extends BaseServiceImpl  implements SystemService
         rtn.setData(data);
         return Func.functionRtnToJsonObject.apply(rtn);
     }
-
-    @Override
-    public List<Map<String, Object>> queryUserInfos(Map<String, Object> map) {
-        return  sysDao.selectUserInfo(map);
-    }
 }

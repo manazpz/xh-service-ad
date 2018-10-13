@@ -1,8 +1,7 @@
 package aq.controller.restful.management;
 
 import aq.common.util.HttpUtil;
-import aq.service.goods.GoodsService;
-import aq.service.goods.OrderService;
+import aq.service.order.OrderService;
 import com.google.gson.JsonObject;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;

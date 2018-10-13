@@ -50,7 +50,4 @@ public interface SystemService extends BaseService {
     //查询客服信息
     JsonObject queryCustomService(JsonObject jsonObject);
 
-    //查询用户信息
-    List<Map<String, Object>> queryUserInfos(Map<String, Object> map);
-
 }

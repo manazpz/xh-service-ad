@@ -282,4 +282,8 @@ public class UserServiceImpl extends BaseServiceImpl implements UserService {
         userDao.insertUsers(res);
     }
 
+    @Override
+    public List<Map<String, Object>> queryUserInfos(Map<String, Object> map) {
+        return  userDao.selectUserInfos(map);
+    }
 }

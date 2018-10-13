@@ -45,4 +45,23 @@ public class UUIDUtil {
         }
         return sb.toString();
     }
+
+    /**
+     * 获取随机的流水号(8位)
+     * @return
+     */
+    public static String getRandomOrderId() {
+        SimpleDateFormat simpleDateFormat;
+
+        simpleDateFormat = new SimpleDateFormat("yyyyMMddHHmmss");
+
+        Date date = new Date();
+
+        String str = simpleDateFormat.format(date);
+
+        Random random = new Random();
+
+        int rannum = (int) (random.nextDouble() * (99999 - 10000 + 1)) + 10000;// 获取5位随机数
+        return str + rannum;
+    }
 }

@@ -71,6 +71,8 @@
         stc.ID AS id,
         stc.NAME AS name,
         stc.PLATFORM AS platform,
+        stc.MC_HID AS mchid,
+        stc.KEY AS keyword,
         stc.ACCESS_KEY_ID AS accessKeyId,
         stc.ACCESS_KEY_SECRET AS accessKeySecret,
         stc.ENDPOINT AS endpoint,

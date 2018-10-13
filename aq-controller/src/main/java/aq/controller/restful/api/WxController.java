@@ -1,26 +1,21 @@
 package aq.controller.restful.api;
 
-import aq.common.util.DateTime;
-import aq.common.util.GsonHelper;
-import aq.common.util.HttpUtil;
-import aq.service.system.AddressService;
+import aq.common.util.*;
+import aq.service.order.OrderService;
 import aq.service.system.ConfigService;
 import aq.service.system.UserService;
-import com.github.pagehelper.PageInfo;
 import com.google.gson.Gson;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import com.google.gson.reflect.TypeToken;
-import org.json.JSONObject;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import java.io.PrintWriter;
+import java.io.*;
 import java.net.URLEncoder;
-import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -35,6 +30,9 @@ public class WxController extends aq.controller.restful.System {
 
     @Resource
     protected UserService userService;
+
+    @Resource
+    protected OrderService orderService;
 
     /**
      * 获取微信公众号配置进行前端授权
@@ -93,13 +91,13 @@ public class WxController extends aq.controller.restful.System {
         String openid = mapInfo.get("openid").toString();
         String access_token = mapInfo.get("access_token").toString();
         String refresh_token = mapInfo.get("refresh_token").toString();
-        if("".equals(maps.get(0).get("accessToken")) || maps.get(0).get("accessToken") == null){
-            mapInfo.clear();
-            mapInfo.put("access_token",access_token);
-            mapInfo.put("update_time", DateTime.dateFormat(new Date(), DateTime.DATE_FORMAT_YYYY_MM_DDHHMMSS));
-            mapInfo.put("id",maps.get(0).get("ID"));
-            configService.updateTppConfig(mapInfo);
-        }
+//        if("".equals(maps.get(0).get("accessToken")) || maps.get(0).get("accessToken") == null){
+//            mapInfo.clear();
+//            mapInfo.put("access_token",access_token);
+//            mapInfo.put("update_time", DateTime.dateFormat(new Date(), DateTime.DATE_FORMAT_YYYY_MM_DDHHMMSS));
+//            mapInfo.put("id",maps.get(0).get("ID"));
+//            configService.updateTppConfig(mapInfo);
+//        }
         // 第二步：拉取用户信息(需scope为 snsapi_userinfo)
         String infoUrl = "https://api.weixin.qq.com/sns/userinfo?access_token="+access_token
                 + "&openid="+openid
@@ -110,7 +108,7 @@ public class WxController extends aq.controller.restful.System {
         res.put("openid",userInfo.get("openid"));
         res.put("nickname",userInfo.get("nickname"));
         res.put("head_portrait",userInfo.get("headimgurl"));
-        List<Map<String, Object>> mapsuser = systemService.queryUserInfos(res);
+        List<Map<String, Object>> mapsuser = userService.queryUserInfos(res);
         if(mapsuser.size()<=0){
             userService.insertUserInfos(res);
         }
@@ -120,6 +118,64 @@ public class WxController extends aq.controller.restful.System {
         return responseJson(response,out, res);
     }
 
+    /**
+     * 获取微信公众号配置信息
+     * @param request
+     * @param response
+     * @param out
+     * @return
+     * @throws Exception
+     */
+    @RequestMapping(value = "/tppConfig",method = RequestMethod.GET)
+    public void Pay(HttpServletRequest request, HttpServletResponse response, PrintWriter out) throws Exception {
+        JsonObject jsonObject = HttpUtil.getParameterMap(request);
+        writerJson(response,out,configService.pay(jsonObject));
+    }
+
+    /**
+     * 微信支付回调
+     *
+     * @param request
+     * @param response
+     * @return
+     * @throws Exception
+     */
+    @RequestMapping(method = RequestMethod.POST, value = "/notify")
+    public String wxCallback(HttpServletRequest request, HttpServletResponse response) throws Exception {
+        String resXml = "";
+        Map<String, String> backxml = new HashMap<String, String>();
+        InputStream inStream;
+        try {
+            inStream = request.getInputStream();
+            ByteArrayOutputStream outSteam = new ByteArrayOutputStream();
+            byte[] buffer = new byte[1024];
+            int len = 0;
+            while ((len = inStream.read(buffer)) != -1) {
+                outSteam.write(buffer, 0, len);
+            }
+            outSteam.close();
+            inStream.close();
+            String result = new String(outSteam.toByteArray(), "utf-8");// 获取微信调用我们notify_url的返回信息
+            Map<String, String> map = WxUtil.xmlToMap(result);
+            if (map.get("result_code").toString().equalsIgnoreCase("SUCCESS")) {
+                resXml = "<xml>" + "<return_code><![CDATA[SUCCESS]]></return_code>"
+                        + "<return_msg><![CDATA[OK]]></return_msg>" + "</xml>";
+                //业务处理开始
+
+                //业务处理结束
+
+                BufferedOutputStream out = new BufferedOutputStream(response.getOutputStream());
+                out.write(resXml.getBytes());
+                out.flush();
+                out.close();
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return resXml;
+
+
+    }
 
 
 }

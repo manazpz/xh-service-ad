@@ -26,6 +26,9 @@ public interface ConfigService extends BaseService {
     //查询配置表
     List<Map<String, Object>> selectTppConfig(Map<String, Object> map);
 
+    //查询配置表
+    JsonObject pay(JsonObject jsonObject);
+
     //修改配置表
     void updateTppConfig(Map<String, Object> map);
 }
