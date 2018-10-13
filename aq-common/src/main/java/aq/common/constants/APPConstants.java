@@ -19,4 +19,8 @@ public final class APPConstants {
     //服务器地址
     public static final String API_KEY = "47.106.177.213";
 
+    //支付回调
+    public static final String WX_NOTIFY = "http://47.106.177.213:8083/aq/api/wx/notify";
+
+
 }

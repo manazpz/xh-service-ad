@@ -1,10 +1,12 @@
 package aq.controller.restful.api;
 
 import aq.common.util.*;
+import aq.service.order.OrderApiService;
 import aq.service.order.OrderService;
 import aq.service.system.ConfigService;
 import aq.service.system.UserService;
 import com.google.gson.Gson;
+import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import com.google.gson.reflect.TypeToken;
@@ -32,7 +34,7 @@ public class WxController extends aq.controller.restful.System {
     protected UserService userService;
 
     @Resource
-    protected OrderService orderService;
+    protected OrderApiService orderApiService;
 
     /**
      * 获取微信公众号配置进行前端授权
@@ -113,23 +115,23 @@ public class WxController extends aq.controller.restful.System {
             userService.insertUserInfos(res);
         }
         res.clear();
-        res.put("code","200");
+        res.put("code",200);
         res.put("openid",userInfo.get("openid"));
         return responseJson(response,out, res);
     }
 
     /**
-     * 获取微信公众号配置信息
+     * 微信统一下单
      * @param request
      * @param response
      * @param out
      * @return
      * @throws Exception
      */
-    @RequestMapping(value = "/tppConfig",method = RequestMethod.GET)
-    public void Pay(HttpServletRequest request, HttpServletResponse response, PrintWriter out) throws Exception {
-        JsonObject jsonObject = HttpUtil.getParameterMap(request);
-        writerJson(response,out,configService.pay(jsonObject));
+    @RequestMapping(value = "/pay",method = RequestMethod.POST)
+    @ResponseBody
+    public void Pay(@RequestBody JsonObject requestJson ,HttpServletRequest request, HttpServletResponse response, PrintWriter out) throws Exception {
+        writerJson(response,out,configService.pay(requestJson));
     }
 
     /**
@@ -144,6 +146,8 @@ public class WxController extends aq.controller.restful.System {
     public String wxCallback(HttpServletRequest request, HttpServletResponse response) throws Exception {
         String resXml = "";
         Map<String, String> backxml = new HashMap<String, String>();
+        Map<String,Object> res = new HashMap<>();
+        JsonObject jsonObject = new JsonObject();
         InputStream inStream;
         try {
             inStream = request.getInputStream();
@@ -161,9 +165,15 @@ public class WxController extends aq.controller.restful.System {
                 resXml = "<xml>" + "<return_code><![CDATA[SUCCESS]]></return_code>"
                         + "<return_msg><![CDATA[OK]]></return_msg>" + "</xml>";
                 //业务处理开始
-
+                res.put("number",map.get("out_trade_no"));
+                List<Map<String, Object>> maps = orderApiService.selectOrder(res);
+                if(maps.size()>0){
+                    res.clear();
+                    res.put("paystatus","02");
+                    res.put("id",maps.get(0).get("id"));
+                    orderApiService.updateOrder(res);
+                }
                 //业务处理结束
-
                 BufferedOutputStream out = new BufferedOutputStream(response.getOutputStream());
                 out.write(resXml.getBytes());
                 out.flush();

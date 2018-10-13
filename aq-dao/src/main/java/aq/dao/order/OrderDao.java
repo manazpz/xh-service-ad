@@ -20,4 +20,7 @@ public interface OrderDao {
     //查询订单
     List<Map<String,Object>> selectorderDetailList(Map<String,Object> map);
 
+    //修改订单
+    Map<String,Object> updateOrder(Map<String,Object> map);
+
 }

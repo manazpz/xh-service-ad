@@ -82,8 +82,20 @@
     <!--添加订单明细-->
     <insert id="insertOrderDetail" >
         INSERT INTO XH_ORDER_SALE_P
-        VALUES(#{id},#{no},#{goodsid},#{oldcheck},#{remarks},
+        VALUES(#{id},#{no},#{goodsid},#{parameter},#{oldcheck},#{checkstatus},#{remarks},
         '','','',#{createUserId},#{createTime,jdbcType=TIMESTAMP},#{lastCreateUserId},#{lastCreateTime,jdbcType=TIMESTAMP})
     </insert>
 
+
+
+    <!--更新订单-->
+    <update id="updateOrder" parameterType="java.util.Map">
+        UPDATE XH_ORDER_H XO
+        <trim prefix="set" suffixOverrides=",">
+            <if test="paystatus!=null and paystatus != ''">
+                XO.PAY_STATUS = #{paystatus},
+            </if>
+        </trim>
+        WHERE XR.ID = #{id}
+    </update>
 </mapper>

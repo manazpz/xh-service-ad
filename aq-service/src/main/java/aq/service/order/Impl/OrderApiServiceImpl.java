@@ -171,6 +171,8 @@ public class OrderApiServiceImpl extends BaseServiceImpl  implements OrderApiSer
                     restdetail.put("no",i*10 +10);
                 }
                 restdetail.put("goodsid",listnew.get(i).get("goodsId"));
+                restdetail.put("parameter",listnew.get(i).get("bllParameter"));
+                restdetail.put("checkstatus","01");
                 restdetail.put("createTime",new Date());
                 restdetail.put("lastCreateTime",new Date());
                 orderDao.insertOrderDetail(restdetail);
@@ -187,6 +189,8 @@ public class OrderApiServiceImpl extends BaseServiceImpl  implements OrderApiSer
                     restdetail.put("no",i*10 +10);
                 }
                 restdetail.put("goodsid",listold.get(i).get("goodsId"));
+                restdetail.put("parameter",listold.get(i).get("bllParameter"));
+                restdetail.put("checkstatus","01");
                 restdetail.put("createTime",new Date());
                 restdetail.put("lastCreateTime",new Date());
                 orderDao.insertOrderDetail(restdetail);
@@ -197,5 +201,17 @@ public class OrderApiServiceImpl extends BaseServiceImpl  implements OrderApiSer
         return Func.functionRtnToJsonObject.apply(rtn);
     }
 
+    @Transactional(rollbackFor = {RuntimeException.class, Exception.class})
+    @Override
+    public List<Map<String, Object>> selectOrder(Map<String, Object> map) {
+        return  orderDao.selectorderList(map);
+    }
+
+
+    @Transactional(rollbackFor = {RuntimeException.class, Exception.class})
+    @Override
+    public Map<String, Object> updateOrder(Map<String, Object> map) {
+        return  orderDao.updateOrder(map);
+    }
 
 }

@@ -26,7 +26,7 @@ public interface ConfigService extends BaseService {
     //查询配置表
     List<Map<String, Object>> selectTppConfig(Map<String, Object> map);
 
-    //查询配置表
+    //微信统一下单
     JsonObject pay(JsonObject jsonObject);
 
     //修改配置表
