@@ -1,6 +1,7 @@
 package aq.controller.restful.api;
 
 import aq.common.util.HttpUtil;
+import aq.service.order.OrderApiService;
 import aq.service.order.OrderService;
 import aq.service.system.AddressService;
 import com.google.gson.JsonObject;
@@ -21,13 +22,20 @@ import java.io.PrintWriter;
 public class OrderApiController extends aq.controller.restful.System {
 
     @Resource
-    protected OrderService orderService;
+    protected OrderApiService orderApiService;
 
     //新增订单
     @RequestMapping(value = "/insert",method = RequestMethod.POST)
     @ResponseBody
     public void insertOrder(@RequestBody JsonObject requestJson, HttpServletRequest request, HttpServletResponse response, PrintWriter out){
-        writerJson(response,out,orderService.instertorderList(requestJson));
+        writerJson(response,out,orderApiService.instertorderList(requestJson));
+    }
+
+    //查询订单
+    @RequestMapping(value = "/list",method = RequestMethod.GET)
+    public void orderList(HttpServletRequest request, HttpServletResponse response, PrintWriter out) throws Exception {
+        JsonObject jsonObject = HttpUtil.getParameterMap(request);
+        writerJson(response,out,orderApiService.queryorderList(jsonObject));
     }
 
 

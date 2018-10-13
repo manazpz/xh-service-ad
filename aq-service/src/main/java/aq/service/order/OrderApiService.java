@@ -6,10 +6,13 @@ import com.google.gson.JsonObject;
 /**
  * Created by ywb on 2017-02-23.
  */
-public interface OrderService extends BaseService {
+public interface OrderApiService extends BaseService {
 
     //查询订单列表
     JsonObject queryorderList(JsonObject jsonObject);
 
+
+    //新增订单
+    JsonObject instertorderList(JsonObject jsonObject);
 
 }

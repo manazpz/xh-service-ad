@@ -6,13 +6,14 @@
     <!--查询订单-->
     <select id="selectorderList" resultType="java.util.Map" parameterType="java.util.Map">
         SELECT
-            XO.ID AS id,
-            XO.NUMBER AS number,
-            XO.PAY_STATUS AS payStatus,
-            XO.ORDER_STATUS AS orderStatus,
-            XO.DELIVERY_STATUS AS deliveryStatus,
-            XO.PRICE AS price,
-            XO.CREATE_TIME AS createTime
+        XO.ID AS id,
+        XO.NUMBER AS number,
+        XO.TYPE AS type,
+        XO.PAY_STATUS AS payStatus,
+        XO.ORDER_STATUS AS orderStatus,
+        XO.DELIVERY_STATUS AS deliveryStatus,
+        XO.PRICE AS price,
+        XO.CREATE_TIME AS createTime
         FROM
         XH_ORDER_H XO
         WHERE 1=1
@@ -25,9 +26,15 @@
         <if test="orderStatus!=null and orderStatus != ''">
             AND XO.ORDER_STATUS = #{orderStatus}
         </if>
+        <if test="deliveryStatus!=null and deliveryStatus != ''">
+            AND XO.DELIVERY_STATUS = #{deliveryStatus}
+        </if>
     </select>
 
+    <!--查询订单详细-->
+    <select id="selectorderP" resultType="java.util.Map" parameterType="java.util.Map">
 
+    </select>
 
     <!--添加订单-->
     <insert id="insertOrder" >
