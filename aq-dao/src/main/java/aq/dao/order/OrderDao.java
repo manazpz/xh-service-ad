@@ -21,6 +21,6 @@ public interface OrderDao {
     List<Map<String,Object>> selectorderDetailList(Map<String,Object> map);
 
     //修改订单
-    Map<String,Object> updateOrder(Map<String,Object> map);
+    int updateOrder(Map<String,Object> map);
 
 }

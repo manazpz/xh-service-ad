@@ -119,14 +119,10 @@ public class ConfigServiceImpl extends BaseServiceImpl  implements ConfigService
             if(map.get("orderId") == null){
                 Map<String,Object> rest = new HashMap<>();
                 Map<String,Object> restdetail = new HashMap<>();
-                rest.put("openid",map.get("openId"));
+                rest.put("openid",payRequest.getOpenid());
                 List<Map<String, Object>> userinfo = userDao.selectUserInfos(rest);
                 rest.put("id", UUIDUtil.getUUID());
-                if(map.get("orderId") == null){
-                    rest.put("number", UUIDUtil.getRandomOrderId());
-                }else{
-                    rest.put("number", map.get("orderId"));
-                }
+                rest.put("number", payRequest.getOrderId());
                 if(map.get("newGoods") != null){
                     listnew = GsonHelper.getInstance().fromJson(new Gson().toJson(map.get("newGoods")), new TypeToken<List<Map<String,Object>>>(){}.getType());
                     if(listnew.size()>0){
@@ -134,7 +130,7 @@ public class ConfigServiceImpl extends BaseServiceImpl  implements ConfigService
                     }
                     rest.put("type", "02");
                     if(userinfo.size()>0){
-                        rest.put("payer",userinfo.get(0).get("id"));
+                        rest.put("buyer",userinfo.get(0).get("id"));
                     }
                     rest.put("paystatus", "01");//付款状态 :01：未付款    02：已付款  03：已取消
                     rest.put("orderstatus","03");//订单状态:01：已完成    02：已取消  03：进行中   04：售后中
@@ -155,7 +151,6 @@ public class ConfigServiceImpl extends BaseServiceImpl  implements ConfigService
                         }
                         restdetail.put("goodsid",listnew.get(i).get("goodsId"));
                         restdetail.put("parameter",listnew.get(i).get("bllParameter"));
-                        restdetail.put("checkstatus","01");
                         restdetail.put("createTime",new Date());
                         restdetail.put("lastCreateTime",new Date());
                         orderDao.insertOrderDetail(restdetail);

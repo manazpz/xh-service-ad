@@ -18,6 +18,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.*;
 import java.net.URLEncoder;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -168,9 +169,11 @@ public class WxController extends aq.controller.restful.System {
                 res.put("number",map.get("out_trade_no"));
                 List<Map<String, Object>> maps = orderApiService.selectOrder(res);
                 if(maps.size()>0){
+                    System.out.print("=============执行更新订单=================");
                     res.clear();
                     res.put("paystatus","02");
                     res.put("id",maps.get(0).get("id"));
+                    res.put("lastCreateTime",new Date());
                     orderApiService.updateOrder(res);
                 }
                 //业务处理结束

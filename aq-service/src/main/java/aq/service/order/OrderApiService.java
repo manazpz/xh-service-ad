@@ -21,6 +21,6 @@ public interface OrderApiService extends BaseService {
     List<Map<String, Object>> selectOrder(Map<String, Object> map);
 
     //更新订单
-    Map updateOrder(Map<String, Object> map);
+    int updateOrder(Map<String, Object> map);
 
 }

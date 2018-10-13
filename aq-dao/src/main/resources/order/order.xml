@@ -95,7 +95,22 @@
             <if test="paystatus!=null and paystatus != ''">
                 XO.PAY_STATUS = #{paystatus},
             </if>
+            <if test="orderstatus!=null and orderstatus != ''">
+                XO.ORDER_STATUS = #{orderstatus},
+            </if>
+            <if test="deliverystatus!=null and deliverystatus != ''">
+                XO.DELIVERY_STATUS = #{deliverystatus},
+            </if>
+            <if test="price!=null and price != ''">
+                XO.PRICE = #{price},
+            </if>
+            <if test="deliveryTime!=null and deliveryTime!=''">
+                XO.DELIVERY_TIME = #{deliveryTime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="lastCreateTime!=null and lastCreateTime!=''">
+                LAST_CREATE_TIME = #{lastCreateTime,jdbcType=TIMESTAMP},
+            </if>
         </trim>
-        WHERE XR.ID = #{id}
+        WHERE XO.ID = #{id}
     </update>
 </mapper>

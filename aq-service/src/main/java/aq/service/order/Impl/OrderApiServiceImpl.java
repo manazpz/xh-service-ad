@@ -149,7 +149,7 @@ public class OrderApiServiceImpl extends BaseServiceImpl  implements OrderApiSer
             rest.put("type", "02");
         }
         if(userinfo.size()>0){
-            rest.put("payer",userinfo.get(0).get("id"));
+            rest.put("buyer",userinfo.get(0).get("id"));
         }
         rest.put("paystatus", "01");//付款状态 :01：未付款    02：已付款  03：已取消
         rest.put("orderstatus","03");//订单状态:01：已完成    02：已取消  03：进行中   04：售后中
@@ -210,7 +210,7 @@ public class OrderApiServiceImpl extends BaseServiceImpl  implements OrderApiSer
 
     @Transactional(rollbackFor = {RuntimeException.class, Exception.class})
     @Override
-    public Map<String, Object> updateOrder(Map<String, Object> map) {
+    public int updateOrder(Map<String, Object> map) {
         return  orderDao.updateOrder(map);
     }
 
