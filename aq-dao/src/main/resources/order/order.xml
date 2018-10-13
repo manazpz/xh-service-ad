@@ -16,6 +16,7 @@
         XO.CREATE_TIME AS createTime
         FROM
         XH_ORDER_H XO
+        INNER JOIN system_user su ON su.ID = XO.BUYER
         WHERE 1=1
         <if test="number!=null and number != ''">
             AND XO.NUMBER = #{number}
@@ -29,11 +30,9 @@
         <if test="deliveryStatus!=null and deliveryStatus != ''">
             AND XO.DELIVERY_STATUS = #{deliveryStatus}
         </if>
-    </select>
-
-    <!--查询订单详细-->
-    <select id="selectorderP" resultType="java.util.Map" parameterType="java.util.Map">
-
+        <if test="openId!=null and openId != ''">
+            AND su.openId = #{openId}
+        </if>
     </select>
 
     <!--添加订单-->
@@ -50,18 +49,31 @@
         SELECT
         XO.ID AS id,
         XO.NO AS no,
-        XO.GOODS_ID AS goodsid,
+        XGM.ID AS goodsId,
+        XGM. NAME AS goodsName,
+        XGM.BAN_PRICE AS banPrice,
+        XC.MODEL AS goodsModel,
+        XO.PARAMETER AS parameter,
         XO.OLD_CHECK_ID AS oldcheck,
+        XO.CHECK_STATUS AS checkStatus,
         XO.REMARKS AS remarks,
         XO.CREATE_TIME AS createTime
         FROM
         XH_ORDER_SALE_P XO
+        LEFT JOIN XH_GOODS_MAIN XGM ON XGM.ID = XO.GOODS_ID
+        LEFT JOIN XH_CLASSIFY XC ON XC.ID = XGM.CLASSIFY_ID
         WHERE 1=1
         <if test="id!=null and id != ''">
             AND XO.ID = #{id}
         </if>
         <if test="no!=null and no != ''">
             AND XO.NO = #{no}
+        </if>
+        <if test="checkStatus!=null and checkStatus != ''">
+            AND XO.CHECK_STATUS = #{checkStatus}
+        </if>
+        <if test="model!=null and model != ''">
+            AND XC.MODEL = #{model}
         </if>
     </select>
 
