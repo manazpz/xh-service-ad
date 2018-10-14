@@ -210,6 +210,20 @@ public class OrderApiServiceImpl extends BaseServiceImpl  implements OrderApiSer
         return Func.functionRtnToJsonObject.apply(rtn);
     }
 
+    @Override
+    public JsonObject updateOrder(JsonObject jsonObject) {
+        Rtn rtn = new Rtn("order");
+        Map<String,Object> res = new HashMap<>();
+        Map<String,Object> rest = new HashMap<>();
+        res = GsonHelper.getInstance().fromJson(jsonObject,Map.class);
+        rest.put("id",res.get("id"));
+        rest.put("paystatus",res.get("paystatus"));
+        orderDao.updateOrder(rest);
+        rtn.setCode(200);
+        rtn.setMessage("success");
+        return  Func.functionRtnToJsonObject.apply(rtn);
+    }
+
     @Transactional(rollbackFor = {RuntimeException.class, Exception.class})
     @Override
     public List<Map<String, Object>> selectOrder(Map<String, Object> map) {

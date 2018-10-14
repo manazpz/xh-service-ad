@@ -23,4 +23,8 @@ public interface OrderApiService extends BaseService {
     //更新订单
     int updateOrder(Map<String, Object> map);
 
+    //更新订单状态
+    JsonObject updateOrder(JsonObject jsonObject);
+
+
 }
