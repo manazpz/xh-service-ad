@@ -47,6 +47,7 @@ public class OrderApiServiceImpl extends BaseServiceImpl  implements OrderApiSer
         res = GsonHelper.getInstance().fromJson(jsonObject,Map.class);
         List<Map<String, Object>> orders = orderDao.selectorderList(res);
         for (Map obj : orders) {
+            String goodsName = "";
             ArrayList<Map> newOrder = new ArrayList();
             ArrayList<Map> oldOrder = new ArrayList();
             res.put("id",obj.get("id"));
@@ -88,6 +89,7 @@ public class OrderApiServiceImpl extends BaseServiceImpl  implements OrderApiSer
                 if("02".equals(obj1.get("goodsModel"))){
                     oldOrder.add(obj1);
                 }
+                goodsName += obj1.get("goodsName")+ ";";
             }
             Double newSum = 0.0;
             Double oldSum = 0.0;
@@ -106,6 +108,9 @@ public class OrderApiServiceImpl extends BaseServiceImpl  implements OrderApiSer
             obj.put("newOrder",newMap);
             obj.put("oldOrder",oldMap);
             obj.put("sum",newSum-oldSum);
+            if(goodsName != ""){
+                obj.put("goodsName",goodsName);
+            }
         }
         rtn.setCode(200);
         rtn.setMessage("success");

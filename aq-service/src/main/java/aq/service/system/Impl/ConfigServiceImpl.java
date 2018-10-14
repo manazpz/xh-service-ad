@@ -105,6 +105,9 @@ public class ConfigServiceImpl extends BaseServiceImpl  implements ConfigService
                     goodsName += listnew.get(i).get("goodsName")+ ";";
                 }
             }
+            if(map.get("goodsName") != null){
+                goodsName = map.get("goodsName").toString();
+            }
             payRequest.setOrderName(goodsName);
             if(map.get("orderId") == null){
                 payRequest.setOrderId(UUIDUtil.getRandomOrderId());
@@ -128,7 +131,7 @@ public class ConfigServiceImpl extends BaseServiceImpl  implements ConfigService
                     if(listnew.size()>0){
                         rest.put("shopid", listnew.get(0).get("shopid"));
                     }
-                    rest.put("type", "02");
+                    rest.put("type", "01");
                     if(userinfo.size()>0){
                         rest.put("buyer",userinfo.get(0).get("id"));
                     }
