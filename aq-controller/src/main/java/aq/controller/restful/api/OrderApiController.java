@@ -1,6 +1,7 @@
 package aq.controller.restful.api;
 
 import aq.common.util.HttpUtil;
+import aq.common.util.StringUtil;
 import aq.service.order.OrderApiService;
 import aq.service.order.OrderService;
 import aq.service.system.AddressService;
@@ -38,12 +39,10 @@ public class OrderApiController extends aq.controller.restful.System {
         writerJson(response,out,orderApiService.queryorderList(jsonObject));
     }
 
-    //新增订单
+    //更新订单
     @RequestMapping(value = "/update",method = RequestMethod.POST)
     @ResponseBody
     public void deleteOrder(@RequestBody JsonObject requestJson, HttpServletRequest request, HttpServletResponse response, PrintWriter out){
         writerJson(response,out,orderApiService.updateOrder(requestJson));
     }
-
-
 }

@@ -3,6 +3,8 @@ package aq.service.order.Impl;
 import aq.common.annotation.DyncDataSource;
 import aq.common.other.Rtn;
 import aq.common.util.*;
+import aq.dao.goods.GoodsDao;
+import aq.dao.goods.SpecDao;
 import aq.dao.order.OrderDao;
 import aq.dao.resource.ResourceDao;
 import aq.dao.user.UserDao;
@@ -34,7 +36,6 @@ public class OrderApiServiceImpl extends BaseServiceImpl  implements OrderApiSer
 
     @Resource
     private ResourceDao resourceDao;
-
 
     @Transactional(rollbackFor = {RuntimeException.class, Exception.class})
     @Override
@@ -124,7 +125,6 @@ public class OrderApiServiceImpl extends BaseServiceImpl  implements OrderApiSer
         rtn.setData(data);
         return  Func.functionRtnToJsonObject.apply(rtn);
     }
-
 
     @Transactional(rollbackFor = {RuntimeException.class, Exception.class})
     @Override

@@ -40,6 +40,7 @@
         <mapper resource="stock/stock.xml"/>
         <mapper resource="shop/shop.xml"/>
         <mapper resource="collect/collect.xml"/>
+        <mapper resource="yanji/yanji.xml"/>
     </mappers>
 
 </configuration> 
