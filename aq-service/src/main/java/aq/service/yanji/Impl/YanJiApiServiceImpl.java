@@ -6,6 +6,9 @@ import aq.common.util.*;
 import aq.dao.goods.GoodsDao;
 import aq.dao.goods.SpecDao;
 import aq.dao.order.OrderDao;
+import aq.dao.resource.ResourceDao;
+import aq.dao.user.UserDao;
+import aq.dao.yanji.YanJiDao;
 import aq.service.base.Impl.BaseServiceImpl;
 import aq.service.system.Func;
 import aq.service.yanji.YanJiApiService;
@@ -31,6 +34,15 @@ public class YanJiApiServiceImpl extends BaseServiceImpl  implements YanJiApiSer
 
     @Resource
     private SpecDao specDao;
+
+    @Resource
+    private UserDao userDao;
+
+    @Resource
+    private YanJiDao yanJiDao;
+
+    @Resource
+    private ResourceDao resourceDao;
 
     @Override
     public JsonObject yanJi(JsonObject jsonObject) {
@@ -72,6 +84,7 @@ public class YanJiApiServiceImpl extends BaseServiceImpl  implements YanJiApiSer
             jsonArray =  GsonHelper.getInstanceJsonparser().parse(GsonHelper.getInstance().toJson(specParameter)).getAsJsonArray();
             data.addProperty("total",jsonArray.size());
             data.add("items",jsonArray);
+            data.addProperty("bllParameter",info.get(0).get("parameter").toString());
             rtn.setData(data);
             return  Func.functionRtnToJsonObject.apply(rtn);
         }else {
@@ -79,6 +92,50 @@ public class YanJiApiServiceImpl extends BaseServiceImpl  implements YanJiApiSer
             rtn.setMessage("errer");
             return  Func.functionRtnToJsonObject.apply(rtn);
         }
+    }
+
+    @Override
+    public JsonObject inseryYanJi(JsonObject jsonObject) {
+        Rtn rtn = new Rtn("order");
+        Map<String,Object> res = new HashMap<>();
+        Map<String,Object> ress = new HashMap<>();
+        res = GsonHelper.getInstance().fromJson(jsonObject,Map.class);
+        ress.clear();
+        ress.put("openId",res.get("openId"));
+        List<Map<String, Object>> userInfos = userDao.selectUserInfos(ress);
+        if(userInfos.size()>0) {
+            ress.clear();
+            String uuid = UUIDUtil.getUUID();
+            ress.put("id",uuid);
+            ress.put("orderNumber",res.get("orderNumber"));
+            ress.put("no",res.get("no"));
+            ress.put("parameter",res.get("parameter"));
+            ress.put("createUserId",userInfos.get(0).get("id"));
+            ress.put("createTime",new Date());
+            yanJiDao.insertYanJi(ress);
+            List<Map> resources = (List<Map>) res.get("files");
+            for (Map obj : resources) {
+                ress.clear();
+                ress.put("id",obj.get("id"));
+                ress.put("name", obj.get("name"));
+                ress.put("url",obj.get("url"));
+                ress.put("extend",obj.get("extend"));
+                ress.put("size",obj.get("size"));
+                ress.put("type","YJ");
+                ress.put("refId",uuid);
+                ress.put("createUserId", userInfos.get(0).get("id"));
+                ress.put("lastCreateUserId", userInfos.get(0).get("id"));
+                ress.put("createTime", new Date());
+                ress.put("lastCreateTime", new Date());
+                resourceDao.insertResourcet(ress);
+            }
+            rtn.setCode(200);
+            rtn.setMessage("success");
+        }else {
+            rtn.setCode(404);
+            rtn.setMessage("errer");
+        }
+        return  Func.functionRtnToJsonObject.apply(rtn);
     }
 
 }

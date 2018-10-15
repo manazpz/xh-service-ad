@@ -3,4 +3,10 @@
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="aq.dao.yanji.YanJiDao">
 
+    <!--添加商品-->
+    <insert id="insertYanJi" >
+        INSERT INTO XH_OLD_CHECK
+        VALUES(#{id},#{orderNumber},#{no},#{parameter},#{remarks},'','','',#{createUserId},#{createTime,jdbcType=TIMESTAMP})
+    </insert>
+
 </mapper>

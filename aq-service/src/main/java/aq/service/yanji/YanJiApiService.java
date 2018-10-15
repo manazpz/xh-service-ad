@@ -8,7 +8,9 @@ import com.google.gson.JsonObject;
  */
 public interface YanJiApiService extends BaseService {
 
-    //验机
+    //获取验机数据
     JsonObject yanJi(JsonObject jsonObject);
 
+    //插入验机
+    JsonObject inseryYanJi(JsonObject jsonObject);
 }

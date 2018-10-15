@@ -1,14 +1,29 @@
 package aq.service.resource.Impl;
 
 import aq.common.annotation.DyncDataSource;
+import aq.common.oss.Oss;
+import aq.common.other.Rtn;
+import aq.common.util.GsonHelper;
+import aq.common.util.ResourceUpload;
+import aq.common.util.StringUtil;
+import aq.common.util.UUIDUtil;
 import aq.dao.config.ConfigDao;
 import aq.dao.resource.ResourceDao;
 import aq.service.base.Impl.BaseServiceImpl;
 import aq.service.resource.ResourceApiService;
+import aq.service.system.Func;
 import com.google.gson.JsonObject;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.util.MultiValueMap;
+import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.multipart.MultipartHttpServletRequest;
+
 import javax.annotation.Resource;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import java.io.IOException;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -42,6 +57,51 @@ public class ResourceApiServiceImpl extends BaseServiceImpl  implements Resource
         return query(jsonObject, (map) -> {
             return resourceDao.selectResource(map);
         });
+    }
+
+    @Override
+    public JsonObject uploadFiles(HttpServletRequest request, HttpServletResponse response) throws IOException {
+        Rtn rtn = new Rtn("Resource");
+        JsonObject data = new JsonObject();
+        MultipartHttpServletRequest multipartRequest = (MultipartHttpServletRequest) request;
+        MultiValueMap<String, MultipartFile> multiFileMap = multipartRequest.getMultiFileMap();
+        List<MultipartFile> files = multiFileMap.get("files");
+        List fileData = new ArrayList();
+        Map<String,Object> res = new HashMap<>();
+        res.clear();
+        res.put("platform","OSS");
+        List<Map<String, Object>> tpp = configDao.selectTppConfig(res);
+        if(tpp.size() < 1) {
+            response.sendError(HttpServletResponse.SC_NOT_FOUND);
+        }else {
+            if(files != null) {
+                Map<String, Object> tppMap = tpp.get(0);
+                ResourceUpload resourceUpload = new ResourceUpload(tppMap.get("endpoint").toString(),tppMap.get("accessKeyId").toString(),tppMap.get("accessKeySecret").toString());
+                for (MultipartFile obj : files) {
+                    String uuid = UUIDUtil.getUUID();
+                    Oss oss = resourceUpload.uploadFile(obj,request.getParameter("path"),uuid,tppMap.get("backetName").toString());
+                    if("success".equals(oss.getCode())){
+                        Map<String,Object> ress = new HashMap<>();
+                        String fileurl = resourceUpload.getFileUrl(oss.getResult().get("FILEURL").toString(),tppMap.get("backetName").toString());
+                        ress.clear();
+                        String[] split = obj.getOriginalFilename().split("\\.");
+                        ress.put("id",uuid);
+                        ress.put("name", StringUtil.isEmpty(split[0])?"":split[0]);
+                        ress.put("url",fileurl);
+                        ress.put("extend",StringUtil.isEmpty(split[1])?"":split[1]);
+                        ress.put("size",obj.getSize());
+                        fileData.add(ress);
+                    }else {
+                        response.sendError(HttpServletResponse.SC_NOT_FOUND);
+                    }
+                }
+            }
+            rtn.setCode(200);
+            rtn.setMessage("success");
+            data.add("files", GsonHelper.getInstanceJsonparser().parse(GsonHelper.getInstance().toJson(fileData)).getAsJsonArray());
+            rtn.setData(data);
+        }
+        return Func.functionRtnToJsonObject.apply(rtn);
     }
 
 }
