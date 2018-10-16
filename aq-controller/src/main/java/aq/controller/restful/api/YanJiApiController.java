@@ -39,11 +39,8 @@ public class YanJiApiController extends aq.controller.restful.System {
 
     //插入验机数据
     @RequestMapping(value = "/push",method = RequestMethod.POST)
-    public void pushYanJi(HttpServletRequest request, HttpServletResponse response, PrintWriter out) throws Exception {
-        JsonObject jsonObject = HttpUtil.getParameterMap(request);
-        JsonObject fileObject = resourceApiService.uploadFiles(request, response);
-        if (fileObject.get("data").getAsJsonObject().get("files") != null)
-            jsonObject.add("files",fileObject.get("data").getAsJsonObject().get("files").getAsJsonArray());
-        writerJson(response,out,yanJiApiService.inseryYanJi(jsonObject));
+    @ResponseBody
+    public void pushYanJi(@RequestBody JsonObject requestJson,HttpServletRequest request, HttpServletResponse response, PrintWriter out) throws Exception {
+        writerJson(response,out,yanJiApiService.inseryYanJi(requestJson));
     }
 }

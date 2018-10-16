@@ -104,4 +104,24 @@ public class ResourceApiServiceImpl extends BaseServiceImpl  implements Resource
         return Func.functionRtnToJsonObject.apply(rtn);
     }
 
+    @Override
+    public JsonObject deleteResource(JsonObject jsonObject) {
+        Rtn rtn = new Rtn("Resource");
+        Map<String,Object> res = new HashMap<>();
+        res.clear();
+        res.put("platform","OSS");
+        List<Map<String, Object>> tpp = configDao.selectTppConfig(res);
+        if(tpp.size() < 1) {
+            rtn.setCode(404);
+            rtn.setMessage("远程仓库链接出错！");
+        }else {
+            Map<String, Object> tppMap = tpp.get(0);
+            ResourceUpload resourceUpload = new ResourceUpload(tppMap.get("endpoint").toString(),tppMap.get("accessKeyId").toString(),tppMap.get("accessKeySecret").toString());
+            resourceUpload.deleteFileToOSS(tppMap.get("backetName").toString(),jsonObject.get("path").getAsString(),jsonObject.get("id").getAsString()+"."+jsonObject.get("extend").getAsString());
+            rtn.setCode(200);
+            rtn.setMessage("success");
+        }
+        return Func.functionRtnToJsonObject.apply(rtn);
+    }
+
 }

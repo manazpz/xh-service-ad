@@ -30,5 +30,19 @@ public class ResourceApiController extends aq.controller.restful.System {
         writerJson(response,out,resourceApiService.queryaResource(jsonObject));
     }
 
+    //上传文件
+    @RequestMapping(value = "/uploadFiles",method = RequestMethod.POST)
+    public void uploadFiles(HttpServletRequest request, HttpServletResponse response, PrintWriter out) throws Exception {
+        JsonObject fileObject = resourceApiService.uploadFiles(request, response);
+        writerJson(response,out,fileObject);
+    }
+
+    //删除资源
+    @RequestMapping(value = "/delete",method = RequestMethod.POST)
+    @ResponseBody
+    public void deleteResource(@RequestBody JsonObject requestJson, HttpServletRequest request, HttpServletResponse response, PrintWriter out){
+        writerJson(response,out,resourceApiService.deleteResource(requestJson));
+    }
+
 
 }

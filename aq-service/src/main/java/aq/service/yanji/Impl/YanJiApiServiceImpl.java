@@ -113,22 +113,21 @@ public class YanJiApiServiceImpl extends BaseServiceImpl  implements YanJiApiSer
             ress.put("createUserId",userInfos.get(0).get("id"));
             ress.put("createTime",new Date());
             yanJiDao.insertYanJi(ress);
-            List<Map> resources = (List<Map>) res.get("files");
-            for (Map obj : resources) {
-                ress.clear();
-                ress.put("id",obj.get("id"));
-                ress.put("name", obj.get("name"));
-                ress.put("url",obj.get("url"));
-                ress.put("extend",obj.get("extend"));
-                ress.put("size",obj.get("size"));
-                ress.put("type","YJ");
-                ress.put("refId",uuid);
-                ress.put("createUserId", userInfos.get(0).get("id"));
-                ress.put("lastCreateUserId", userInfos.get(0).get("id"));
-                ress.put("createTime", new Date());
-                ress.put("lastCreateTime", new Date());
-                resourceDao.insertResourcet(ress);
-            }
+//            for (Map obj : resources) {
+//                ress.clear();
+//                ress.put("id",obj.get("id"));
+//                ress.put("name", obj.get("name"));
+//                ress.put("url",obj.get("url"));
+//                ress.put("extend",obj.get("extend"));
+//                ress.put("size",obj.get("size"));
+//                ress.put("type","YJ");
+//                ress.put("refId",uuid);
+//                ress.put("createUserId", userInfos.get(0).get("id"));
+//                ress.put("lastCreateUserId", userInfos.get(0).get("id"));
+//                ress.put("createTime", new Date());
+//                ress.put("lastCreateTime", new Date());
+//                resourceDao.insertResourcet(ress);
+//            }
             rtn.setCode(200);
             rtn.setMessage("success");
         }else {

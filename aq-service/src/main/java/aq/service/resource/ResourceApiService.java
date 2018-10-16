@@ -18,4 +18,7 @@ public interface ResourceApiService extends BaseService {
     //多文件上传（暂无线程控制，后期修改）
     JsonObject uploadFiles(HttpServletRequest request, HttpServletResponse response) throws IOException;
 
+    //删除资源
+    JsonObject deleteResource(JsonObject jsonObject);
+
 }
