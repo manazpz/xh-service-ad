@@ -17,6 +17,7 @@
         XO.ORDER_NUMBER AS orderId,
         XO.NO AS no,
         XO.PARAMENT AS parameter,
+        XO.BLL_PRICE AS price,
         su.NICK_NAME AS name,
         XO.REMARKS AS remarks,
         XO.CREATE_TIME AS createTime
