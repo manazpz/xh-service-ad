@@ -110,6 +110,7 @@ public class YanJiApiServiceImpl extends BaseServiceImpl  implements YanJiApiSer
             ress.put("orderNumber",res.get("orderNumber"));
             ress.put("no",res.get("no"));
             ress.put("parameter",res.get("parameter"));
+            ress.put("bllPrice",res.get("bllPrice"));
             ress.put("createUserId",userInfos.get(0).get("id"));
             ress.put("createTime",new Date());
             yanJiDao.insertYanJi(ress);

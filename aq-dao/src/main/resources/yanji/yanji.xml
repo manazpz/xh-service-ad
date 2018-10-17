@@ -6,7 +6,7 @@
     <!--添加商品-->
     <insert id="insertYanJi" >
         INSERT INTO XH_OLD_CHECK
-        VALUES(#{id},#{orderNumber},#{no},#{parameter},#{remarks},'','','',#{createUserId},#{createTime,jdbcType=TIMESTAMP})
+        VALUES(#{id},#{orderNumber},#{no},#{parameter},#{bllPrice},#{remarks},'','','',#{createUserId},#{createTime,jdbcType=TIMESTAMP})
     </insert>
 
 
