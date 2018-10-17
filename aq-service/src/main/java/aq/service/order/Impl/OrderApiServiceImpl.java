@@ -110,6 +110,8 @@ public class OrderApiServiceImpl extends BaseServiceImpl  implements OrderApiSer
             obj.put("newOrder", newMap);
             obj.put("oldOrder", oldMap);
             obj.put("sum", newSum - oldSum);
+            List address = GsonHelper.getInstance().fromJson(obj.get("address").toString(), List.class);
+            obj.put("address",address.get(0));
             if (goodsName != "") {
                 obj.put("goodsName", goodsName);
             }
@@ -164,6 +166,8 @@ public class OrderApiServiceImpl extends BaseServiceImpl  implements OrderApiSer
         rest.put("orderstatus","03");//订单状态:01：已完成    02：已取消  03：进行中   04：售后中
         rest.put("deliverystatus","02");//收/发货状态://01：已发货    02：未发货    03：已收货
         rest.put("price",res.get("price"));
+        rest.put("recovery",res.get("recovery"));
+        rest.put("address",res.get("address").toString());
         rest.put("createTime",new Date());
         rest.put("lastCreateTime",new Date());
         //插入订单抬头信息

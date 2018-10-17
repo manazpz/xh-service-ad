@@ -9,4 +9,30 @@
         VALUES(#{id},#{orderNumber},#{no},#{parameter},#{remarks},'','','',#{createUserId},#{createTime,jdbcType=TIMESTAMP})
     </insert>
 
+
+    <!--查询已验机数据-->
+    <select id="selectAmslerList" resultType="java.util.Map" parameterType="java.util.Map">
+        SELECT
+        XO.ID AS id,
+        XO.ORDER_NUMBER AS orderId,
+        XO.NO AS no,
+        XO.PARAMENT AS parameter,
+        su.NICK_NAME AS name,
+        XO.REMARKS AS remarks,
+        XO.CREATE_TIME AS createTime
+        FROM
+        XH_OLD_CHECK XO
+        LEFT JOIN system_user su ON su.ID = XO.CREATE_USER
+        WHERE 1=1
+        <if test="id!=null and id != ''">
+            AND XO.ID = #{id}
+        </if>
+        <if test="no!=null and no != ''">
+            AND XO.NO = #{no}
+        </if>
+        <if test="orderId!=null and orderId != ''">
+            AND XO.ORDER_NUMBER = #{orderId}
+        </if>
+    </select>
+
 </mapper>

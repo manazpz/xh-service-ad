@@ -43,4 +43,14 @@ public class YanJiApiController extends aq.controller.restful.System {
     public void pushYanJi(@RequestBody JsonObject requestJson,HttpServletRequest request, HttpServletResponse response, PrintWriter out) throws Exception {
         writerJson(response,out,yanJiApiService.inseryYanJi(requestJson));
     }
+
+    //查询已验机数据
+    @RequestMapping(value = "/amsler",method = RequestMethod.GET)
+    public void amslerList(HttpServletRequest request, HttpServletResponse response, PrintWriter out) throws Exception {
+        JsonObject jsonObject = HttpUtil.getParameterMap(request);
+        if(StringUtil.isEmpty(jsonObject.get("orderId")) || StringUtil.isEmpty(jsonObject.get("orderId"))) {
+            response.sendError(HttpServletResponse.SC_NOT_FOUND,"orderId and no is no null!");
+        }
+        writerJson(response,out,yanJiApiService.amslerList(jsonObject));
+    }
 }

@@ -137,4 +137,23 @@ public class YanJiApiServiceImpl extends BaseServiceImpl  implements YanJiApiSer
         return  Func.functionRtnToJsonObject.apply(rtn);
     }
 
+
+    @Override
+    public JsonObject amslerList(JsonObject jsonObject) {
+        Rtn rtn = new Rtn("order");
+        JsonObject data = new JsonObject();
+        JsonArray jsonArray = new JsonArray();
+        Map<String,Object> res = new HashMap<>();
+        res.clear();
+        res = GsonHelper.getInstance().fromJson(jsonObject,Map.class);
+        List<Map<String, Object>> maps = yanJiDao.selectAmslerList(res);
+        rtn.setCode(200);
+        rtn.setMessage("success");
+        jsonArray =  GsonHelper.getInstanceJsonparser().parse(GsonHelper.getInstance().toJson(maps)).getAsJsonArray();
+        data.addProperty("total",jsonArray.size());
+        data.add("items",jsonArray);
+        rtn.setData(data);
+        return  Func.functionRtnToJsonObject.apply(rtn);
+    }
+
 }

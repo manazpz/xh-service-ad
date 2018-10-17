@@ -6,17 +6,20 @@
     <!--查询订单-->
     <select id="selectorderList" resultType="java.util.Map" parameterType="java.util.Map">
         SELECT
-        XO.ID AS id,
-        XO.NUMBER AS number,
-        XO.TYPE AS type,
-        XO.PAY_STATUS AS payStatus,
-        XO.ORDER_STATUS AS orderStatus,
-        XO.DELIVERY_STATUS AS deliveryStatus,
-        XO.PRICE AS price,
-        XO.CREATE_TIME AS createTime
+            XO.ID AS id,
+            XO.NUMBER AS number,
+            XO.TYPE AS type,
+            XO.PAY_STATUS AS payStatus,
+            XO.ORDER_STATUS AS orderStatus,
+            XO.DELIVERY_STATUS AS deliveryStatus,
+            XO.PRICE AS price,
+            XR.TYPE AS recovery,
+            XO.ADDRESS AS address,
+            XO.CREATE_TIME AS createTime
         FROM
-        XH_ORDER_H XO
+          XH_ORDER_H XO
         INNER JOIN system_user su ON su.ID = XO.BUYER
+        LEFT JOIN XH_RECOVERY XR ON XR.ID = XO.RECOVERY
         WHERE 1=1
         <if test="number!=null and number != ''">
             AND XO.NUMBER = #{number}
@@ -33,13 +36,16 @@
         <if test="openId!=null and openId != ''">
             AND su.openId = #{openId}
         </if>
+        <if test="id!=null and id != ''">
+            AND XO.ID = #{id}
+        </if>
     </select>
 
     <!--添加订单-->
     <insert id="insertOrder" >
         INSERT INTO XH_ORDER_H
         VALUES(#{id},#{number},#{shopid},#{buyer},#{type},#{paystatus},#{orderstatus},#{deliverystatus},#{deliveryTime,jdbcType=TIMESTAMP},#{price},'','',#{remarks},
-        '','','',#{createUserId},#{createTime,jdbcType=TIMESTAMP},#{lastCreateUserId},#{lastCreateTime,jdbcType=TIMESTAMP})
+        #{recovery},#{address},'',#{createUserId},#{createTime,jdbcType=TIMESTAMP},#{lastCreateUserId},#{lastCreateTime,jdbcType=TIMESTAMP})
     </insert>
 
 

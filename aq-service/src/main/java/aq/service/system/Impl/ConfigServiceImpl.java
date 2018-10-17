@@ -139,6 +139,8 @@ public class ConfigServiceImpl extends BaseServiceImpl  implements ConfigService
                     rest.put("orderstatus","03");//订单状态:01：已完成    02：已取消  03：进行中   04：售后中
                     rest.put("deliverystatus","02");//收/发货状态://01：已发货    02：未发货    03：已收货
                     rest.put("price",map.get("price"));
+                    rest.put("recovery",map.get("recovery"));
+                    rest.put("address",map.get("address").toString());
                     rest.put("createTime",new Date());
                     rest.put("lastCreateTime",new Date());
                     //插入订单抬头信息

@@ -13,4 +13,7 @@ public interface YanJiApiService extends BaseService {
 
     //插入验机
     JsonObject inseryYanJi(JsonObject jsonObject);
+
+    //查询已验机数据
+    JsonObject amslerList(JsonObject jsonObject);
 }
