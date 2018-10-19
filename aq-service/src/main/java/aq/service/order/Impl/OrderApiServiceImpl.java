@@ -111,7 +111,9 @@ public class OrderApiServiceImpl extends BaseServiceImpl  implements OrderApiSer
             obj.put("oldOrder", oldMap);
             obj.put("sum", newSum - oldSum);
             List address = GsonHelper.getInstance().fromJson(obj.get("address").toString(), List.class);
-            obj.put("address",address.get(0));
+            if(address != null){
+                obj.put("address",address.get(0));
+            }
             if (goodsName != "") {
                 obj.put("goodsName", goodsName);
             }

@@ -62,5 +62,9 @@ public interface UserDao {
     //获取微信授权用户信息
     List<Map<String,Object>> selectUserInfos(Map<String,Object> map);
 
+    //更新用户授权信息
+    int updateUserInfos(Map<String,Object> map);
+
+
 
 }

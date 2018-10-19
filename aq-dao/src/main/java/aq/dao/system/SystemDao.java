@@ -64,4 +64,7 @@ public interface SystemDao {
     //获取客服信息
     List<Map<String,Object>> selectCustomService(Map<String,Object> map);
 
+    //获取客服信息
+    List<Map<String,Object>> selectSms(Map<String,Object> map);
+
 }

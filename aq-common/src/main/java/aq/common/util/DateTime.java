@@ -171,4 +171,14 @@ public class DateTime {
             return null;
         }
     }
+
+    /**
+     * 返回当前时间
+     * @return
+     */
+    public static String getNowTime(String format){
+        SimpleDateFormat sdf=new SimpleDateFormat(format);
+        String time=sdf.format(new Date());
+        return time;
+    }
 }

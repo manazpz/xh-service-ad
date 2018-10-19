@@ -257,4 +257,21 @@
     </select>
 
 
+
+    <!--获取客服信息-->
+    <select id="selectSms" resultType="java.util.Map" parameterType="java.util.Map">
+        SELECT
+            sms.ID AS id,
+            sms.SMS_NAME AS sms_name,
+            sms.URL AS url,
+            sms.USERNAME AS username,
+            sms.PSW AS password,
+            sms.PRODUCT_ID AS productid
+        FROM
+            system_sms_config sms
+        WHERE 1=1
+            AND sms.IS_DEFAULT = 'Y'
+    </select>
+
+
 </mapper>
