@@ -156,4 +156,26 @@ public class System extends Base {
         writerJson(response,out,systemService.queryCustomService(jsonObject));
     }
 
+    //更新短信网关
+    @RequestMapping(value = "/insertSms",method = RequestMethod.POST)
+    @ResponseBody
+    public void insertSms(@RequestBody JsonObject requestJson, HttpServletRequest request, HttpServletResponse response, PrintWriter out){
+        writerJson(response,out,systemService.insertSms(requestJson));
+    }
+
+    //查询短信网关
+    @RequestMapping(value = "/smsList",method = RequestMethod.GET)
+    public void smsList(HttpServletRequest request, HttpServletResponse response, PrintWriter out){
+        JsonObject jsonObject = HttpUtil.getParameterMap(request);
+        writerJson(response,out,systemService.querySmsList(jsonObject));
+    }
+
+
+    //更新短信网关
+    @RequestMapping(value = "/updateSms",method = RequestMethod.POST)
+    @ResponseBody
+    public void updateSms(@RequestBody JsonObject requestJson, HttpServletRequest request, HttpServletResponse response, PrintWriter out){
+        writerJson(response,out,systemService.updateSms(requestJson));
+    }
+
 }

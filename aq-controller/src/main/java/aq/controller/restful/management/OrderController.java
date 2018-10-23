@@ -18,12 +18,20 @@ public class OrderController extends aq.controller.restful.System {
     @Resource
     protected OrderService orderService;
 
-    //查询商品分类
+    //查询订单列表
     @ResponseBody
     @RequestMapping(value = "/orderList",method = RequestMethod.GET)
     public void orderList(HttpServletRequest request, HttpServletResponse response, PrintWriter out) throws Exception {
         JsonObject jsonObject = HttpUtil.getParameterMap(request);
         writerJson(response,out,orderService.queryorderList(jsonObject));
+    }
+
+    //查询订单明细列表
+    @ResponseBody
+    @RequestMapping(value = "/orderDetail",method = RequestMethod.GET)
+    public void orderDetail(HttpServletRequest request, HttpServletResponse response, PrintWriter out) throws Exception {
+        JsonObject jsonObject = HttpUtil.getParameterMap(request);
+        writerJson(response,out,orderService.queryOrderDetail(jsonObject));
     }
 
 

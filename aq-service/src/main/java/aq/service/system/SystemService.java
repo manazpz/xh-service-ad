@@ -50,4 +50,13 @@ public interface SystemService extends BaseService {
     //查询客服信息
     JsonObject queryCustomService(JsonObject jsonObject);
 
+    //查询短信网关信息
+    JsonObject querySmsList(JsonObject jsonObject);
+
+    //更新短信网关信息
+    JsonObject updateSms(JsonObject jsonObject);
+
+    //更新短信网关信息
+    JsonObject insertSms(JsonObject jsonObject);
+
 }

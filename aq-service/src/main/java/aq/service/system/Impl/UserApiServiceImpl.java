@@ -10,11 +10,11 @@ import aq.service.system.Func;
 import aq.service.system.UserApiService;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
-import com.sun.deploy.net.URLEncoder;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
 import java.io.UnsupportedEncodingException;
+import java.net.URLEncoder;
 import java.util.*;
 
 /**
@@ -70,6 +70,7 @@ public class UserApiServiceImpl extends BaseServiceImpl implements UserApiServic
         Map<String,Object> res = new HashMap<>();
         JsonObject data = new JsonObject();
         Map result = new HashMap();
+        res.put("def","Y");
         List<Map<String, Object>> maps = systemDao.selectSms(res);
         if(maps.size()> 0 ){
             String url = maps.get(0).get("url").toString();

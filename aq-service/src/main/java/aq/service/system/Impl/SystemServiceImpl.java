@@ -397,4 +397,52 @@ public class SystemServiceImpl extends BaseServiceImpl  implements SystemService
         rtn.setData(data);
         return Func.functionRtnToJsonObject.apply(rtn);
     }
+
+    @Override
+    public JsonObject querySmsList(JsonObject jsonObject) {
+        Rtn rtn = new Rtn("System");
+        Map map = new HashMap();
+        List list = sysDao.selectSms(map);
+        JsonObject data = new JsonObject();
+        JsonArray jsonArray = new JsonArray();
+        jsonArray =  GsonHelper.getInstanceJsonparser().parse(GsonHelper.getInstance().toJson(list)).getAsJsonArray();
+        data.add("items",jsonArray);
+        rtn.setCode(200);
+        rtn.setMessage("success");
+        rtn.setData(data);
+        return Func.functionRtnToJsonObject.apply(rtn);
+    }
+
+
+    @Override
+    public JsonObject updateSms(JsonObject jsonObject) {
+        Rtn rtn = new Rtn("System");
+        Map<String,Object> res = new HashMap<>();
+        if(StringUtil.isEmpty(jsonObject.get("id"))) {
+            rtn.setCode(10003);
+            rtn.setMessage("主键不为空！");
+        }else {
+            res.clear();
+            res = GsonHelper.getInstance().fromJson(jsonObject,Map.class);
+            sysDao.updateSms(res);
+            rtn.setCode(200);
+            rtn.setMessage("success");
+        }
+        return Func.functionRtnToJsonObject.apply(rtn);
+    }
+
+
+    @Override
+    public JsonObject insertSms(JsonObject jsonObject) {
+        Rtn rtn = new Rtn("System");
+        Map<String,Object> res = new HashMap<>();
+        res = GsonHelper.getInstance().fromJson(jsonObject,Map.class);
+        res.put("id",UUIDUtil.getUUID());
+        res.put("def","N");
+        sysDao.insertSms(res);
+        rtn.setCode(200);
+        rtn.setMessage("success");
+        return Func.functionRtnToJsonObject.apply(rtn);
+    }
+
 }

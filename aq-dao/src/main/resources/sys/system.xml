@@ -258,7 +258,7 @@
 
 
 
-    <!--获取客服信息-->
+    <!--获取短信网关信息-->
     <select id="selectSms" resultType="java.util.Map" parameterType="java.util.Map">
         SELECT
             sms.ID AS id,
@@ -266,12 +266,51 @@
             sms.URL AS url,
             sms.USERNAME AS username,
             sms.PSW AS password,
-            sms.PRODUCT_ID AS productid
+            sms.PRODUCT_ID AS productid,
+            sms.IS_DEFAULT AS def
         FROM
             system_sms_config sms
         WHERE 1=1
-            AND sms.IS_DEFAULT = 'Y'
+            <if test="sms_name!=null and sms_name != ''">
+                AND sms.SMS_NAME = #{sms_name}
+            </if>
+            <if test="def!=null and def != ''">
+                AND sms.IS_DEFAULT = #{def}
+            </if>
     </select>
+
+    <!--编辑短信网关信息-->
+    <update id="updateSms" parameterType="java.util.Map">
+        UPDATE system_sms_config sms
+        <trim prefix="set" suffixOverrides=",">
+            <if test="sms_name!=null and sms_name != ''">
+                sms.SMS_NAME = #{sms_name},
+            </if>
+            <if test="url!=null and url != ''">
+                sms.URL = #{url},
+            </if>
+            <if test="username!=null and username != ''">
+                sms.USERNAME = #{username},
+            </if>
+            <if test="password!=null and password != ''">
+                sms.PSW = #{password},
+            </if>
+            <if test="productid!=null and productid != ''">
+                sms.PRODUCT_ID = #{productid},
+            </if>
+            <if test="def!=null and def != ''">
+                sms.IS_DEFAULT = #{def},
+            </if>
+        </trim>
+        WHERE 1=1  AND sms.ID = #{id}
+    </update>
+
+
+    <!--新增短信网关信息-->
+    <insert id="insertSms" >
+        INSERT INTO system_sms_config
+        VALUES(#{id},#{sms_name},#{url},#{username},#{password},#{productid},#{def})
+    </insert>
 
 
 </mapper>
