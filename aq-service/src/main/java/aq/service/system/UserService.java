@@ -53,4 +53,9 @@ public interface UserService extends BaseService {
     //查询用户信息
     List<Map<String, Object>> queryUserInfos(Map<String, Object> map);
 
+    //查询客服信息
+    JsonObject queryCustomService(JsonObject jsonObject);
+
+    //更新客服
+    JsonObject updateCustomService(JsonObject jsonObject);
 }

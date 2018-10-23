@@ -22,10 +22,16 @@ public interface ConfigDao {
     //删除配置表
     int deleteConfig(Map<String,Object> map);
 
+    //新增第三方配置表
+    int insertTppConfig(Map<String,Object> map);
+
     //查询第三方配置表
     List<Map<String,Object>> selectTppConfig(Map<String,Object> map);
 
     //编辑第三方配置表
     int updateTppConfig(Map<String,Object> map);
+
+    //删除第三方配置表
+    int deleteTppConfig(Map<String,Object> map);
 
 }

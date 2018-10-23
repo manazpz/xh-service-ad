@@ -29,6 +29,26 @@
         <if test="openId != null">
             AND su.OPENID = #{openId}
         </if>
+        <if test="status != null and status != ''">
+            AND su.STATUS = #{status}
+        </if>
+        <if test="phone != null and phone != ''">
+            AND su.PHONE LIKE CONCAT('%', #{phone}, '%')
+        </if>
+        <if test="nickName != null and nickName != ''">
+            AND su.NICK_NAME LIKE CONCAT('%', #{nickName}, '%')
+        </if>
     </select>
+
+    <!--更新客户信息-->
+    <update id="updateCustomer" parameterType="java.util.Map">
+        UPDATE system_user su
+        <trim prefix="set" suffixOverrides=",">
+            <if test="status!=null and status != ''">
+                su.STATUS = #{status},
+            </if>
+        </trim>
+        WHERE su.ID = #{id}
+    </update>
 
 </mapper>

@@ -11,4 +11,5 @@ public interface CustomerDao {
     //获取客户信息
     List<Map<String,Object>> selectCustomerInfo(Map<String,Object> map);
 
+    int updateCustomer(Map<String,Object> map);
 }

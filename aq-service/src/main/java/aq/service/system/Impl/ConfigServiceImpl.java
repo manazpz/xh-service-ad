@@ -46,18 +46,10 @@ public class ConfigServiceImpl extends BaseServiceImpl  implements ConfigService
     @Transactional(rollbackFor = {RuntimeException.class, Exception.class})
     @Override
     public JsonObject queryaConfig(JsonObject jsonObject) {
-        Rtn rtn = new Rtn("Config");
-        JsonObject data = new JsonObject();
-        JsonArray jsonArray = new JsonArray();
-        Map<String,Object> map = new HashMap<>();
-        map = GsonHelper.getInstance().fromJson(jsonObject,Map.class);
-        List<Map<String, Object>> results = configDao.selectConfig(map);
-        jsonArray =  GsonHelper.getInstanceJsonparser().parse(GsonHelper.getInstance().toJson(results)).getAsJsonArray();
-        rtn.setCode(200);
-        rtn.setMessage("success");
-        data.add("items",jsonArray);
-        rtn.setData(data);
-        return Func.functionRtnToJsonObject.apply(rtn);
+        jsonObject.addProperty("service","Config");
+        return query(jsonObject,(map)->{
+            return configDao.selectConfig(map);
+        });
     }
 
     @Transactional(rollbackFor = {RuntimeException.class, Exception.class})
@@ -173,17 +165,49 @@ public class ConfigServiceImpl extends BaseServiceImpl  implements ConfigService
 
     @Override
     public JsonObject insertConfig(JsonObject jsonObject) {
-        return null;
+        Rtn rtn = new Rtn("Config");
+        Map<String,Object> res = new HashMap<>();
+        res = GsonHelper.getInstance().fromJson(jsonObject,Map.class);
+        res.put("id", UUIDUtil.getUUID());
+        configDao.insertConfig(res);
+        rtn.setCode(200);
+        rtn.setMessage("success");
+        return Func.functionRtnToJsonObject.apply(rtn);
     }
 
     @Override
     public JsonObject deleteConfig(JsonObject jsonObject) {
-        return null;
+        Rtn rtn = new Rtn("Config");
+        Map<String,Object> res = new HashMap<>();
+        res.clear();
+        res = GsonHelper.getInstance().fromJson(jsonObject,Map.class);
+        configDao.deleteConfig(res);
+        rtn.setCode(200);
+        rtn.setMessage("success");
+        return  Func.functionRtnToJsonObject.apply(rtn);
     }
 
     @Override
     public JsonObject updateConfig(JsonObject jsonObject) {
-        return null;
+        Rtn rtn = new Rtn("Config");
+        Map<String,Object> res = new HashMap<>();
+        res = GsonHelper.getInstance().fromJson(jsonObject,Map.class);
+        configDao.updateConfig(res);
+        rtn.setCode(200);
+        rtn.setMessage("success");
+        return Func.functionRtnToJsonObject.apply(rtn);
+    }
+
+    @Override
+    public JsonObject insertTppConfig(JsonObject jsonObject) {
+        Rtn rtn = new Rtn("Config");
+        Map<String,Object> res = new HashMap<>();
+        res = GsonHelper.getInstance().fromJson(jsonObject,Map.class);
+        res.put("id", UUIDUtil.getUUID());
+        configDao.insertTppConfig(res);
+        rtn.setCode(200);
+        rtn.setMessage("success");
+        return Func.functionRtnToJsonObject.apply(rtn);
     }
 
     @Override
@@ -191,7 +215,25 @@ public class ConfigServiceImpl extends BaseServiceImpl  implements ConfigService
         return  configDao.selectTppConfig(map);
     }
     @Override
-    public void updateTppConfig(Map<String, Object> map) {
-        configDao.updateTppConfig(map);
+    public JsonObject updateTppConfig(JsonObject jsonObject) {
+        Rtn rtn = new Rtn("Config");
+        Map<String,Object> res = new HashMap<>();
+        res = GsonHelper.getInstance().fromJson(jsonObject,Map.class);
+        configDao.updateTppConfig(res);
+        rtn.setCode(200);
+        rtn.setMessage("success");
+        return Func.functionRtnToJsonObject.apply(rtn);
+    }
+
+    @Override
+    public JsonObject deleteTppConfig(JsonObject jsonObject) {
+        Rtn rtn = new Rtn("Config");
+        Map<String,Object> res = new HashMap<>();
+        res.clear();
+        res = GsonHelper.getInstance().fromJson(jsonObject,Map.class);
+        configDao.deleteTppConfig(res);
+        rtn.setCode(200);
+        rtn.setMessage("success");
+        return  Func.functionRtnToJsonObject.apply(rtn);
     }
 }

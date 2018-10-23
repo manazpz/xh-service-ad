@@ -23,12 +23,19 @@ public interface ConfigService extends BaseService {
     //修改配置表
     JsonObject updateConfig(JsonObject jsonObject);
 
-    //查询配置表
+    //新增第三方配置表
+    JsonObject insertTppConfig(JsonObject jsonObject);
+
+    //查询第三方配置表
     List<Map<String, Object>> selectTppConfig(Map<String, Object> map);
 
     //微信统一下单
     JsonObject pay(JsonObject jsonObject);
 
-    //修改配置表
-    void updateTppConfig(Map<String, Object> map);
+    //修改第三方平台配置表
+    JsonObject updateTppConfig(JsonObject jsonObject);
+
+    //删除第三方平台配置表
+    JsonObject deleteTppConfig(JsonObject jsonObject);
+
 }

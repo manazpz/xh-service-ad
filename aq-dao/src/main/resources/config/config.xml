@@ -17,16 +17,16 @@
                 sc.NAME = #{name},
             </if>
             <if test="keyWord!=null">
-                sc.KEY_WORD = #{keyWord}
+                sc.KEY_WORD = #{keyWord},
             </if>
             <if test="num!=null">
-                sc.NUM = #{num}
+                sc.NUM = #{num},
             </if>
             <if test="type!=null">
-                sc.TYPE = #{type}
+                sc.TYPE = #{type},
             </if>
             <if test="flag!=null">
-                sc.FLAG = #{flag}
+                sc.FLAG = #{flag},
             </if>
         </trim>
         WHERE sc.ID = #{id}
@@ -57,6 +57,9 @@
         <if test="type != null">
             AND sc.TYPE in (${type})
         </if>
+        <if test="typef != null and typef != ''">
+            AND sc.TYPE LIKE CONCAT('%', #{typef}, '%')
+        </if>
         <if test="flag != null">
             AND sc.FLAG = ${flag}
         </if>
@@ -64,6 +67,12 @@
             AND sc.KEY_WORD = #{keyWord}
         </if>
     </select>
+
+    <!--插入第三方配置表-->
+    <insert id="insertTppConfig" >
+        INSERT INTO system_tpp_config
+        VALUES(#{id},#{name},#{platform},#{accessKeyId},#{accessKeySecret},#{mchid},#{keyword},#{endpoint},#{backetName},null,null,#{returnUrl})
+    </insert>
 
     <!--查询第三方配置表-->
     <select id="selectTppConfig" resultType="java.util.Map" parameterType="java.util.Map">
@@ -93,19 +102,44 @@
         </if>
     </select>
 
-    <!--更新配置表-->
+    <!--更新第三方配置表-->
     <update id="updateTppConfig" parameterType="java.util.Map">
         UPDATE system_tpp_config sc
         <trim prefix="set" suffixOverrides=",">
-            <if test="access_token!=null">
-                sa.ACCESS_TOKEN = #{access_token},
+            <if test="accessToken != ''">
+                sc.ACCESS_TOKEN = #{accessToken},
             </if>
-            <if test="update_time!=null">
-                sc.UPDATE_TIME= #{update_time}
+            <if test="updateTime != ''">
+                sc.UPDATE_TIME= #{updateTime},
             </if>
-
+            <if test="accessKeyId!=null and accessKeyId != ''">
+                sc.ACCESS_KEY_ID = #{accessKeyId},
+            </if>
+            <if test="accessKeySecret!=null and accessKeySecret != ''">
+                sc.ACCESS_KEY_SECRET = #{accessKeySecret},
+            </if>
+            <if test="mchid!=null and mchid != ''">
+                sc.MC_HID = #{mchid},
+            </if>
+            <if test="keyword!=null and keyword != ''">
+                sc.KEY = #{keyword},
+            </if>
+            <if test="endpoint!=null and endpoint != ''">
+                sc.ENDPOINT = #{endpoint},
+            </if>
+            <if test="backetName!=null and backetName != ''">
+                sc.BACKET_NAME = #{backetName},
+            </if>
+            <if test="returnUrl!=null and returnUrl != ''">
+                sc.RETURN_URL = #{returnUrl},
+            </if>
         </trim>
         WHERE sc.ID = #{id}
     </update>
+
+    <!--删除第三方配置表-->
+    <delete id="deleteTppConfig"  parameterType="java.util.Map" >
+        DELETE FROM system_tpp_config WHERE ID = #{id}
+    </delete>
 
 </mapper>

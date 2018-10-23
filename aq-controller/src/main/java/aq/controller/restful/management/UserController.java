@@ -118,4 +118,19 @@ public class UserController extends aq.controller.restful.System {
         writerJson(response,out,userService.updateRecovery(requestJson));
     }
 
+    //查询客服信息
+    @RequestMapping(value = "/customerList",method = RequestMethod.GET)
+    @ResponseBody
+    public void customerList(HttpServletRequest request, HttpServletResponse response, PrintWriter out){
+        JsonObject jsonObject = HttpUtil.getParameterMap(request);
+        writerJson(response,out,userService.queryCustomService(jsonObject));
+    }
+
+    //新增回收方式
+    @RequestMapping(value = "/updateCustomer",method = RequestMethod.POST)
+    @ResponseBody
+    public void updateCustomer(@RequestBody JsonObject requestJson, HttpServletRequest request, HttpServletResponse response, PrintWriter out){
+        writerJson(response,out,userService.updateCustomService(requestJson));
+    }
+
 }

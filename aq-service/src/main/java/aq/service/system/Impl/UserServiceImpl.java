@@ -5,6 +5,7 @@ import aq.common.access.Factory;
 import aq.common.annotation.DyncDataSource;
 import aq.common.other.Rtn;
 import aq.common.util.*;
+import aq.dao.user.CustomerDao;
 import aq.dao.user.UserDao;
 import aq.service.base.Impl.BaseServiceImpl;
 import aq.service.system.Func;
@@ -26,6 +27,9 @@ public class UserServiceImpl extends BaseServiceImpl implements UserService {
 
     @Resource
     private UserDao userDao;
+
+    @Resource
+    private CustomerDao customerDao;
 
     @Transactional(rollbackFor = {RuntimeException.class, Exception.class})
     @Override
@@ -285,5 +289,25 @@ public class UserServiceImpl extends BaseServiceImpl implements UserService {
     @Override
     public List<Map<String, Object>> queryUserInfos(Map<String, Object> map) {
         return  userDao.selectUserInfos(map);
+    }
+
+    @Override
+    public JsonObject queryCustomService(JsonObject jsonObject) {
+        jsonObject.addProperty("service","customer");
+        return query(jsonObject,(map)->{
+            return customerDao.selectCustomerInfo(map);
+        });
+    }
+
+    @Override
+    public JsonObject updateCustomService(JsonObject jsonObject) {
+        Rtn rtn = new Rtn("customer");
+        Map<String,Object> res = new HashMap<>();
+        res.clear();
+        res = GsonHelper.getInstance().fromJson(jsonObject,Map.class);
+        customerDao.updateCustomer(res);
+        rtn.setCode(200);
+        rtn.setMessage("success");
+        return Func.functionRtnToJsonObject.apply(rtn);
     }
 }
