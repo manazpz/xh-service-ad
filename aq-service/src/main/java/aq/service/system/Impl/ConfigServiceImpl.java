@@ -47,6 +47,9 @@ public class ConfigServiceImpl extends BaseServiceImpl  implements ConfigService
     @Override
     public JsonObject queryaConfig(JsonObject jsonObject) {
         jsonObject.addProperty("service","Config");
+        if(StringUtil.isEmpty(jsonObject.get("pageSize"))) {
+            jsonObject.addProperty("pageSize", 10);
+        }
         return query(jsonObject,(map)->{
             return configDao.selectConfig(map);
         });

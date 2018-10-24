@@ -1,0 +1,125 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="aq.dao.coupon.CouponDao">
+
+    <!--插入优惠券-->
+    <insert id="insertCoupon" >
+        INSERT INTO XH_COUPON
+        VALUES(#{id},#{no},#{title},#{content},#{price},#{num},#{limitNum},#{receiveTrem},#{beginTime,jdbcType=TIMESTAMP},#{endTime,jdbcType=TIMESTAMP},
+        #{status},#{type},#{remarks},'','Y','',#{createUserId},#{createTime,jdbcType=TIMESTAMP},#{lastCreateUserId},#{lastCreateTime,jdbcType=TIMESTAMP})
+    </insert>
+
+    <!--更新优惠券-->
+    <update id="updateCoupon" parameterType="java.util.Map">
+        UPDATE XH_COUPON XC
+        <trim prefix="set" suffixOverrides=",">
+            <if test="title!=null and title!=''">
+                XC.TITLE = #{title},
+            </if>
+            <if test="content!=null and content!=''">
+                XC.CONTENT = #{content},
+            </if>
+            <if test="price!=null and price!=''">
+                XC.PRICE = #{price},
+            </if>
+            <if test="num!=null and num!=''">
+                XC.NUM = #{num},
+            </if>
+            <if test="limitNum!=null and limitNum!=''">
+                XC.LIMIT_NUM = #{limitNum},
+            </if>
+            <if test="receiveTrem!=null and receiveTrem!=''">
+                XC.RECEIVE_TREM = #{receiveTrem},
+            </if>
+            <if test="beginTime!=null and beginTime!=''">
+                XC.BEGIN_TIME = #{beginTime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="endTime!=null and endTime!=''">
+                XC.END_TIME = #{endTime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="status!=null and status!=''">
+                XC.STATUS = #{status},
+            </if>
+            <if test="type!=null and type!=''">
+                XC.TYPE = #{type},
+            </if>
+            <if test="obligate1!=null and obligate1!=''">
+                XC.OBLIGATE1 = #{obligate1},
+            </if>
+            <if test="remarks!=null and remarks!=''">
+                XC.REMARKS = #{remarks},
+            </if>
+            <if test="lastCreateUserId!=null and lastCreateUserId!=''">
+                XC.LAST_CREATE_USER = #{lastCreateUserId},
+            </if>
+            <if test="lastCreateTime!=null and lastCreateTime!=''">
+                XC.LAST_CREATE_TIME = #{lastCreateTime,jdbcType=TIMESTAMP},
+            </if>
+        </trim>
+        WHERE XC.ID = #{id}
+    </update>
+
+    <!--删除配置表-->
+    <delete id="deleteCoupon"  parameterType="java.util.Map" >
+        DELETE FROM XH_COUPON WHERE ID = #{id}
+    </delete>
+
+    <!--查询优惠券-->
+    <select id="selectCoupon" resultType="java.util.Map" parameterType="java.util.Map">
+        SELECT
+        XC.ID AS id,
+        XC. NO AS no,
+        XC.TITLE AS title,
+        XC.CONTENT AS content,
+        XC.PRICE AS price,
+        XC.NUM AS num,
+        XC.LIMIT_NUM AS limitNum,
+        XC.RECEIVE_TREM AS receiveTrem,
+        DATE_FORMAT(
+        XC.BEGIN_TIME,
+        '%Y-%m-%d %H:%i:%S'
+        ) AS beginTime,
+        DATE_FORMAT(
+        XC.END_TIME,
+        '%Y-%m-%d %H:%i:%S'
+        ) AS endTime,
+        XC. STATUS AS status,
+        XC. OBLIGATE1 AS obligate1,
+        XC. TYPE AS type,
+        sc.NAME AS typeName,
+        XC.REMARKS AS remarks,
+        XC.CREATE_USER AS createUserId,
+        cu.NICK_NAME AS createUserName,
+        XC.LAST_CREATE_USER AS lastCreateUserId,
+        lcu.NICK_NAME AS lastCreateUserName,
+        DATE_FORMAT(
+        XC.CREATE_TIME,
+        '%Y-%m-%d %H:%i:%S'
+        ) AS createTime,
+        DATE_FORMAT(
+        XC.LAST_CREATE_TIME,
+        '%Y-%m-%d %H:%i:%S'
+        ) AS lastCreateTime
+        FROM
+        XH_COUPON XC
+        LEFT JOIN system_config sc ON sc.KEY_WORD = XC.TYPE
+        LEFT JOIN system_administrator cu ON cu.ID = XC.CREATE_USER
+        LEFT JOIN system_administrator lcu ON lcu.ID = XC.LAST_CREATE_USER
+        WHERE 1=1
+        <if test="id != null">
+            AND XC.ID = #{id}
+        </if>
+        <if test="createUser != null">
+            AND XC.CREATE_USER = #{createUser}
+        </if>
+        <if test="type != null and type != ''">
+            AND XC.TYPE = #{type}
+        </if>
+        <if test="obligate1 != null and obligate1 != ''">
+            AND XC.OBLIGATE1 = #{obligate1}
+        </if>
+        ORDER BY XC.CREATE_TIME DESC
+    </select>
+
+</mapper>

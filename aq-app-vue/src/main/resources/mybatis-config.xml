@@ -41,6 +41,7 @@
         <mapper resource="shop/shop.xml"/>
         <mapper resource="collect/collect.xml"/>
         <mapper resource="yanji/yanji.xml"/>
+        <mapper resource="coupon/coupon.xml"/>
     </mappers>
 
 </configuration> 
