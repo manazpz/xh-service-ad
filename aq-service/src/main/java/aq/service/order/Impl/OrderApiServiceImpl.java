@@ -134,13 +134,16 @@ public class OrderApiServiceImpl extends BaseServiceImpl  implements OrderApiSer
     @Override
     public JsonObject instertorderList(JsonObject jsonObject) {
         Rtn rtn = new Rtn("order");
+        JsonObject data = new JsonObject();
+        JsonArray jsonArray = new JsonArray();
         Map<String,Object> res = new HashMap<>();
         Map<String,Object> rest = new HashMap<>();
         Map<String,Object> restdetail = new HashMap<>();
         List<Map<String,Object>> listold = new ArrayList();
         List<Map<String,Object>> listnew = new ArrayList();
+        List<Map<String, Object>> req = new ArrayList();
         res = GsonHelper.getInstance().fromJson(jsonObject,Map.class);
-        rest.put("openId",res.get("openId"));
+        rest.put("openid",res.get("openId"));
         List<Map<String, Object>> userinfo = userDao.selectUserInfos(rest);
         rest.put("id", UUIDUtil.getUUID());
         if(res.get("orderId") == null){
@@ -211,6 +214,12 @@ public class OrderApiServiceImpl extends BaseServiceImpl  implements OrderApiSer
                 orderDao.insertOrderDetail(restdetail);
             }
         }
+        res.clear();
+        res.put("orderId",rest.get("id"));
+        req.add(res);
+        jsonArray =  GsonHelper.getInstanceJsonparser().parse(GsonHelper.getInstance().toJson(req)).getAsJsonArray();
+        data.add("items",jsonArray);
+        rtn.setData(data);
         rtn.setCode(200);
         rtn.setMessage("success");
         return Func.functionRtnToJsonObject.apply(rtn);

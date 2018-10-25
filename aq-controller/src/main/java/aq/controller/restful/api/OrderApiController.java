@@ -36,6 +36,9 @@ public class OrderApiController extends aq.controller.restful.System {
     @RequestMapping(value = "/list",method = RequestMethod.GET)
     public void orderList(HttpServletRequest request, HttpServletResponse response, PrintWriter out) throws Exception {
         JsonObject jsonObject = HttpUtil.getParameterMap(request);
+        if(StringUtil.isEmpty(jsonObject.get("openId"))) {
+            response.sendError(HttpServletResponse.SC_NOT_FOUND,"openId is no null!");
+        }
         writerJson(response,out,orderApiService.queryorderList(jsonObject));
     }
 

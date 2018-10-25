@@ -94,10 +94,10 @@
         stc.RETURN_URL AS returnUrl
         FROM system_tpp_config stc
         WHERE 1=1
-        <if test="platform != null">
+        <if test="platform != null and platform != ''">
             AND stc.PLATFORM = #{platform}
         </if>
-        <if test="id != null">
+        <if test="id != null and id != ''">
             AND stc.ID = #{id}
         </if>
     </select>
