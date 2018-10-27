@@ -250,6 +250,14 @@ public class GoodsBfServiceImpl extends BaseServiceImpl  implements GoodsBfServi
     @Override
     public JsonObject queryGoods(JsonObject jsonObject) {
         jsonObject.addProperty("service","goods");
+        Map ress = new HashMap();
+        if(!StringUtil.isEmpty(jsonObject.get("noLable"))) {
+            ress.clear();
+            ress.put("lableId",jsonObject.get("noLable").getAsString());
+            List goodsLables = goodsDao.selectGoodsLable(ress);
+            if(goodsLables.size() > 0)
+                jsonObject.add("noGoodsIds",GsonHelper.getInstanceJsonparser().parse(GsonHelper.getInstance().toJson(goodsLables)).getAsJsonArray());
+        }
         return query(jsonObject,(map)->{
             Map res = new HashMap();
             List<Map<String, Object>> goods = goodsDao.selectGoods(map);
@@ -273,26 +281,6 @@ public class GoodsBfServiceImpl extends BaseServiceImpl  implements GoodsBfServi
     @Transactional(rollbackFor = {RuntimeException.class, Exception.class})
     @Override
     public JsonObject updateGoods(JsonObject jsonObject) {
-        AbsAccessUser user = Factory.getContext().user();
-        Rtn rtn = new Rtn("Goods");
-        if (user == null) {
-            rtn.setCode(10000);
-            rtn.setMessage("未登录！");
-        }else {
-            Map<String,Object> res = new HashMap<>();
-            res = GsonHelper.getInstance().fromJson(jsonObject,Map.class);
-            res.put("lastCreateUserId", user.getUserId());
-            res.put("lastCreateTime",new Date());
-            res.put("specParameter",StringUtil.isEmpty(jsonObject.get("parameter"))?"":jsonObject.get("parameter").getAsJsonArray().toString());
-            goodsDao.updateGoods(res);
-            rtn.setCode(200);
-            rtn.setMessage("success");
-        }
-        return Func.functionRtnToJsonObject.apply(rtn);
-    }
-
-    @Override
-    public JsonObject batchUpdateGoods(JsonObject jsonObject) {
         AbsAccessUser user = Factory.getContext().user();
         Rtn rtn = new Rtn("Goods");
         if (user == null) {
@@ -580,5 +568,41 @@ public class GoodsBfServiceImpl extends BaseServiceImpl  implements GoodsBfServi
         return query(jsonObject,(map)->{
             return goodsDao.selectLable(map);
         });
+    }
+
+    @Override
+    public JsonObject addGoodsLable(JsonObject jsonObject) {
+        Rtn rtn = new Rtn("Goods");
+        Map<String,Object> res = new HashMap<>();
+        res = GsonHelper.getInstance().fromJson(jsonObject,Map.class);
+        if(StringUtil.isEmpty(res.get("goodsIds")) || StringUtil.isEmpty(res.get("lableId"))) {
+            rtn.setCode(404);
+            rtn.setMessage("添加失败！");
+        }else {
+            List<String> goodsIds = (List) res.get("goodsIds");
+            for(String goodsId : goodsIds) {
+                Map<String,Object> ress = new HashMap<>();
+                ress.put("goodsId",goodsId);
+                ress.put("lableId",res.get("lableId"));
+                List<Map<String, Object>> goodsLables = goodsDao.selectGoodsLable(ress);
+                if(goodsLables.size() < 1) {
+                    goodsDao.insertGoodsLable(ress);
+                }
+            }
+            rtn.setCode(200);
+            rtn.setMessage("success");
+        }
+        return Func.functionRtnToJsonObject.apply(rtn);
+    }
+
+    @Override
+    public JsonObject deleteGoodsLable(JsonObject jsonObject) {
+        Rtn rtn = new Rtn("Goods");
+        Map<String,Object> res = new HashMap<>();
+        res = GsonHelper.getInstance().fromJson(jsonObject,Map.class);
+        goodsDao.deleteGoodsLable(res);
+        rtn.setCode(200);
+        rtn.setMessage("success");
+        return Func.functionRtnToJsonObject.apply(rtn);
     }
 }

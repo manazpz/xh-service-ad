@@ -24,6 +24,7 @@
         XSM.IS_DELETE AS isDelete,
         XSM.REMARKS AS remarks,
         XSM.OBLIGATE1 AS obligate1,
+        sac.FD_URL AS imgUrl,
         DATE_FORMAT(
         XSM.CREATE_TIME,
         '%Y-%m-%d %H:%i:%S'
@@ -35,6 +36,7 @@
         FROM
         XH_SHOPS_MAIN XSM
         LEFT JOIN system_administrator sa ON XSM.USER_ID = sa.ID
+        LEFT JOIN system_attachment sac ON XSM.ID = sac.FD_REF_ID
         WHERE 1=1
         <if test="id != null">
             AND XSM.ID = #{id}

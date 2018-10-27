@@ -59,16 +59,6 @@ public class GoodsBfController extends aq.controller.restful.System {
         writerJson(response,out,goodsBfService.queryGoods(jsonObject));
     }
 
-    //批量更新
-    @RequestMapping(value = "/batchUpdate",method = RequestMethod.POST)
-    @ResponseBody
-    public void batchUpdateGoods(@RequestBody JsonObject requestJson,HttpServletRequest request, HttpServletResponse response, PrintWriter out) throws Exception {
-        if(StringUtil.isEmpty(requestJson.get("ids"))) {
-            response.sendError(HttpServletResponse.SC_NOT_FOUND,"ids is no null!");
-        }
-        writerJson(response,out,goodsBfService.batchUpdateGoods(requestJson));
-    }
-
     //删除商品（硬删除）
     @RequestMapping(value = "/delete",method = RequestMethod.POST)
     @ResponseBody
@@ -142,4 +132,17 @@ public class GoodsBfController extends aq.controller.restful.System {
         writerJson(response,out,goodsBfService.queryLable(jsonObject));
     }
 
+    //添加标签商品
+    @RequestMapping(value = "/addGoodsLable",method = RequestMethod.POST)
+    @ResponseBody
+    public void addGoodsLable(@RequestBody JsonObject requestJson,HttpServletRequest request, HttpServletResponse response, PrintWriter out) throws Exception {
+        writerJson(response,out,goodsBfService.addGoodsLable(requestJson));
+    }
+
+    //取消标签商品
+    @RequestMapping(value = "/deleteGoodsLable",method = RequestMethod.POST)
+    @ResponseBody
+    public void deleteGoodsLable(@RequestBody JsonObject requestJson,HttpServletRequest request, HttpServletResponse response, PrintWriter out) throws Exception {
+        writerJson(response,out,goodsBfService.deleteGoodsLable(requestJson));
+    }
 }

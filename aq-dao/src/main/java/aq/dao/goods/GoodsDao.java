@@ -20,8 +20,7 @@ public interface GoodsDao {
     //删除商品
     int deleteGoods(Map<String,Object> map);
 
-    //查询品牌
-    List<Map<String,Object>> selectBrand(Map<String,Object> map);
+    /**********************************************************************************/
 
     //添加置换车
     int insertReplacementCar(Map<String,Object> map);
@@ -35,8 +34,10 @@ public interface GoodsDao {
     //删除置换车
     int deleteReplacementCar(Map<String,Object> map);
 
-    //查询商品品牌
-    List<Map<String,Object>> selectBrandList(Map<String,Object> map);
+    /**********************************************************************************/
+
+    //查询品牌
+    List<Map<String,Object>> selectBrand(Map<String,Object> map);
 
     //添加品牌
     int insertBrand(Map<String,Object> map);
@@ -47,7 +48,20 @@ public interface GoodsDao {
     //删除品牌
     int deleteBrand(Map<String,Object> map);
 
+    /**********************************************************************************/
+
     //查询标签
     List<Map<String,Object>> selectLable(Map<String,Object> map);
+
+    /**********************************************************************************/
+
+    //插入商品-标签对应表
+    int insertGoodsLable(Map<String,Object> map);
+
+    //查询商品-标签对应表
+    List<Map<String,Object>> selectGoodsLable(Map<String,Object> map);
+
+    //删除商品-标签对应表
+    int deleteGoodsLable(Map<String,Object> map);
 
 }

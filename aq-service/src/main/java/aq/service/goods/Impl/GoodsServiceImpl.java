@@ -234,7 +234,7 @@ public class GoodsServiceImpl extends BaseServiceImpl  implements GoodsService {
     public JsonObject querybrandList(JsonObject jsonObject) {
         jsonObject.addProperty("service","goods");
         return query(jsonObject,(map)->{
-            return goodsDao.selectBrandList(map);
+            return goodsDao.selectBrand(map);
         });
     }
 

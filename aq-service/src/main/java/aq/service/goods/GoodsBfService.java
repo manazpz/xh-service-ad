@@ -20,9 +20,6 @@ public interface GoodsBfService extends BaseService {
     //更新商品
     JsonObject updateGoods(JsonObject jsonObject);
 
-    //批量更新商品
-    JsonObject batchUpdateGoods(JsonObject jsonObject);
-
     //删除商品
     JsonObject deleteGoods(JsonObject jsonObject);
 
@@ -43,5 +40,11 @@ public interface GoodsBfService extends BaseService {
 
     //查询标签
     JsonObject queryLable(JsonObject jsonObject);
+
+    //添加标签商品
+    JsonObject addGoodsLable(JsonObject jsonObject);
+
+    //删除标签商品
+    JsonObject deleteGoodsLable(JsonObject jsonObject);
 
 }

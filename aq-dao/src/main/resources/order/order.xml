@@ -43,6 +43,9 @@
         <if test="buyer!=null and buyer != ''">
             AND XO.BUYER = #{buyer}
         </if>
+        <if test="shopId!=null and shopId != ''">
+            AND XO.SHOP_ID = #{shopId}
+        </if>
     </select>
 
     <!--添加订单-->

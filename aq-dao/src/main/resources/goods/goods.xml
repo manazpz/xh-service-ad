@@ -7,7 +7,7 @@
     <insert id="insertGoods" >
         INSERT INTO XH_GOODS_MAIN
         VALUES(#{id},#{code},#{outCode},#{shopId},#{name},#{alias},#{banPrice},#{brandId},#{classifyId},#{unit},
-        #{logistcs},'02',#{specParameter},#{parameter},#{detail},#{remarks},'Y','','','N','',
+        #{logistcs},'02',#{specParameter},#{parameter},#{detail},#{remarks},'N','','N','',
         #{createUserId},#{createTime,jdbcType=TIMESTAMP},#{lastCreateUserId},#{lastCreateTime,jdbcType=TIMESTAMP})
     </insert>
 
@@ -34,7 +34,6 @@
         XGM.PARAMETER AS parameter,
         XGM.DETAIL AS detail,
         SK.ID AS stockId,
-        XGM.LABLE AS lable,
         (
         CASE
         WHEN SK.CURRENT_STOCK IS NULL THEN
@@ -56,6 +55,10 @@
         cu.NICK_NAME AS createUserName,
         XGM.LAST_CREATE_USER AS lastCreateUserId,
         lcu.NICK_NAME AS lastCreateUserName,
+        <if test="yesLable == 'yes'">
+            XL.ID AS lableId,
+            XL.NAME AS lableName,
+        </if>
         DATE_FORMAT(
         XGM.CREATE_TIME,
         '%Y-%m-%d %H:%i:%S'
@@ -73,6 +76,10 @@
         LEFT JOIN system_config sc ON sc.KEY_WORD = XGM.UNIT
         LEFT JOIN system_administrator cu ON cu.ID = XGM.CREATE_USER
         LEFT JOIN system_administrator lcu ON lcu.ID = XGM.LAST_CREATE_USER
+        <if test="yesLable == 'yes'">
+            INNER JOIN XH_GOODS_LABLE XGL ON XGL.GOODS_ID = XGM.ID
+            LEFT JOIN XH_LABLE XL ON XL.ID = XGL.LABLE_ID
+        </if>
         WHERE 1=1
         <if test="model != null and model != ''">
             AND XC.MODEL = #{model}
@@ -92,11 +99,11 @@
         <if test="classifyId != null">
             AND XGM.CLASSIFY_ID = #{classifyId}
         </if>
-        <if test="lable != null">
-            AND XGM.Lable ${lable}
-        </if>
         <if test="obligate1 != null and obligate1 != ''">
             AND XGM.OBLIGATE1 = #{obligate1}
+        </if>
+        <if test="lableValue != null and lableValue != ''">
+            AND XL.VALUE = #{lableValue}
         </if>
         <if test="shopId != null">
             AND XGM.SHOP_ID = #{shopId}
@@ -107,15 +114,14 @@
         <if test="wxQuery != null and wxQuery != ''">
             AND (lower(XGM. NAME) LIKE CONCAT('%', lower(#{wxQuery}), '%') OR lower(XB.NAME) LIKE CONCAT('%', lower(#{wxQuery}), '%'))
         </if>
-        <if test="ids!=null and ids!=''">
-            AND XGM.ID in
-            <foreach collection="ids" index="index" item="item" open="(" separator="," close=")">
-                #{item.basicId}
+        <if test="noGoodsIds!=null and noGoodsIds!=''">
+            AND XGM.ID NOT in
+            <foreach collection="noGoodsIds" index="index" item="item" open="(" separator="," close=")">
+                #{item.goodsId}
             </foreach>
         </if>
         ORDER BY XB.NAME DESC,XGM.LAST_CREATE_TIME DESC,XC.MODEL DESC
     </select>
-
 
     <!--更新商品-->
     <update id="updateGoods" parameterType="java.util.Map">
@@ -135,9 +141,6 @@
             </if>
             <if test="classifyId!=null and classifyId!=''">
                 CLASSIFY_ID = #{classifyId},
-            </if>
-            <if test="lable!=null and lable!=''">
-                LABLE = #{lable},
             </if>
             <if test="unit!=null and unit!=''">
                 UNIT = #{unit},
@@ -189,36 +192,6 @@
     <delete id="deleteGoods"  parameterType="java.util.Map" >
         DELETE FROM XH_GOODS_MAIN WHERE ID = #{id}
     </delete>
-
-    <!--查询品牌-->
-    <select id="selectBrand" resultType="java.util.Map" parameterType="java.util.Map">
-        SELECT
-        XB.ID AS id,
-        XB. NAME AS name,
-        XB.OFFICIAL_WEBSITE AS officialWebsite,
-        XB.REMARKS AS remarks,
-        XB.CREATE_USER AS createUserId,
-        cu.NICK_NAME AS createUserName,
-        XB.LAST_CREATE_USER AS lastCreateUserId,
-        lcu.NICK_NAME AS lastCreateUserName,
-        DATE_FORMAT(
-        XB.CREATE_TIME,
-        '%Y-%m-%d %H:%i:%S'
-        ) AS createTime,
-        DATE_FORMAT(
-        XB.LAST_CREATE_TIME,
-        '%Y-%m-%d %H:%i:%S'
-        ) AS lastCreateTime
-        FROM
-        XH_BRAND XB
-        LEFT JOIN system_administrator cu ON cu.ID = XB.CREATE_USER
-        LEFT JOIN system_administrator lcu ON lcu.ID = XB.LAST_CREATE_USER
-        WHERE 1=1
-        <if test="id != null">
-            AND XB.ID = #{id}
-        </if>
-        ORDER BY XB.NAME DESC,XB.LAST_CREATE_TIME DESC
-    </select>
 
     <!--添加置换车-->
     <insert id="insertReplacementCar" >
@@ -299,6 +272,35 @@
         DELETE FROM XH_REPLACEMENT_CAR WHERE ID = #{id}
     </delete>
 
+    <!--查询品牌-->
+    <select id="selectBrand" resultType="java.util.Map" parameterType="java.util.Map">
+        SELECT
+        XB.ID AS id,
+        XB. NAME AS name,
+        XB.OFFICIAL_WEBSITE AS officialWebsite,
+        XB.REMARKS AS remarks,
+        XB.CREATE_USER AS createUserId,
+        cu.NICK_NAME AS createUserName,
+        XB.LAST_CREATE_USER AS lastCreateUserId,
+        lcu.NICK_NAME AS lastCreateUserName,
+        DATE_FORMAT(
+        XB.CREATE_TIME,
+        '%Y-%m-%d %H:%i:%S'
+        ) AS createTime,
+        DATE_FORMAT(
+        XB.LAST_CREATE_TIME,
+        '%Y-%m-%d %H:%i:%S'
+        ) AS lastCreateTime
+        FROM
+        XH_BRAND XB
+        LEFT JOIN system_administrator cu ON cu.ID = XB.CREATE_USER
+        LEFT JOIN system_administrator lcu ON lcu.ID = XB.LAST_CREATE_USER
+        WHERE 1=1
+        <if test="id != null">
+            AND XB.ID = #{id}
+        </if>
+        ORDER BY XB.NAME DESC,XB.LAST_CREATE_TIME DESC
+    </select>
 
     <!--新增品牌-->
     <insert id="insertBrand" >
@@ -315,24 +317,6 @@
         #{lastCreateUser},
         #{lastCreateTime,jdbcType=TIMESTAMP})
     </insert>
-
-
-    <!--查询商品品牌-->
-    <select id="selectBrandList" resultType="java.util.Map" parameterType="java.util.Map">
-        SELECT
-            XB.ID AS id,
-            XB.NAME AS name,
-            XB.OFFICIAL_WEBSITE AS official,
-            XB.REMARKS AS remarks
-        FROM
-            XH_BRAND XB
-        WHERE 1=1
-        <if test="name!=null and name != ''">
-            AND XB.NAME = #{name}
-        </if>
-        ORDER BY XB.CREATE_TIME ASC
-    </select>
-
 
     <!--更新品牌-->
     <update id="updateBrand" parameterType="java.util.Map">
@@ -362,8 +346,7 @@
         DELETE FROM XH_BRAND WHERE ID = #{id}
     </delete>
 
-
-    <!--查询置换车-->
+    <!--查询标签-->
     <select id="selectLable" resultType="java.util.Map" parameterType="java.util.Map">
         SELECT
         XGL.ID AS id,
@@ -376,12 +359,38 @@
         '%Y-%m-%d %H:%i:%S'
         ) AS createTime
         FROM
-        XH_GOODS_LABLE XGL
+        XH_LABLE XGL
         LEFT JOIN system_administrator cu ON cu.ID = XGL.CREATE_USER
         <if test="id != null">
             AND XGL.ID = #{id}
         </if>
     </select>
 
+    <!--新增商品-标签-->
+    <insert id="insertGoodsLable" >
+        INSERT INTO XH_GOODS_LABLE
+        VALUES(#{lableId},#{goodsId})
+    </insert>
+
+    <!--查询商品-标签-->
+    <select id="selectGoodsLable" resultType="java.util.Map" parameterType="java.util.Map">
+        SELECT
+        XGL.LABLE_ID AS lableId,
+        XGL.GOODS_ID AS goodsId
+        FROM
+        XH_GOODS_LABLE XGL
+        WHERE 1=1
+        <if test="lableId != null">
+            AND XGL.LABLE_ID = #{lableId}
+        </if>
+        <if test="goodsId != null">
+            AND XGL.GOODS_ID = #{goodsId}
+        </if>
+    </select>
+
+    <!--删除商品-标签-->
+    <delete id="deleteGoodsLable"  parameterType="java.util.Map" >
+        DELETE FROM XH_GOODS_LABLE WHERE LABLE_ID = #{lableId} AND GOODS_ID = #{goodsId}
+    </delete>
 
 </mapper>
