@@ -64,9 +64,6 @@ public class OrderBfServiceImpl extends BaseServiceImpl  implements OrderBfServi
                 return query(jsonObject,(map)->{
                     List<Map<String, Object>> orders = orderDao.selectorderList(map);
                     for (Map obj : orders) {
-                        String goodsName = "";
-                        ArrayList<Map> newOrder = new ArrayList();
-                        ArrayList<Map> oldOrder = new ArrayList();
                         res.put("id", obj.get("id"));
                         List<Map<String, Object>> orderPs = orderDao.selectorderDetailList(res);
                         for (Map obj1 : orderPs) {
@@ -78,8 +75,8 @@ public class OrderBfServiceImpl extends BaseServiceImpl  implements OrderBfServi
                             Double banPrice = Double.parseDouble(obj1.get("banPrice").toString());
                             if (!StringUtil.isEmpty(obj1.get("parameter"))) {
                                 List<Map> parameter = GsonHelper.getInstance().fromJson(obj1.get("parameter").toString(), List.class);
+                                Double sum = 0.0;
                                 for (Map obj2 : parameter) {
-                                    Double sum = 0.0;
                                     List<Map> spec = (List<Map>) obj2.get("spec");
                                     for (Map obj3 : spec) {
                                         str += obj3.get("spec_value_name") + " ";
@@ -91,52 +88,23 @@ public class OrderBfServiceImpl extends BaseServiceImpl  implements OrderBfServi
                                             sum = sum + NumUtil.compareDouble(price, minPrice, cappedPrice) - banPrice;
                                         }
                                     }
-                                    if ("01".equals(obj1.get("goodsModel"))) {
+                                     if ("01".equals(obj1.get("goodsModel"))) {
                                         obj1.put("guJia", obj2.get("price"));
                                     }
-                                    if ("02".equals(obj1.get("goodsModel"))) {
-                                        obj1.put("guJia", sum + banPrice);
-                                    }
+                                }
+                                if ("02".equals(obj1.get("goodsModel"))) {
+                                    obj1.put("guJia", - sum - banPrice);
                                 }
                             }
                             obj1.put("parameterStr", str);
-                            if ("01".equals(obj1.get("goodsModel"))) {
-                                newOrder.add(obj1);
-                            }
-                            if ("02".equals(obj1.get("goodsModel"))) {
-                                oldOrder.add(obj1);
-                            }
-                            goodsName += obj1.get("goodsName") + ";";
                         }
-                        Double newSum = 0.0;
-                        Double oldSum = 0.0;
-                        HashMap newMap = new HashMap();
-                        HashMap oldMap = new HashMap();
-                        for (Map m : newOrder) {
-                            newSum += Double.parseDouble(m.get("guJia").toString());
-                        }
-                        for (Map m : oldOrder) {
-                            oldSum += Double.parseDouble(m.get("guJia").toString());
-                        }
-                        newMap.put("item", newOrder);
-                        newMap.put("sum", newSum);
-                        oldMap.put("item", oldOrder);
-                        oldMap.put("sum", oldSum);
-                        obj.put("newOrder", newMap);
-                        obj.put("oldOrder", oldMap);
-                        obj.put("sum", newSum - oldSum);
+                        obj.put("goods",orderPs);
                         List address = GsonHelper.getInstance().fromJson(obj.get("address").toString(), List.class);
                         if(address != null){
                             obj.put("address",address.get(0));
                         }
-                        if (goodsName != "") {
-                            obj.put("goodsName", goodsName);
-                        }
-                        if (orderPs.size() > 0) {
-                            req.add(obj);
-                        }
                     }
-                    return req;
+                    return orders;
                 });
             }
         }
