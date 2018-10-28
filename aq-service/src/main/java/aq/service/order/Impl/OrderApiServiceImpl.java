@@ -48,6 +48,7 @@ public class OrderApiServiceImpl extends BaseServiceImpl  implements OrderApiSer
         JsonArray jsonArray = new JsonArray();
         Map<String,Object> res = new HashMap<>();
         Map<String,Object> ress = new HashMap<>();
+        Boolean falg = false;
         List<Map<String, Object>> req = new ArrayList();
         res = GsonHelper.getInstance().fromJson(jsonObject,Map.class);
         List<Map<String, Object>> orders = orderDao.selectorderList(res);
@@ -105,6 +106,11 @@ public class OrderApiServiceImpl extends BaseServiceImpl  implements OrderApiSer
             }
             for (Map m : oldOrder) {
                 oldSum += Double.parseDouble(m.get("guJia").toString());
+                if("02".equals(m.get("checkStatus"))){
+                    falg = true;
+                }else{
+                    falg = false;
+                }
             }
             newMap.put("item", newOrder);
             newMap.put("sum", newSum);
@@ -112,6 +118,7 @@ public class OrderApiServiceImpl extends BaseServiceImpl  implements OrderApiSer
             oldMap.put("sum", oldSum);
             obj.put("newOrder", newMap);
             obj.put("oldOrder", oldMap);
+            obj.put("checkStatus", falg);
             List address = GsonHelper.getInstance().fromJson(obj.get("address").toString(), List.class);
             if(address != null){
                 obj.put("address",address.get(0));
@@ -236,11 +243,8 @@ public class OrderApiServiceImpl extends BaseServiceImpl  implements OrderApiSer
     public JsonObject updateOrder(JsonObject jsonObject) {
         Rtn rtn = new Rtn("order");
         Map<String,Object> res = new HashMap<>();
-        Map<String,Object> rest = new HashMap<>();
         res = GsonHelper.getInstance().fromJson(jsonObject,Map.class);
-        rest.put("id",res.get("id"));
-        rest.put("paystatus",res.get("paystatus"));
-        orderDao.updateOrder(rest);
+        orderDao.updateOrder(res);
         rtn.setCode(200);
         rtn.setMessage("success");
         return  Func.functionRtnToJsonObject.apply(rtn);
