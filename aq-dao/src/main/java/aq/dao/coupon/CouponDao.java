@@ -20,5 +20,10 @@ public interface CouponDao {
     //删除优惠券
     int deleteCoupon(Map<String,Object> map);
 
+    //用户领取优惠券
+    int instertCouponUser(Map<String,Object> map);
+
+    //查询用户已领取优惠券
+    List<Map<String,Object>> selectUserCoupon(Map<String,Object> map);
 
 }

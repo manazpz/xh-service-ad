@@ -269,7 +269,11 @@
 
     <!--删除置换车-->
     <delete id="deleteReplacementCar"  parameterType="java.util.Map" >
-        DELETE FROM XH_REPLACEMENT_CAR WHERE ID = #{id}
+        DELETE FROM XH_REPLACEMENT_CAR WHERE ID IN
+        <foreach item="item" index="index" collection="id" open="("
+                 separator="," close=")">
+            #{item}
+        </foreach>
     </delete>
 
     <!--查询品牌-->

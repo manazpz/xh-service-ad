@@ -107,19 +107,75 @@
         LEFT JOIN system_administrator cu ON cu.ID = XC.CREATE_USER
         LEFT JOIN system_administrator lcu ON lcu.ID = XC.LAST_CREATE_USER
         WHERE 1=1
-        <if test="id != null">
+        <if test="id != null and id != ''">
             AND XC.ID = #{id}
         </if>
         <if test="createUser != null">
             AND XC.CREATE_USER = #{createUser}
         </if>
+        <if test="no != null and no != ''">
+            AND XC.NO = #{no}
+        </if>
         <if test="type != null and type != ''">
             AND XC.TYPE = #{type}
+        </if>
+        <if test="status != null and status != ''">
+            AND XC.STATUS = #{status}
         </if>
         <if test="obligate1 != null and obligate1 != ''">
             AND XC.OBLIGATE1 = #{obligate1}
         </if>
         ORDER BY XC.CREATE_TIME DESC
+    </select>
+
+
+
+    <!--用户领取优惠券-->
+    <insert id="instertCouponUser" >
+        INSERT INTO XH_COUPON_GET
+        VALUES(#{id},#{userId},#{types},'','','','',#{createUserId},#{createTime,jdbcType=TIMESTAMP},#{lastCreateUserId},#{lastCreateTime,jdbcType=TIMESTAMP})
+    </insert>
+
+
+    <!--查询用户已领取优惠券-->
+    <select id="selectUserCoupon" resultType="java.util.Map" parameterType="java.util.Map">
+        SELECT
+            XC.ID AS id,
+            XC.TITLE AS title,
+            XC.CONTENT AS content,
+            XC.PRICE AS price,
+            XC.NUM AS num,
+            XC. TYPE AS type,
+            XCG.TYPES AS status,
+            sc.NAME AS typeName,
+            XC.LIMIT_NUM AS limitNum,
+            XC.RECEIVE_TREM AS receiveTrem,
+            DATE_FORMAT(
+            XC.BEGIN_TIME,
+            '%Y-%m-%d %H:%i:%S'
+            ) AS beginTime,
+            DATE_FORMAT(
+            XC.END_TIME,
+            '%Y-%m-%d %H:%i:%S'
+            ) AS endTime
+        FROM
+            XH_COUPON_GET XCG
+        LEFT JOIN XH_COUPON XC ON XC.ID = XCG.ID
+        LEFT JOIN system_config sc ON sc.KEY_WORD = XC.TYPE
+        LEFT JOIN system_user su ON su.ID = XCG.USER_ID
+        WHERE 1=1
+        <if test="id != null and id != ''">
+            AND XC.ID = #{id}
+        </if>
+        <if test="no != null and no != ''">
+            AND XC.NO = #{no}
+        </if>
+        <if test="type != null and type != ''">
+            AND XC.TYPE = #{type}
+        </if>
+        <if test="openId != null and openId != ''">
+            AND su.OPENID = #{openId}
+        </if>
     </select>
 
 </mapper>

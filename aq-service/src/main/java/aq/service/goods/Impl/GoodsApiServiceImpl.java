@@ -133,16 +133,6 @@ public class GoodsApiServiceImpl extends BaseServiceImpl  implements GoodsApiSer
             }
             obj1.put("detail",req2);
         }
-//        maps.forEach(obj->{
-//            resa.clear();
-//            resa.put("brandId",obj.get("id"));
-//            if(!StringUtil.isEmpty(jsonObject.get("model")) && "01".equals(jsonObject.get("model").getAsString())) {
-//                resa.put("status","01");
-//            }
-//            resa.put("model",StringUtil.isEmpty(jsonObject.get("model"))?"":jsonObject.get("model").getAsString());
-//            List<Map<String, Object>> goods = goodsDao.selectGoods(resa);
-//            obj.put("goods",goods);
-//        });
         rtn.setCode(200);
         rtn.setMessage("success");
         jsonArray =  GsonHelper.getInstanceJsonparser().parse(GsonHelper.getInstance().toJson(maps)).getAsJsonArray();
@@ -329,8 +319,6 @@ public class GoodsApiServiceImpl extends BaseServiceImpl  implements GoodsApiSer
         Map<String,Object> res = new HashMap<>();
         List newGoods = new ArrayList();
         List oldGoods = new ArrayList();
-//        JsonObject data = new JsonObject();
-//        JsonArray jsonArray = new JsonArray();
         res.clear();
         res = GsonHelper.getInstance().fromJson(jsonObject,Map.class);
         if(!StringUtil.isEmpty(res.get("ids"))) {
@@ -355,7 +343,6 @@ public class GoodsApiServiceImpl extends BaseServiceImpl  implements GoodsApiSer
                     }
                 }
                 obj.put("bllParameterStr",str);
-//                obj.put("bllParameter",bllParameter);
             }
             Map<String,Object> ress = new HashMap<>();
             ress.put("type","GI");
@@ -372,9 +359,6 @@ public class GoodsApiServiceImpl extends BaseServiceImpl  implements GoodsApiSer
         res.clear();
         res.put("newGoods",newGoods);
         res.put("oldGoods",oldGoods);
-//        jsonArray =  GsonHelper.getInstanceJsonparser().parse(GsonHelper.getInstance().toJson(blls)).getAsJsonArray();
-//        data.addProperty("total",jsonArray.size());
-//        data.add("items",jsonArray);
         rtn.setCode(200);
         rtn.setMessage("success");
         rtn.setData(GsonHelper.getInstanceJsonparser().parse(GsonHelper.getInstance().toJson(res)).getAsJsonObject());
@@ -386,9 +370,13 @@ public class GoodsApiServiceImpl extends BaseServiceImpl  implements GoodsApiSer
     public JsonObject deleteReplacementCar(JsonObject jsonObject) {
         Rtn rtn = new Rtn("Goods");
         Map<String,Object> res = new HashMap<>();
+        Map<String,Object> rest = new HashMap<>();
+        List bllId = new ArrayList();
         res.clear();
         res = GsonHelper.getInstance().fromJson(jsonObject,Map.class);
-        goodsDao.deleteReplacementCar(res);
+        bllId.add(res.get("id"));
+        rest.put("id",bllId);
+        goodsDao.deleteReplacementCar(rest);
         rtn.setCode(200);
         rtn.setMessage("success");
         return  Func.functionRtnToJsonObject.apply(rtn);

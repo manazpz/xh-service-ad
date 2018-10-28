@@ -288,6 +288,7 @@
         FROM
         system_user su
         WHERE 1=1
+        AND su.OPENID = #{openid}
         <if test="id != null">
             AND su.ID = #{id}
         </if>
@@ -302,9 +303,6 @@
         </if>
         <if test="status != null and status != ''">
             AND su.STATUS = #{status}
-        </if>
-        <if test="openid != null and openid != ''">
-            AND su.OPENID = #{openid}
         </if>
         ORDER BY su.IS_VALID ASC
         <if test="sort != null">

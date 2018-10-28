@@ -127,4 +127,19 @@
         WHERE XO.ID = #{id}
     </update>
 
+
+    <!--更新订单-->
+    <update id="updateOrderDetail" parameterType="java.util.Map">
+        UPDATE XH_ORDER_SALE_P XO
+        <trim prefix="set" suffixOverrides=",">
+            <if test="checkId!=null and checkId != ''">
+                XO.OLD_CHECK_ID = #{checkId},
+            </if>
+            <if test="checkStatus!=null and checkStatus != ''">
+                XO.CHECK_STATUS = #{checkStatus},
+            </if>
+        </trim>
+        WHERE XO.ID = #{id} AND XO.NO = #{no}
+    </update>
+
 </mapper>

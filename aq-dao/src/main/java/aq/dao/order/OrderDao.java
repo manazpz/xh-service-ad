@@ -23,4 +23,7 @@ public interface OrderDao {
     //修改订单
     int updateOrder(Map<String,Object> map);
 
+    //更新订单明细
+    int updateOrderDetail(Map<String,Object> map);
+
 }

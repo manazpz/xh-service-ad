@@ -101,7 +101,7 @@ public class YanJiApiServiceImpl extends BaseServiceImpl  implements YanJiApiSer
         Map<String,Object> ress = new HashMap<>();
         res = GsonHelper.getInstance().fromJson(jsonObject,Map.class);
         ress.clear();
-        ress.put("openId",res.get("openId"));
+        ress.put("openid",res.get("openId"));
         List<Map<String, Object>> userInfos = userDao.selectUserInfos(ress);
         if(userInfos.size()>0) {
             ress.clear();
@@ -114,21 +114,12 @@ public class YanJiApiServiceImpl extends BaseServiceImpl  implements YanJiApiSer
             ress.put("createUserId",userInfos.get(0).get("id"));
             ress.put("createTime",new Date());
             yanJiDao.insertYanJi(ress);
-//            for (Map obj : resources) {
-//                ress.clear();
-//                ress.put("id",obj.get("id"));
-//                ress.put("name", obj.get("name"));
-//                ress.put("url",obj.get("url"));
-//                ress.put("extend",obj.get("extend"));
-//                ress.put("size",obj.get("size"));
-//                ress.put("type","YJ");
-//                ress.put("refId",uuid);
-//                ress.put("createUserId", userInfos.get(0).get("id"));
-//                ress.put("lastCreateUserId", userInfos.get(0).get("id"));
-//                ress.put("createTime", new Date());
-//                ress.put("lastCreateTime", new Date());
-//                resourceDao.insertResourcet(ress);
-//            }
+            ress.clear();
+            ress.put("checkStatus","02");
+            ress.put("checkId",uuid);
+            ress.put("id",res.get("orderNumber"));
+            ress.put("no",res.get("no"));
+            orderDao.updateOrderDetail(ress);
             rtn.setCode(200);
             rtn.setMessage("success");
         }else {
