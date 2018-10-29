@@ -16,11 +16,14 @@
             XR.TYPE AS recovery,
             XO.ADDRESS AS address,
             su.NICK_NAME AS buyer,
-            XO.CREATE_TIME AS createTime
+            XO.CREATE_TIME AS createTime,
+            XI.TITLE AS invoiceTitle,
+            XI.CONTENT AS invoiceContent
         FROM
           XH_ORDER_H XO
         INNER JOIN system_user su ON su.ID = XO.BUYER
         LEFT JOIN XH_RECOVERY XR ON XR.ID = XO.RECOVERY
+        LEFT JOIN XH_INVOICE XI ON XI.ORDER_ID = XO.ID
         WHERE 1=1
         <if test="number!=null and number != ''">
             AND XO.NUMBER = #{number}
@@ -119,6 +122,9 @@
             </if>
             <if test="deliveryTime!=null and deliveryTime!=''">
                 XO.DELIVERY_TIME = #{deliveryTime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="lastCreateUser!=null and lastCreateUser!=''">
+                LAST_CREATE_USER = #{lastCreateUser},
             </if>
             <if test="lastCreateTime!=null and lastCreateTime!=''">
                 LAST_CREATE_TIME = #{lastCreateTime,jdbcType=TIMESTAMP},

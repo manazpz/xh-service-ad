@@ -45,7 +45,7 @@ public class OrderApiController extends aq.controller.restful.System {
     //更新订单
     @RequestMapping(value = "/update",method = RequestMethod.POST)
     @ResponseBody
-    public void deleteOrder(@RequestBody JsonObject requestJson, HttpServletRequest request, HttpServletResponse response, PrintWriter out){
+    public void updateOrder(@RequestBody JsonObject requestJson, HttpServletRequest request, HttpServletResponse response, PrintWriter out){
         writerJson(response,out,orderApiService.updateOrder(requestJson));
     }
 }

@@ -58,7 +58,7 @@ public class ResourceBfServiceImpl extends BaseServiceImpl  implements ResourceB
                 Map<String, Object> tppMap = tpp.get(0);
                 ResourceUpload resourceUpload = new ResourceUpload(tppMap.get("endpoint").toString(),tppMap.get("accessKeyId").toString(),tppMap.get("accessKeySecret").toString());
                 for (MultipartFile obj : files) {
-                    String uuid = UUIDUtil.getUUID();
+                    String uuid = StringUtil.isEmpty(request.getParameter("id"))? UUIDUtil.getUUID() : request.getParameter("id");
                     Oss oss = resourceUpload.uploadFile(obj,request.getParameter("path"),uuid,tppMap.get("backetName").toString());
                     if("success".equals(oss.getCode())){
                         Map<String,Object> ress = new HashMap<>();

@@ -6,7 +6,7 @@
     <!--创建店铺-->
     <insert id="insertShop" >
         INSERT INTO XH_SHOPS_MAIN
-        VALUES(#{id},#{name},#{no},#{userId},#{address},#{credit},'02',#{remarks},'','',''
+        VALUES(#{id},#{img},#{name},#{no},#{userId},#{address},#{credit},'02',#{remarks},'','',''
         ,#{createTime,jdbcType=TIMESTAMP},#{lastCreateTime,jdbcType=TIMESTAMP})
     </insert>
 
@@ -14,9 +14,11 @@
     <select id="selectShop" resultType="java.util.Map" parameterType="java.util.Map">
         SELECT
         XSM.ID AS id,
+        XSM.IMG AS img,
         XSM. NAME AS name,
         XSM. NO AS no,
-        XSM.USER_ID AS userID,
+        sa.PHONE AS phone,
+        XSM.USER_ID AS userId,
         sa.NICK_NAME AS nickName,
         XSM.ADDRESS AS address,
         XSM.CREDIT AS credit,
@@ -25,6 +27,7 @@
         XSM.REMARKS AS remarks,
         XSM.OBLIGATE1 AS obligate1,
         sac.FD_URL AS imgUrl,
+        XSM.BLURB AS blurb,
         DATE_FORMAT(
         XSM.CREATE_TIME,
         '%Y-%m-%d %H:%i:%S'
@@ -61,6 +64,9 @@
             </if>
             <if test="address!=null and address!=''">
                 ADDRESS = #{address},
+            </if>
+            <if test="img!=null and img!=''">
+                IMG = #{img},
             </if>
             <if test="credit!=null and credit!=''">
                 CREDIT = #{credit},

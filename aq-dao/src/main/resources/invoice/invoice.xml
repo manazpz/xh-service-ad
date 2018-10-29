@@ -1,0 +1,76 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="aq.dao.invoice.InvoiceDao">
+
+    <!--查询发票-->
+    <select id="selectInvoice" resultType="java.util.Map" parameterType="java.util.Map">
+      SELECT
+        XI.ID AS id,
+        XI.ORDER_ID AS orderId,
+        XOH.NUMBER AS orderNum,
+        XI.TYPE AS type,
+        XI.PRICE AS price,
+        XI.TITLE AS title,
+        XI.DUTY AS duty,
+        XI.CONTENT AS content,
+        SU.NICK_NAME AS nickName,
+        DATE_FORMAT(XI.CREATE_TIME,'%Y-%m-%d %H:%i:%S') AS createTime
+    FROM
+        XH_INVOICE XI
+    LEFT JOIN XH_ORDER_H XOH ON XOH.ID = XI.ORDER_ID
+    LEFT JOIN system_user SU ON SU.ID = XOH.BUYER
+    WHERE
+        1 = 1
+    <if test="createUser != null and createUser != ''">
+        AND XI.CREATE_USER = #{createUser}
+    </if>
+        ORDER BY XI.CREATE_TIME DESC
+    </select>
+
+    <!--更新发票-->
+    <update id="updateInvoice" parameterType="java.util.Map">
+        UPDATE XH_INVOICE
+        <trim prefix="set" suffixOverrides=",">
+            <if test="type!=null and type!=''">
+                TYPE = #{type},
+            </if>
+            <if test="price!=null and price!=''">
+                PRICE = #{price},
+            </if>
+            <if test="title!=null and title!=''">
+                TITLE = #{title},
+            </if>
+            <if test="duty!=null and duty!=''">
+                DUTY = #{duty},
+            </if>
+            <if test="content!=null and content!=''">
+                CONTENT = #{content},
+            </if>
+            <if test="createTime!=null and createTime!=''">
+                CREATE_TIME = #{createTime,jdbcType=TIMESTAMP},
+            </if>
+        </trim>
+        WHERE ID = #{id}
+    </update>
+
+    <!--新增发票-->
+    <insert id="insertInvoice" >
+        INSERT INTO XH_INVOICE
+        VALUES(#{id},
+        #{orderId},
+        #{type},
+        #{price},
+        #{title},
+        #{duty},
+        #{content},
+        #{remarks},
+        #{obligate},
+        #{obligate1},
+        #{obligate2},
+        #{createUser},
+        #{createTime,jdbcType=TIMESTAMP})
+    </insert>
+
+
+</mapper>

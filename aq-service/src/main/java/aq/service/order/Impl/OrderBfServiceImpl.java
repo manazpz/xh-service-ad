@@ -19,7 +19,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.annotation.Resource;
-import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -52,7 +52,6 @@ public class OrderBfServiceImpl extends BaseServiceImpl  implements OrderBfServi
         }else {
             Map<String,Object> res = new HashMap<>();
             Map<String,Object> ress = new HashMap<>();
-            List<Map<String, Object>> req = new ArrayList();
             ress.clear();
             ress.put("userId",user.getUserId());
             List<Map<String, Object>> shops = shopDao.selectShop(ress);
@@ -64,6 +63,7 @@ public class OrderBfServiceImpl extends BaseServiceImpl  implements OrderBfServi
                 return query(jsonObject,(map)->{
                     List<Map<String, Object>> orders = orderDao.selectorderList(map);
                     for (Map obj : orders) {
+                        String flag = "";
                         res.put("id", obj.get("id"));
                         List<Map<String, Object>> orderPs = orderDao.selectorderDetailList(res);
                         for (Map obj1 : orderPs) {
@@ -93,11 +93,18 @@ public class OrderBfServiceImpl extends BaseServiceImpl  implements OrderBfServi
                                     }
                                 }
                                 if ("02".equals(obj1.get("goodsModel"))) {
+                                    if(StringUtil.isEmpty(flag)) {
+                                        flag = "02";
+                                    }
                                     obj1.put("guJia", - sum - banPrice);
                                 }
                             }
+                            if ("01".equals(obj1.get("checkStatus"))) {
+                                flag = "01";
+                            }
                             obj1.put("parameterStr", str);
                         }
+                        obj.put("checkStatus", flag);
                         obj.put("goods",orderPs);
                         List address = GsonHelper.getInstance().fromJson(obj.get("address").toString(), List.class);
                         if(address != null){
@@ -126,6 +133,25 @@ public class OrderBfServiceImpl extends BaseServiceImpl  implements OrderBfServi
         data.addProperty("total",jsonArray.size());
         data.add("items",jsonArray);
         rtn.setData(data);
+        return  Func.functionRtnToJsonObject.apply(rtn);
+    }
+
+    @Override
+    public JsonObject updateOrder(JsonObject jsonObject) {
+        AbsAccessUser user = Factory.getContext().user();
+        Rtn rtn = new Rtn("order");
+        if (user == null) {
+            rtn.setCode(10000);
+            rtn.setMessage("未登录！");
+        }else {
+            Map<String,Object> res = new HashMap<>();
+            res = GsonHelper.getInstance().fromJson(jsonObject,Map.class);
+            res.put("lastCreateUser",user.getUserId());
+            res.put("lastCreateTime",new Date());
+            orderDao.updateOrder(res);
+            rtn.setCode(200);
+            rtn.setMessage("success");
+        }
         return  Func.functionRtnToJsonObject.apply(rtn);
     }
 }

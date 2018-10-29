@@ -14,5 +14,8 @@ public interface OrderBfService extends BaseService {
     //查询订单明细列表
     JsonObject queryOrderDetail(JsonObject jsonObject);
 
+    //查询订单明细列表
+    JsonObject updateOrder(JsonObject jsonObject);
+
 
 }

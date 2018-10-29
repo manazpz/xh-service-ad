@@ -39,6 +39,8 @@
             <mvc:mapping path="/goods/**" />
             <mvc:mapping path="/bf/coupon/**" />
             <mvc:mapping path="/bf/order/**" />
+            <mvc:mapping path="/bf/invoice/**" />
+            <mvc:mapping path="/bf/shop/**" />
             <mvc:mapping path="/statement/**" />
             <mvc:mapping path="/resource/**" />
             <bean  class="aq.app.vue.interceptor.RequestFilter">
