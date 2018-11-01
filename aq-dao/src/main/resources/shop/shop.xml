@@ -183,6 +183,9 @@
         <if test="flag != null">
             AND XSS.FLAG = #{flag}
         </if>
+        <if test="moon != null">
+            AND XSS.MOON = #{moon}
+        </if>
         ORDER BY XSS.MOON
     </select>
 </mapper>

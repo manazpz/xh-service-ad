@@ -7,6 +7,7 @@ import aq.dao.goods.GoodsDao;
 import aq.dao.goods.SpecDao;
 import aq.dao.order.OrderDao;
 import aq.dao.resource.ResourceDao;
+import aq.dao.shop.ShopDao;
 import aq.dao.user.UserDao;
 import aq.dao.yanji.YanJiDao;
 import aq.service.base.Impl.BaseServiceImpl;
@@ -31,19 +32,8 @@ public class JobsServiceImpl extends BaseServiceImpl  implements JobsService {
     private OrderDao orderDao;
 
     @Resource
-    private GoodsDao goodsDao;
+    private ShopDao shopDao;
 
-    @Resource
-    private SpecDao specDao;
-
-    @Resource
-    private UserDao userDao;
-
-    @Resource
-    private YanJiDao yanJiDao;
-
-    @Resource
-    private ResourceDao resourceDao;
 
     @Override
     public JsonObject queryOrderCollect(JsonObject jsonObject) {
@@ -73,6 +63,45 @@ public class JobsServiceImpl extends BaseServiceImpl  implements JobsService {
         rtn.setMessage("success");
         rtn.setData(data);
         return  Func.functionRtnToJsonObject.apply(rtn);
+    }
+
+    @Override
+    public JsonObject settlement() throws Exception {
+        Map<String,Object> res = new HashMap<>();
+        List<Map<String, Object>> shops = shopDao.selectShop(res);
+        String yearMoon = DateTime.getCurrentYearMonth();
+        if(shops.size() > 0) {
+            for (Map shopObj : shops) {
+                double sum = 0;
+                res.clear();
+                res.put("moon",yearMoon);
+                res.put("shopId",shopObj.get("id"));
+                List<Map<String, Object>> settlements = shopDao.selectSettlement(res);
+                if (settlements.size() < 1) {
+                    res.put("orderStatus","01");
+                    res.put("shopId",shopObj.get("id"));
+                    String startTime = DateTime.getBeforeFirstMonthdate();
+                    String endTime = DateTime.getBeforeLastMonthdate();
+                    res.put("startTime",startTime);
+                    res.put("endTime",endTime);
+                    List<Map<String, Object>> orders = orderDao.selectorderList(res);
+                    if(orders.size() > 0) {
+                        for (Map orderObj : orders) {
+                            sum += Double.parseDouble(orderObj.get("price").toString());
+                        }
+                        res.clear();
+                        res.put("id",UUIDUtil.getUUID());
+                        res.put("shopId",shopObj.get("id"));
+                        res.put("estimatePrice",sum);
+                        res.put("moon",yearMoon);
+                        res.put("num",orders.size());
+                        res.put("flag","N");
+                        shopDao.insertSettlement(res);
+                    }
+                }
+            }
+        }
+        return null;
     }
 
 }

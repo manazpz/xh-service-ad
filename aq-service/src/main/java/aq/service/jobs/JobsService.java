@@ -11,4 +11,7 @@ public interface JobsService extends BaseService {
     //获取验机数据
     JsonObject queryOrderCollect(JsonObject jsonObject);
 
+    //结算
+    JsonObject settlement() throws Exception;
+
 }

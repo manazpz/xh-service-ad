@@ -3,6 +3,7 @@ package aq.common.util;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.time.temporal.ChronoUnit;
+import java.util.Calendar;
 import java.util.Date;
 import java.sql.Timestamp;
 import java.time.LocalDate;
@@ -181,4 +182,32 @@ public class DateTime {
         String time=sdf.format(new Date());
         return time;
     }
+
+    //4、获取上个月的第一天
+    public static String getBeforeFirstMonthdate()throws Exception{
+        SimpleDateFormat format=new SimpleDateFormat("yyyy-MM-dd");
+        Calendar calendar= Calendar.getInstance();
+        calendar.add(Calendar.MONTH, -1);
+        calendar.set(Calendar.DAY_OF_MONTH, 1);
+        return format.format(calendar.getTime());
+    }
+
+    //5、获取上个月的最后一天
+    public static String getBeforeLastMonthdate()throws Exception{
+        SimpleDateFormat format=new SimpleDateFormat("yyyy-MM-dd");
+        Calendar calendar=Calendar.getInstance();
+        int month=calendar.get(Calendar.MONTH);
+        calendar.set(Calendar.MONTH, month-1);
+        calendar.set(Calendar.DAY_OF_MONTH, calendar.getActualMaximum(Calendar.DAY_OF_MONTH));
+        return format.format(calendar.getTime());
+    }
+
+    public static String getCurrentYearMonth()throws Exception{
+        SimpleDateFormat format=new SimpleDateFormat("yyyy-MM");
+        Calendar calendar=Calendar.getInstance();
+        int month=calendar.get(Calendar.MONTH);
+        calendar.set(Calendar.MONTH, month-1);
+        return format.format(calendar.getTime());
+    }
+
 }
