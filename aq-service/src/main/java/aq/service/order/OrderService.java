@@ -11,8 +11,5 @@ public interface OrderService extends BaseService {
     //查询订单列表
     JsonObject queryorderList(JsonObject jsonObject);
 
-    //查询订单明细列表
-    JsonObject queryOrderDetail(JsonObject jsonObject);
-
 
 }

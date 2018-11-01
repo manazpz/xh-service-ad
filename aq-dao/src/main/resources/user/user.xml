@@ -66,6 +66,9 @@
             <if test="headPortrait!=null and headPortrait != ''">
                 sa.HEAD_PORTRAIT = #{headPortrait},
             </if>
+            <if test="userName!=null and userName != ''">
+                sa.USER_NAME = #{userName},
+            </if>
             <if test="password!=null and password != ''">
                 sa.PASSWORD = #{password},
             </if>
@@ -87,7 +90,6 @@
             <if test="email!=null and email != ''">
                 sa.EMAIL = #{email},
             </if>
-
             <if test="status!=null and status != ''">
                 sa.STATUS = #{status},
             </if>
@@ -319,6 +321,106 @@
             </if>
         </trim>
         WHERE su.openId = #{openid}
+    </update>
+
+    <!--新增用户银行信息-->
+    <insert id="insertUsersBank" >
+        INSERT INTO system_bank
+        VALUES(#{id},#{basicId},#{bankName},#{bankAddress},#{accountName},#{accountNo},#{createTime,jdbcType=TIMESTAMP},#{updateTime,jdbcType=TIMESTAMP})
+    </insert>
+
+    <!--查询用户银行信息-->
+    <select id="selectUserBank" resultType="java.util.Map" parameterType="java.util.Map">
+        SELECT
+        sb.ID AS id,
+        sb.BASIC_ID AS basicId,
+        sb.BANK_NAME AS bankName,
+        sb.BANK_ADDRESS AS bankAddress,
+        sb.ACCOUNT_NAME AS accountName,
+        sb.ACCOUNT_NO AS accountNo,
+        DATE_FORMAT(sb.CREATE_TIME,'%Y-%m-%d %H:%i:%S') AS createTime,
+        DATE_FORMAT(sb.UPDATE_TIME,'%Y-%m-%d %H:%i:%S') AS updateTime
+        FROM
+        system_bank sb
+        WHERE
+        1 = 1
+        <if test="id != null">
+            AND sb.ID = #{id}
+        </if>
+    </select>
+
+    <!--更新用户银行信息-->
+    <update id="updateUserBank" parameterType="java.util.Map">
+        UPDATE system_bank sb
+        <trim prefix="set" suffixOverrides=",">
+            <if test="bankName!=null and bankName != ''">
+                sb.BANK_NAME = #{bankName},
+            </if>
+            <if test="bankAddress!=null and bankAddress != ''">
+                sb.BANK_ADDRESS = #{bankAddress},
+            </if>
+            <if test="accountName!=null and accountName != ''">
+                sb.ACCOUNT_NAME = #{accountName},
+            </if>
+            <if test="accountNo!=null and accountNo != ''">
+                sb.ACCOUNT_NO = #{accountNo},
+            </if>
+            <if test="updateTime!=null and updateTime != ''">
+                sb.UPDATE_TIME = #{updateTime,jdbcType=TIMESTAMP},
+            </if>
+        </trim>
+        WHERE sb.ID = #{id}
+    </update>
+
+    <!--新增用户证件信息-->
+    <insert id="insertUsersPaper" >
+        INSERT INTO system_paper
+        VALUES(#{id},#{basicId},#{paperNo},#{paperAddress}
+        ,#{startTime,jdbcType=TIMESTAMP},#{endTime,jdbcType=TIMESTAMP}
+        ,#{createTime,jdbcType=TIMESTAMP},#{updateTime,jdbcType=TIMESTAMP})
+    </insert>
+
+    <!--查询用户证件信息-->
+    <select id="selectUsersPaper" resultType="java.util.Map" parameterType="java.util.Map">
+        SELECT
+        sp.ID AS id,
+        sp.BASIC_ID AS basicId,
+        sp.PAPER_NO AS paperNo,
+        sp.PAPER_ADDRESS AS paperAddress,
+        DATE_FORMAT(sp.START_TIME,'%Y-%m-%d %H:%i:%S') AS startTime,
+        DATE_FORMAT(sp.END_TIME,'%Y-%m-%d %H:%i:%S') AS endTime,
+        DATE_FORMAT(sp.CREATE_TIME,'%Y-%m-%d %H:%i:%S') AS createTime,
+        DATE_FORMAT(sp.UPDATE_TIME,'%Y-%m-%d %H:%i:%S') AS updateTime
+        FROM
+        system_paper sp
+        WHERE
+        1 = 1
+        <if test="id != null">
+            AND sb.ID = #{id}
+        </if>
+    </select>
+
+    <!--更新用户证件信息-->
+    <update id="updateUsersPaper" parameterType="java.util.Map">
+        UPDATE system_paper sb
+        <trim prefix="set" suffixOverrides=",">
+            <if test="paperNo!=null and paperNo != ''">
+                sb.PAPER_NO = #{paperNo},
+            </if>
+            <if test="paperAddress!=null and paperAddress != ''">
+                sb.PAPER_ADDRESS = #{paperAddress},
+            </if>
+            <if test="startTime!=null and startTime != ''">
+                sb.START_TIME = #{startTime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="endTime!=null and endTime != ''">
+                sb.END_TIME = #{endTime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="updateTime!=null and updateTime != ''">
+                sb.UPDATE_TIME = #{updateTime,jdbcType=TIMESTAMP},
+            </if>
+        </trim>
+        WHERE sb.ID = #{id}
     </update>
 
 </mapper>

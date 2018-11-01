@@ -32,7 +32,7 @@ public class OrderBfController extends aq.controller.restful.System {
     @RequestMapping(value = "/detail",method = RequestMethod.GET)
     public void orderDetail(HttpServletRequest request, HttpServletResponse response, PrintWriter out) throws Exception {
         JsonObject jsonObject = HttpUtil.getParameterMap(request);
-        writerJson(response,out,orderBfService.queryOrderDetail(jsonObject));
+        writerJson(response,out,orderBfService.queryorderList(jsonObject));
     }
 
     //更新订单

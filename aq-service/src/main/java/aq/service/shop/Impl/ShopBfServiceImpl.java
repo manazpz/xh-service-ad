@@ -72,4 +72,29 @@ public class ShopBfServiceImpl extends BaseServiceImpl  implements ShopBfService
         return Func.functionRtnToJsonObject.apply(rtn);
     }
 
+    @Override
+    public JsonObject querySettlement(JsonObject jsonObject) {
+        Rtn rtn = new Rtn("shop");
+        jsonObject.addProperty("service","shop");
+        AbsAccessUser user = Factory.getContext().user();
+        if (user == null) {
+            rtn.setCode(10000);
+            rtn.setMessage("未登录！");
+        }else {
+            Map<String,Object> res = new HashMap<>();
+            res.put("userId", user.getUserId());
+            List<Map<String, Object>> lists = shopDao.selectShop(res);
+            if(lists.size() > 0) {
+                jsonObject.addProperty("shopId",lists.get(0).get("id").toString());
+                return query(jsonObject,(map)->{
+                    return shopDao.selectSettlement(map);
+                });
+            }else {
+                rtn.setCode(404);
+                rtn.setMessage("店铺不存在！");
+            }
+        }
+        return Func.functionRtnToJsonObject.apply(rtn);
+    }
+
 }

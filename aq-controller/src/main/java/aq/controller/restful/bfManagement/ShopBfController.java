@@ -38,10 +38,14 @@ public class ShopBfController extends aq.controller.restful.System {
         JsonObject fileObject = resourceBfService.uploadFiles(request, response);
         if (fileObject.get("data").getAsJsonObject().get("files") != null)
             jsonObject.add("files",fileObject.get("data").getAsJsonObject().get("files").getAsJsonArray());
-//        if(StringUtil.isEmpty(requestJson.get("id"))) {
-//            response.sendError(HttpServletResponse.SC_NOT_FOUND,"id is no null!");
-//        }
         writerJson(response,out,shopBfService.updateShop(jsonObject));
+    }
+
+    //查询店铺结算账单
+    @RequestMapping(value = "/settlementList",method = RequestMethod.GET)
+    public void settlementList(HttpServletRequest request, HttpServletResponse response, PrintWriter out) throws Exception {
+        JsonObject jsonObject = HttpUtil.getParameterMap(request);
+        writerJson(response,out,shopBfService.querySettlement(jsonObject));
     }
 
 }

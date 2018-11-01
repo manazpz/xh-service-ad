@@ -14,4 +14,7 @@ public interface ShopBfService extends BaseService {
     //更新商品
     JsonObject updateShop(JsonObject jsonObject);
 
+    //查询店铺
+    JsonObject querySettlement(JsonObject jsonObject);
+
 }

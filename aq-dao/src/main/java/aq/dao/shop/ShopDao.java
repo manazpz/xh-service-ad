@@ -20,4 +20,13 @@ public interface ShopDao {
     //删除店铺
     int deleteShop(Map<String,Object> map);
 
+    //添加账单
+    int insertSettlement(Map<String,Object> map);
+
+    //查询账单
+    List<Map<String,Object>> selectSettlement(Map<String,Object> map);
+
+    //更新账单
+    int updateSettlement(Map<String,Object> map);
+
 }

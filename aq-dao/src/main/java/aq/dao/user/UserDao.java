@@ -65,6 +65,22 @@ public interface UserDao {
     //更新用户授权信息
     int updateUserInfos(Map<String,Object> map);
 
+    //新增用户银行信息
+    int insertUsersBank(Map<String,Object> map);
 
+    //获取用户银行信息
+    List<Map<String,Object>> selectUserBank(Map<String,Object> map);
+
+    //更新用户银行信息
+    int updateUserBank(Map<String,Object> map);
+
+    //新增用户证件信息
+    int insertUsersPaper(Map<String,Object> map);
+
+    //获取用户证件信息
+    List<Map<String,Object>> selectUsersPaper(Map<String,Object> map);
+
+    //更新用户证件信息
+    int updateUsersPaper(Map<String,Object> map);
 
 }

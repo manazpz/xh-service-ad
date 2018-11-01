@@ -6,8 +6,7 @@
     <!--创建店铺-->
     <insert id="insertShop" >
         INSERT INTO XH_SHOPS_MAIN
-        VALUES(#{id},#{img},#{name},#{no},#{userId},#{address},#{credit},'02',#{remarks},'','',''
-        ,#{createTime,jdbcType=TIMESTAMP},#{lastCreateTime,jdbcType=TIMESTAMP})
+        VALUES(#{id},#{img},#{name},#{no},#{userId},#{address},'5','02','N',#{blurb},'OFF',#{ratio},#{remarks},'','','',#{foundingTime,jdbcType=TIMESTAMP},#{createTime,jdbcType=TIMESTAMP},#{lastCreateTime,jdbcType=TIMESTAMP})
     </insert>
 
     <!--查询店铺-->
@@ -22,12 +21,17 @@
         sa.NICK_NAME AS nickName,
         XSM.ADDRESS AS address,
         XSM.CREDIT AS credit,
-        XSM. STATUS AS statuc,
+        XSM. STATUS AS status,
         XSM.IS_DELETE AS isDelete,
         XSM.REMARKS AS remarks,
         XSM.OBLIGATE1 AS obligate1,
-        sac.FD_URL AS imgUrl,
         XSM.BLURB AS blurb,
+        XSM.IS_ON_OFF AS isOnOff,
+        XSM.RATIO AS ratio,
+        DATE_FORMAT(
+        XSM.FOUNDING_TIME,
+        '%Y-%m-%d %H:%i:%S'
+        ) AS foundingTime,
         DATE_FORMAT(
         XSM.CREATE_TIME,
         '%Y-%m-%d %H:%i:%S'
@@ -39,7 +43,6 @@
         FROM
         XH_SHOPS_MAIN XSM
         LEFT JOIN system_administrator sa ON XSM.USER_ID = sa.ID
-        LEFT JOIN system_attachment sac ON XSM.ID = sac.FD_REF_ID
         WHERE 1=1
         <if test="id != null">
             AND XSM.ID = #{id}
@@ -52,6 +55,9 @@
         </if>
         <if test="status != null">
             AND XSM.STATUS = #{status}
+        </if>
+        <if test="isOnOff != null">
+            AND XSM.IS_ON_OFF = #{isOnOff}
         </if>
     </select>
 
@@ -68,14 +74,32 @@
             <if test="img!=null and img!=''">
                 IMG = #{img},
             </if>
+            <if test="userId!=null and userId!=''">
+                USER_ID = #{userId},
+            </if>
+            <if test="address!=null and address!=''">
+                ADDRESS = #{address},
+            </if>
             <if test="credit!=null and credit!=''">
                 CREDIT = #{credit},
             </if>
             <if test="status!=null and status!=''">
                 STATUS = #{status},
             </if>
+            <if test="blurb!=null and blurb!=''">
+                BLURB = #{blurb},
+            </if>
             <if test="remarks!=null and remarks!=''">
                 REMARKS = #{remarks},
+            </if>
+            <if test="isOnOff!=null and isOnOff!=''">
+                IS_ON_OFF = #{isOnOff},
+            </if>
+            <if test="ratio!=null and ratio!=''">
+                RATIO = #{ratio},
+            </if>
+            <if test="foundingTime!=null and foundingTime!=''">
+                FOUNDING_TIME = #{foundingTime,jdbcType=TIMESTAMP},
             </if>
             <if test="lastCreateTime!=null and lastCreateTime!=''">
                 LAST_CREATE_TIME = #{lastCreateTime,jdbcType=TIMESTAMP},
@@ -96,8 +120,69 @@
         </if>
     </update>
 
-    <!--删除商品-->
+    <!--删除商店-->
     <delete id="deleteShop"  parameterType="java.util.Map" >
         DELETE FROM XH_SHOPS_MAIN WHERE ID = #{id}
     </delete>
+
+    <!--创建账单-->
+    <insert id="insertSettlement" >
+        INSERT INTO XH_SHOP_SETTLEMENT
+        VALUES(#{id},#{shopId},#{estimatePrice},#{settlementPrice},#{moon},#{num},'N',#{updateTime,jdbcType=TIMESTAMP},#{userId})
+    </insert>
+
+    <!--更新账单-->
+    <update id="updateSettlement" parameterType="java.util.Map">
+        UPDATE XH_SHOP_SETTLEMENT
+        <trim prefix="set" suffixOverrides=",">
+            <if test="flag!=null and flag!=''">
+                FLAG = #{flag},
+            </if>
+            <if test="settlementPrice!=null and settlementPrice!=''">
+                SETTLEMENT_PRICE = #{settlementPrice},
+            </if>
+            <if test="userId!=null and userId!=''">
+                UPDATE_USER = #{userId},
+            </if>
+        </trim>
+        WHERE
+        <if test="id!=null and id!=''">
+            ID = #{id}
+        </if>
+    </update>
+
+    <!--查询账单-->
+    <select id="selectSettlement" resultType="java.util.Map" parameterType="java.util.Map">
+        SELECT
+        XSS.ID AS id,
+        XSS.SHOP_ID AS shopId,
+        XSM. NAME AS shopName,
+        XSS.ESTIMATE_PRICE AS estimatePrice,
+        XSS.SETTLEMENT_PRICE AS settlementPrice,
+        XSS.NUM AS num,
+        XSS.MOON AS moon,
+        XSS.FLAG AS flag,
+        XSS.UPDATE_USER AS userId,
+        sa.NICk_NAME AS userName,
+        DATE_FORMAT(
+        XSS.UPDATE_TIME,
+        '%Y-%m-%d %H:%i:%S'
+        ) AS updateTime
+        FROM
+        XH_SHOP_SETTLEMENT XSS
+        LEFT JOIN system_administrator sa ON XSS.UPDATE_USER = sa.ID
+        LEFT JOIN XH_SHOPS_MAIN XSM ON XSM.ID = XSS.SHOP_ID
+        WHERE
+        1 = 1
+        <if test="id != null">
+            AND XSM.ID = #{id}
+        </if>
+        <if test="shopId != null">
+            AND XSS.SHOP_ID = #{shopId}
+        </if>
+        <if test="flag != null">
+            AND XSS.FLAG = #{flag}
+        </if>
+        ORDER BY XSS.MOON
+    </select>
 </mapper>

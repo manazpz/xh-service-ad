@@ -31,7 +31,7 @@ public class OrderController extends aq.controller.restful.System {
     @RequestMapping(value = "/orderDetail",method = RequestMethod.GET)
     public void orderDetail(HttpServletRequest request, HttpServletResponse response, PrintWriter out) throws Exception {
         JsonObject jsonObject = HttpUtil.getParameterMap(request);
-        writerJson(response,out,orderService.queryOrderDetail(jsonObject));
+        writerJson(response,out,orderService.queryorderList(jsonObject));
     }
 
 

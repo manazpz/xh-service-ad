@@ -17,6 +17,7 @@ import aq.service.system.Func;
 import com.google.gson.JsonObject;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.util.MultiValueMap;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.multipart.MultipartHttpServletRequest;
 
@@ -96,6 +97,67 @@ public class ResourceServiceImpl extends BaseServiceImpl  implements ResourceSer
             rtn.setCode(200);
             rtn.setMessage("success");
         }
+        return Func.functionRtnToJsonObject.apply(rtn);
+    }
+
+    @Override
+    public JsonObject uploadFiles(ResourceUpload resourceUpload, List<MultipartFile> files, String path, String id, String backetName) throws IOException {
+        Rtn rtn = new Rtn("Resource");
+        JsonObject data = new JsonObject();
+        List fileData = new ArrayList();
+        if(files != null) {
+            for (MultipartFile obj : files) {
+                String uuid = StringUtil.isEmpty(id)? UUIDUtil.getUUID() : id;
+                Oss oss = resourceUpload.uploadFile(obj,path,uuid,backetName.toString());
+                if("success".equals(oss.getCode())){
+                    Map<String,Object> ress = new HashMap<>();
+                    String fileurl = resourceUpload.getFileUrl(oss.getResult().get("FILEURL").toString(),backetName);
+                    ress.clear();
+                    String[] split = obj.getOriginalFilename().split("\\.");
+                    ress.put("id",uuid);
+                    ress.put("name", StringUtil.isEmpty(split[0])?"":split[0]);
+                    ress.put("url",fileurl);
+                    ress.put("extend",StringUtil.isEmpty(split[1])?"":split[1]);
+                    ress.put("size",obj.getSize());
+                    fileData.add(ress);
+                }else {
+                    return null;
+                }
+            }
+        }
+        rtn.setCode(200);
+        rtn.setMessage("success");
+        data.add("files", GsonHelper.getInstanceJsonparser().parse(GsonHelper.getInstance().toJson(fileData)).getAsJsonArray());
+        rtn.setData(data);
+        return Func.functionRtnToJsonObject.apply(rtn);
+    }
+
+    @Override
+    public JsonObject deleteFiles(ResourceUpload resourceUpload,List<Map> afileList,List<Map> fileList,String path, String backetName) {
+        Rtn rtn = new Rtn("Resource");
+        Map<String,Object> res = new HashMap<>();
+        JsonObject data = new JsonObject();
+        List<Map> ress = new ArrayList<>();
+        if (fileList.size() > 0) {
+            for (Map obj1 : afileList) {
+                Boolean flag = true;
+                for (Map obj2 : fileList) {
+                    if(obj1.get("id").equals(obj2.get("id"))) {
+                        flag = false;
+                    }
+                }
+                if (flag) {
+                    ress.add(obj1);
+                }
+            }
+        }
+        for (Map obj : ress) {
+            resourceUpload.deleteFileToOSS(backetName,path,obj.get("id")+"."+obj.get("extend"));
+        }
+        rtn.setCode(200);
+        rtn.setMessage("success");
+        data.add("delFiles", GsonHelper.getInstanceJsonparser().parse(GsonHelper.getInstance().toJson(ress)).getAsJsonArray());
+        rtn.setData(data);
         return Func.functionRtnToJsonObject.apply(rtn);
     }
 

@@ -118,24 +118,6 @@ public class OrderBfServiceImpl extends BaseServiceImpl  implements OrderBfServi
         return  Func.functionRtnToJsonObject.apply(rtn);
     }
 
-
-    @Override
-    public JsonObject queryOrderDetail(JsonObject jsonObject) {
-        Rtn rtn = new Rtn("order");
-        JsonObject data = new JsonObject();
-        JsonArray jsonArray = new JsonArray();
-        Map<String,Object> res = new HashMap<>();
-        res = GsonHelper.getInstance().fromJson(jsonObject,Map.class);
-        List<Map<String, Object>> orderPs = orderDao.selectorderDetailList(res);
-        rtn.setCode(200);
-        rtn.setMessage("success");
-        jsonArray =  GsonHelper.getInstanceJsonparser().parse(GsonHelper.getInstance().toJson(orderPs)).getAsJsonArray();
-        data.addProperty("total",jsonArray.size());
-        data.add("items",jsonArray);
-        rtn.setData(data);
-        return  Func.functionRtnToJsonObject.apply(rtn);
-    }
-
     @Override
     public JsonObject updateOrder(JsonObject jsonObject) {
         AbsAccessUser user = Factory.getContext().user();

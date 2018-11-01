@@ -35,8 +35,10 @@
         <mvc:interceptor>
             <mvc:mapping path="/sys/**" />
             <mvc:mapping path="/user/**" />
-            <mvc:mapping path="/bf/goods/**" />
             <mvc:mapping path="/goods/**" />
+            <mvc:mapping path="/shop/**" />
+            <mvc:mapping path="/order/**" />
+            <mvc:mapping path="/bf/goods/**" />
             <mvc:mapping path="/bf/coupon/**" />
             <mvc:mapping path="/bf/order/**" />
             <mvc:mapping path="/bf/invoice/**" />
