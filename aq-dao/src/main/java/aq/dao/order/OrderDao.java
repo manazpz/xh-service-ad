@@ -26,4 +26,13 @@ public interface OrderDao {
     //更新订单明细
     int updateOrderDetail(Map<String,Object> map);
 
+    //新增评论
+    int insertRate(Map<String,Object> map);
+
+    //查询评论
+    List<Map<String,Object>> selectRate(Map<String,Object> map);
+
+    //新增支付明细
+    int insertBlance(Map<String,Object> map);
+
 }

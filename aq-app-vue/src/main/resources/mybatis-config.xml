@@ -43,6 +43,7 @@
         <mapper resource="yanji/yanji.xml"/>
         <mapper resource="coupon/coupon.xml"/>
         <mapper resource="invoice/invoice.xml"/>
+        <mapper resource="news/news.xml"/>
     </mappers>
 
 </configuration> 

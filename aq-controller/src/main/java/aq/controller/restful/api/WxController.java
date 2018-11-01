@@ -1,6 +1,9 @@
 package aq.controller.restful.api;
 
 import aq.common.util.*;
+import aq.dao.news.NewsDao;
+import aq.dao.order.OrderDao;
+import aq.service.news.NewsApiService;
 import aq.service.order.OrderApiService;
 import aq.service.order.OrderService;
 import aq.service.system.ConfigService;
@@ -36,6 +39,12 @@ public class WxController extends aq.controller.restful.System {
 
     @Resource
     protected OrderApiService orderApiService;
+
+    @Resource
+    protected OrderDao orderDao;
+
+    @Resource
+    protected NewsDao newsDao;
 
     /**
      * 获取微信公众号配置进行前端授权
@@ -94,13 +103,6 @@ public class WxController extends aq.controller.restful.System {
         String openid = mapInfo.get("openid").toString();
         String access_token = mapInfo.get("access_token").toString();
         String refresh_token = mapInfo.get("refresh_token").toString();
-//        if("".equals(maps.get(0).get("accessToken")) || maps.get(0).get("accessToken") == null){
-//            mapInfo.clear();
-//            mapInfo.put("access_token",access_token);
-//            mapInfo.put("update_time", DateTime.dateFormat(new Date(), DateTime.DATE_FORMAT_YYYY_MM_DDHHMMSS));
-//            mapInfo.put("id",maps.get(0).get("ID"));
-//            configService.updateTppConfig(mapInfo);
-//        }
         // 第二步：拉取用户信息(需scope为 snsapi_userinfo)
         String infoUrl = "https://api.weixin.qq.com/sns/userinfo?access_token="+access_token
                 + "&openid="+openid
@@ -148,6 +150,7 @@ public class WxController extends aq.controller.restful.System {
         String resXml = "";
         Map<String, String> backxml = new HashMap<String, String>();
         Map<String,Object> res = new HashMap<>();
+        Map<String,Object> rest = new HashMap<>();
         JsonObject jsonObject = new JsonObject();
         InputStream inStream;
         try {
@@ -167,6 +170,7 @@ public class WxController extends aq.controller.restful.System {
                         + "<return_msg><![CDATA[OK]]></return_msg>" + "</xml>";
                 //业务处理开始
                 res.put("number",map.get("out_trade_no"));
+                System.out.print("=============支付回调=================："+map);
                 List<Map<String, Object>> maps = orderApiService.selectOrder(res);
                 if(maps.size()>0){
                     System.out.print("=============执行更新订单=================");
@@ -174,7 +178,23 @@ public class WxController extends aq.controller.restful.System {
                     res.put("paystatus","02");
                     res.put("id",maps.get(0).get("id"));
                     res.put("lastCreateTime",new Date());
-                    orderApiService.updateOrder(res);
+                    orderDao.updateOrder(res);
+                    rest.put("id",UUIDUtil.getUUID());
+                    rest.put("orderId",res.get("id"));
+                    rest.put("buyer",maps.get(0).get("buyerId"));
+                    rest.put("createTime",new Date());
+                    rest.put("status","02");
+                    rest.put("type","01");
+                    newsDao.insertOrderLog(rest);
+                    rest.clear();
+                    rest.put("id",UUIDUtil.getUUID());
+                    rest.put("orderId",map.get("out_trade_no"));
+                    rest.put("types",maps.get(0).get("type"));
+                    rest.put("total_fee",map.get("total_fee"));
+                    rest.put("payWay","01");
+                    rest.put("createUserId",maps.get(0).get("buyerId"));
+                    rest.put("createTime",new Date());
+                    orderDao.insertBlance(rest);
                 }
                 //业务处理结束
                 BufferedOutputStream out = new BufferedOutputStream(response.getOutputStream());

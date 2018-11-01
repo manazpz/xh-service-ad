@@ -48,4 +48,12 @@ public class OrderApiController extends aq.controller.restful.System {
     public void updateOrder(@RequestBody JsonObject requestJson, HttpServletRequest request, HttpServletResponse response, PrintWriter out){
         writerJson(response,out,orderApiService.updateOrder(requestJson));
     }
+
+
+    //新增评论
+    @RequestMapping(value = "/insertRate",method = RequestMethod.POST)
+    @ResponseBody
+    public void insertRate(@RequestBody JsonObject requestJson, HttpServletRequest request, HttpServletResponse response, PrintWriter out){
+        writerJson(response,out,orderApiService.insertRate(requestJson));
+    }
 }

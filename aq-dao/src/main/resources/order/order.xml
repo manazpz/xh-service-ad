@@ -16,9 +16,10 @@
             XR.TYPE AS recovery,
             XO.ADDRESS AS address,
             su.NICK_NAME AS buyer,
-            XO.CREATE_TIME AS createTime,
             XI.TITLE AS invoiceTitle,
             XI.CONTENT AS invoiceContent
+            su.ID AS buyerId,
+            XO.CREATE_TIME AS createTime
         FROM
           XH_ORDER_H XO
         INNER JOIN system_user su ON su.ID = XO.BUYER
@@ -42,6 +43,9 @@
         </if>
         <if test="id!=null and id != ''">
             AND XO.ID = #{id}
+        </if>
+        <if test="lastCreateTime!=null and lastCreateTime != ''">
+            AND XO.LAST_CREATE_TIME &lt;= #{lastCreateTime}
         </if>
         <if test="buyer!=null and buyer != ''">
             AND XO.BUYER = #{buyer}
@@ -127,7 +131,7 @@
                 LAST_CREATE_USER = #{lastCreateUser},
             </if>
             <if test="lastCreateTime!=null and lastCreateTime!=''">
-                LAST_CREATE_TIME = #{lastCreateTime,jdbcType=TIMESTAMP},
+                XO.LAST_CREATE_TIME = #{lastCreateTime,jdbcType=TIMESTAMP},
             </if>
         </trim>
         WHERE XO.ID = #{id}
@@ -147,5 +151,50 @@
         </trim>
         WHERE XO.ID = #{id} AND XO.NO = #{no}
     </update>
+
+
+    <!--新增评论-->
+    <insert id="insertRate" >
+        INSERT INTO XH_ORDER_COMMENT
+        VALUES(#{goodsId},#{no},#{types},#{ref_no},#{revierer},#{content},#{star},#{remarks},
+        #{createUserId},#{createTime,jdbcType=TIMESTAMP},#{lastCreateUserId},#{lastCreateTime,jdbcType=TIMESTAMP})
+    </insert>
+
+
+
+    <!--查询评论- -->
+    <select id="selectRate" resultType="java.util.Map" parameterType="java.util.Map">
+        SELECT
+            XO.GOODS_ID AS goodsId,
+            XO.NO AS no,
+            XO.TYPES AS types,
+            XO.REF_NO AS ref_no,
+            XO.REVIERER AS revierer,
+            XO.CONTENT AS content,
+            XO.STAR AS star,
+            XO.REMARKS AS remarks,
+            DATE_FORMAT(
+                XO.CREATE_TIME,
+                '%Y-%m-%d %H:%i:%S'
+                ) AS createTime
+        FROM
+            XH_ORDER_COMMENT XO
+        WHERE 1=1
+        <if test="goodsId!=null and goodsId != ''">
+            AND XO.GOODS_ID = #{goodsId}
+        </if>
+        <if test="no!=null and no != ''">
+            AND XO.NO = #{no}
+        </if>
+    </select>
+
+
+
+    <!--新增支付明细-->
+    <insert id="insertBlance" >
+        INSERT INTO XH_ORDER_BLANCE
+        VALUES(#{id},#{orderId},#{types},#{total_fee},#{payWay},#{remarks},'','','',
+        #{createUserId},#{createTime,jdbcType=TIMESTAMP},#{lastCreateUserId},#{lastCreateTime,jdbcType=TIMESTAMP})
+    </insert>
 
 </mapper>

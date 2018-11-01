@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="aq.dao.news.NewsDao">
+
+    <!--查询订单-->
+    <select id="selectorderLogList" resultType="java.util.Map" parameterType="java.util.Map">
+        SELECT
+            XO.ID AS id,
+            XO.ORDER_ID AS orderId,
+            XO.BUYER AS buyer,
+            XO.TYPE AS type,
+            XO.STATUS AS status,
+            DATE_FORMAT(
+            XO.CREATE_TIME,
+            '%Y-%m-%d %H:%i:%S'
+            ) AS createTime
+        FROM
+            XH_ORDER_LOG XO
+        INNER JOIN system_user su ON su.ID = XO.BUYER
+        WHERE 1=1
+        <if test="orderId!=null and orderId != ''">
+            AND XO.ORDER_ID = #{orderId}
+        </if>
+        <if test="type!=null and type != ''">
+            AND XO.TYPE = #{type}
+        </if>
+        <if test="status!=null and status != ''">
+            AND XO.STATUS = #{status}
+        </if>
+        <if test="buyer!=null and buyer != ''">
+            AND XO.BUYER = #{buyer}
+        </if>
+        <if test="openId!=null and openId != ''">
+            AND su.openId = #{openId}
+        </if>
+    </select>
+
+
+    <!--添加订单日志-->
+    <insert id="insertOrderLog" >
+        INSERT INTO XH_ORDER_LOG
+        VALUES(#{id},#{orderId},#{buyer},#{type},#{status},#{remarks},
+        '','','',#{createUserId},#{createTime,jdbcType=TIMESTAMP},#{lastCreateUserId},#{lastCreateTime,jdbcType=TIMESTAMP})
+    </insert>
+
+</mapper>

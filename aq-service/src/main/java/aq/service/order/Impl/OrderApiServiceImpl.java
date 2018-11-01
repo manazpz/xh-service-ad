@@ -5,6 +5,7 @@ import aq.common.other.Rtn;
 import aq.common.util.*;
 import aq.dao.goods.GoodsDao;
 import aq.dao.goods.SpecDao;
+import aq.dao.news.NewsDao;
 import aq.dao.order.OrderDao;
 import aq.dao.resource.ResourceDao;
 import aq.dao.user.UserDao;
@@ -33,6 +34,9 @@ public class OrderApiServiceImpl extends BaseServiceImpl  implements OrderApiSer
 
     @Resource
     private UserDao userDao;
+
+    @Resource
+    private NewsDao newsDao;
 
     @Resource
     private GoodsDao goodsDao;
@@ -180,7 +184,7 @@ public class OrderApiServiceImpl extends BaseServiceImpl  implements OrderApiSer
             rest.put("buyer",userinfo.get(0).get("id"));
         }
         rest.put("orderstatus","03");//订单状态:01：已完成    02：已取消  03：进行中   04：售后中
-        rest.put("deliverystatus","02");//收/发货状态://01：已发货    02：未发货    03：已收货
+        rest.put("deliverystatus","02");//收/发货状态://01：已发货    02：未发货    03：已发货用户未收货    04：已收货
         rest.put("price",res.get("price"));
         rest.put("recovery",res.get("recovery"));
         rest.put("address",res.get("address").toString());
@@ -226,6 +230,16 @@ public class OrderApiServiceImpl extends BaseServiceImpl  implements OrderApiSer
             }
         }
         res.clear();
+        res.put("orderId",rest.get("id"));
+        res.put("id",UUIDUtil.getUUID());
+        if(userinfo.size()>0){
+            res.put("buyer",userinfo.get(0).get("id"));
+        }
+        res.put("type","01");//01: 订单  02 ： 物流   03： 优惠券   04 ：  活动
+        res.put("status","01");//01: 未付款 02: 已付款  03： 取消订单 04： 已收款
+        res.put("createTime",new Date());
+        newsDao.insertOrderLog(res);
+        res.clear();
         res.put("id",bllId);
         goodsDao.deleteReplacementCar(res);
         res.clear();
@@ -243,8 +257,65 @@ public class OrderApiServiceImpl extends BaseServiceImpl  implements OrderApiSer
     public JsonObject updateOrder(JsonObject jsonObject) {
         Rtn rtn = new Rtn("order");
         Map<String,Object> res = new HashMap<>();
+        Map<String,Object> rest = new HashMap<>();
         res = GsonHelper.getInstance().fromJson(jsonObject,Map.class);
         orderDao.updateOrder(res);
+        rest.put("openId",res.get("openId"));
+        List<Map<String, Object>> maps = userDao.selectUserInfos(rest);
+        if(maps.size()> 0 ){
+            rest.put("buyer",maps.get(0).get("id"));
+        }
+        rest.put("id",UUIDUtil.getUUID());
+        rest.put("orderId",res.get("id"));
+        rest.put("status",res.get("type"));
+        rest.put("type","01");
+        rest.put("createTime",new Date());
+        newsDao.insertOrderLog(rest);
+        rtn.setCode(200);
+        rtn.setMessage("success");
+        return  Func.functionRtnToJsonObject.apply(rtn);
+    }
+
+
+
+    @Override
+    public JsonObject insertRate(JsonObject jsonObject) {
+        Rtn rtn = new Rtn("order");
+        Map<String,Object> res = new HashMap<>();
+        Map<String,Object> rest = new HashMap<>();
+        res = GsonHelper.getInstance().fromJson(jsonObject,Map.class);
+        if(!"".equals(res.get("openId"))){
+            rest.put("openid",res.get("openId"));
+            List<Map<String, Object>> userinfo = userDao.selectUserInfos(rest);
+            if(userinfo.size()>0){
+                res.put("revierer",userinfo.get(0).get("id"));
+                res.put("star",(new Double(Double.parseDouble(res.get("star").toString()))).intValue());
+                List<Map<String, Object>> maps = orderDao.selectRate(res);
+                if(maps.size()>0){
+                    res.put("no",maps.size()*10 + 10);
+                }else{
+                    res.put("no",10);
+                }
+                res.put("createTime",new Date());
+                orderDao.insertRate(res);
+                rtn.setCode(200);
+                rtn.setMessage("success");
+            }else{
+                rtn.setCode(500);
+                rtn.setMessage("error");
+            }
+        }
+        return  Func.functionRtnToJsonObject.apply(rtn);
+    }
+
+
+    @Override
+    public JsonObject insertBlance(JsonObject jsonObject) {
+        Rtn rtn = new Rtn("order");
+        Map<String,Object> res = new HashMap<>();
+        Map<String,Object> rest = new HashMap<>();
+        res = GsonHelper.getInstance().fromJson(jsonObject,Map.class);
+        orderDao.insertBlance(res);
         rtn.setCode(200);
         rtn.setMessage("success");
         return  Func.functionRtnToJsonObject.apply(rtn);

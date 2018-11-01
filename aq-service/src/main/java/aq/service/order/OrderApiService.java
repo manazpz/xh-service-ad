@@ -26,5 +26,12 @@ public interface OrderApiService extends BaseService {
     //更新订单状态
     JsonObject updateOrder(JsonObject jsonObject);
 
+    //新增评论
+    JsonObject insertRate(JsonObject jsonObject);
+
+    //新增支付明细
+    JsonObject insertBlance(JsonObject jsonObject);
+
+
 
 }

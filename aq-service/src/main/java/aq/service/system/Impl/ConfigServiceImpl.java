@@ -6,6 +6,7 @@ import aq.common.util.GsonHelper;
 import aq.common.util.StringUtil;
 import aq.common.util.UUIDUtil;
 import aq.dao.config.ConfigDao;
+import aq.dao.news.NewsDao;
 import aq.dao.order.OrderDao;
 import aq.dao.user.UserDao;
 import aq.service.base.Impl.BaseServiceImpl;
@@ -39,6 +40,9 @@ public class ConfigServiceImpl extends BaseServiceImpl  implements ConfigService
 
     @Resource
     private OrderDao orderDao;
+
+    @Resource
+    private NewsDao newsDao;
 
     @Resource
     private UserDao userDao;
@@ -155,6 +159,14 @@ public class ConfigServiceImpl extends BaseServiceImpl  implements ConfigService
                         restdetail.put("lastCreateTime",new Date());
                         orderDao.insertOrderDetail(restdetail);
                     }
+                    map.clear();
+                    map.put("orderId",rest.get("id"));
+                    map.put("id",UUIDUtil.getUUID());
+                    map.put("buyer",rest.get("buyer"));
+                    map.put("type","01");//01: 订单  02 ： 物流   03： 优惠券   04 ：  活动
+                    map.put("status","01");//01: 未付款 02: 已付款  03： 取消订单 04： 已收款
+                    map.put("createTime",new Date());
+                    newsDao.insertOrderLog(map);
                 }
             }
             //异步回调

@@ -89,4 +89,32 @@
                       id="serviceOpertation" />
         <aop:advisor advice-ref="txAdvice" pointcut-ref="serviceOpertation" />
     </aop:config>
+
+    <!--============Quartz  BEGIN================================================================================-->
+    <!-- JOB -->
+    <bean id="OrderOverTimeJob" class="aq.app.vue.job.OrderOverTime"/>
+    <bean id="OrderOverTimeJobMethod" class="org.springframework.scheduling.quartz.MethodInvokingJobDetailFactoryBean">
+        <property name="targetObject">
+            <ref bean="OrderOverTimeJob"/>
+        </property>
+        <property name="targetMethod" value="execute"></property>
+    </bean>
+
+
+    <!-- ======================== 调度触发器 ======================== -->
+
+    <bean id="CronTaskBean" class="org.springframework.scheduling.quartz.CronTriggerFactoryBean">
+        <property name="jobDetail" ref="OrderOverTimeJobMethod"></property>
+        <property name="cronExpression" value="0 0 0 * * ?"></property>
+    </bean>
+
+    <!-- ======================== 调度工厂 ======================== -->
+    <bean id="SpringJobSchedulerFactoryBean" class="org.springframework.scheduling.quartz.SchedulerFactoryBean">
+        <property name="triggers">
+            <list>
+                <ref bean="CronTaskBean"/>
+            </list>
+        </property>
+    </bean>
+    <!--============Quartz  END================================================================================-->
 </beans>
