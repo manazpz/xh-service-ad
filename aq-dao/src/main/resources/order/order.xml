@@ -17,7 +17,7 @@
             XO.ADDRESS AS address,
             su.NICK_NAME AS buyer,
             XI.TITLE AS invoiceTitle,
-            XI.CONTENT AS invoiceContent
+            XI.CONTENT AS invoiceContent,
             su.ID AS buyerId,
             XO.CREATE_TIME AS createTime
         FROM
