@@ -1,15 +1,16 @@
 package aq.common.util;
 
+import org.apache.commons.lang3.StringUtils;
+
 import java.text.ParseException;
+import java.text.ParsePosition;
 import java.text.SimpleDateFormat;
+import java.time.*;
 import java.time.temporal.ChronoUnit;
+import java.time.temporal.TemporalAdjusters;
 import java.util.Calendar;
 import java.util.Date;
 import java.sql.Timestamp;
-import java.time.LocalDate;
-import java.time.LocalDateTime;
-import java.time.LocalTime;
-import java.time.ZoneOffset;
 import java.time.format.DateTimeFormatter;
 
 /**
@@ -173,6 +174,15 @@ public class DateTime {
         }
     }
 
+    public static String dateFormat(LocalDateTime time, String format) {
+        if (!StringUtil.isEmpty(time)) {
+            DateTimeFormatter df = DateTimeFormatter.ofPattern(format);
+            return df.format(time);
+        } else {
+            return null;
+        }
+    }
+
     /**
      * 返回当前时间
      * @return
@@ -208,6 +218,61 @@ public class DateTime {
         int month=calendar.get(Calendar.MONTH);
         calendar.set(Calendar.MONTH, month-1);
         return format.format(calendar.getTime());
+    }
+
+     public static Date strToDateLong(String strDate) {
+       SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd");
+       ParsePosition pos = new ParsePosition(0);
+       Date strtodate = formatter.parse(strDate, pos);
+       return strtodate;
+    }
+
+    /**
+     * 获取某月第一天
+     * @param localDateTime
+     * @return
+     */
+    public static String getFirstDayOfMonth(LocalDateTime localDateTime){
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+        LocalDateTime endOfDay = localDateTime.with(TemporalAdjusters.firstDayOfMonth()).with(LocalTime.MIN);
+        Date dates = Date.from(endOfDay.atZone(ZoneId.systemDefault()).toInstant());
+        return sdf.format(dates);
+    }
+
+    /**
+     * 获取某月第一天
+     * @param localDateTime
+     * @return
+     */
+    public static String getLastDayOfMonth(LocalDateTime localDateTime){
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+        LocalDateTime endOfDay = localDateTime.with(TemporalAdjusters.lastDayOfMonth()).with(LocalTime.MAX);
+        Date dates = Date.from(endOfDay.atZone(ZoneId.systemDefault()).toInstant());
+        return sdf.format(dates);
+    }
+
+    /**
+     * 获取某月第一天
+     * @param localDateTime
+     * @return
+     */
+    public static String getFirstDayOfYear(LocalDateTime localDateTime){
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+        LocalDateTime endOfDay = localDateTime.with(TemporalAdjusters.firstDayOfYear()).with(LocalTime.MIN);
+        Date dates = Date.from(endOfDay.atZone(ZoneId.systemDefault()).toInstant());
+        return sdf.format(dates);
+    }
+
+    /**
+     * 获取某月第一天
+     * @param localDateTime
+     * @return
+     */
+    public static String getLastDayOfYear(LocalDateTime localDateTime){
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+        LocalDateTime endOfDay = localDateTime.with(TemporalAdjusters.lastDayOfYear()).with(LocalTime.MAX);
+        Date dates = Date.from(endOfDay.atZone(ZoneId.systemDefault()).toInstant());
+        return sdf.format(dates);
     }
 
 }

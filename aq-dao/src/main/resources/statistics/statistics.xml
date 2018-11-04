@@ -1,0 +1,307 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="aq.dao.statistics.StatisticsDao">
+
+    <!--获取有效客户总数-->
+    <select id="countCustomer" resultType="java.util.Map" >
+        SELECT
+            COUNT(*) AS count
+        FROM
+            system_user su
+        WHERE
+            1 = 1
+        AND su.IS_VALID = 'Y'
+    </select>
+
+    <!--获取有效商品总数-->
+    <select id="countGoods" resultType="java.util.Map" >
+        SELECT
+            COUNT(*) AS count
+        FROM
+            XH_GOODS_MAIN XGM
+        WHERE
+            1 = 1
+        AND XGM.IS_DELETE = 'N' AND XGM.OBLIGATE1 = 'Y'
+    </select>
+
+    <!--获取总收入-->
+    <select id="countEndOrder" resultType="java.util.Map" >
+        SELECT
+            SUM(XOH.PRICE) AS sum
+        FROM
+            XH_ORDER_H XOH
+        WHERE
+            1 = 1
+        AND XOH.ORDER_STATUS = '01' AND XOH.PRICE > 0
+    </select>
+
+    <!--获取有效客户最新一条-->
+    <select id="newestCustomer" resultType="java.util.Map" >
+        SELECT
+            su.CREATE_TIME AS endTime
+        FROM
+            system_user su
+        WHERE
+            1 = 1
+        AND su.IS_VALID = 'Y'
+        GROUP BY
+            DATE_FORMAT(su.CREATE_TIME, '%Y-%m-%d')
+        ORDER BY
+            su.CREATE_TIME DESC
+        LIMIT 1
+    </select>
+
+    <!--获取一周有效客户总数-->
+    <select id="countWeekCustomer" resultType="java.util.Map" parameterType="java.util.Map">
+        SELECT
+            count(*) AS count,
+            DATE_FORMAT(su.CREATE_TIME, '%Y-%m-%d') AS time
+        FROM
+            system_user su
+        WHERE
+            1 = 1
+        AND su.IS_VALID = 'Y'
+        AND su.CREATE_TIME between #{startTime} and #{endTime}
+        GROUP BY
+            DATE_FORMAT(su.CREATE_TIME, '%Y-%m-%d')
+        ORDER BY
+            su.CREATE_TIME ASC
+    </select>
+
+    <!--获取上线商品最新一条-->
+    <select id="newestGoods" resultType="java.util.Map" >
+        SELECT
+        XGM.CREATE_TIME AS endTime
+        FROM
+         XH_GOODS_MAIN XGM
+        WHERE
+        1 = 1
+        AND XGM.IS_DELETE = 'N' AND XGM.OBLIGATE1 = 'Y'
+        GROUP BY
+        DATE_FORMAT(XGM.CREATE_TIME, '%Y-%m-%d')
+        ORDER BY
+        XGM.CREATE_TIME DESC
+        LIMIT 1
+    </select>
+
+    <!--获取一周上线商品-->
+    <select id="countWeekGoods" resultType="java.util.Map" parameterType="java.util.Map">
+        SELECT
+            COUNT(*) AS count,
+            DATE_FORMAT(XGM.CREATE_TIME, '%Y-%m-%d') AS time
+        FROM
+            XH_GOODS_MAIN XGM
+        WHERE
+            1 = 1
+        AND XGM.IS_DELETE = 'N' AND XGM.OBLIGATE1 = 'Y'
+        AND XGM.CREATE_TIME between #{startTime} and #{endTime}
+        GROUP BY
+        DATE_FORMAT(XGM.CREATE_TIME, '%Y-%m-%d')
+        ORDER BY
+        XGM.CREATE_TIME ASC
+    </select>
+
+    <!--获取完结订单最新一条-->
+    <select id="newestEndOrder" resultType="java.util.Map" >
+        SELECT
+            XOH.LAST_CREATE_TIME AS endTime
+        FROM
+            XH_ORDER_H XOH
+        WHERE
+            1 = 1
+        AND XOH.ORDER_STATUS = '01' AND XOH.PRICE > 0
+        GROUP BY
+        DATE_FORMAT(XOH.LAST_CREATE_TIME, '%Y-%m-%d')
+        ORDER BY
+        XOH.LAST_CREATE_TIME DESC
+        LIMIT 1
+    </select>
+
+    <!--获取总收入-->
+    <select id="countWeekEndOrder" resultType="java.util.Map" parameterType="java.util.Map">
+        SELECT
+        SUM(XOH.PRICE) AS sum,
+        DATE_FORMAT(XOH.LAST_CREATE_TIME, '%Y-%m-%d') AS time
+        FROM
+        XH_ORDER_H XOH
+        WHERE
+        1 = 1
+        AND XOH.ORDER_STATUS = '01' AND XOH.PRICE > 0
+        AND XOH.LAST_CREATE_TIME between #{startTime} and #{endTime}
+        GROUP BY
+        DATE_FORMAT(XOH.LAST_CREATE_TIME, '%Y-%m-%d')
+        ORDER BY
+        XOH.LAST_CREATE_TIME ASC
+    </select>
+
+    <!--获取订单3大类型数-->
+    <select id="countOrderType" resultType="java.util.Map" parameterType="java.util.Map">
+        SELECT
+            count(*) AS value,
+            XOH.TYPE AS type
+        FROM
+            XH_ORDER_H XOH
+        WHERE
+            1 = 1
+        AND XOH.ORDER_STATUS = '01'
+        GROUP BY XOH.TYPE
+        ORDER BY XOH.TYPE ASC
+    </select>
+
+    <!--获取订单半年销售-->
+    <select id="countEndOrderMoon" resultType="java.util.Map" parameterType="java.util.Map">
+        SELECT
+            sum(price) AS sum,
+            DATE_FORMAT(
+                XOH.LAST_CREATE_TIME,
+                '%Y-%m'
+            ) AS moon
+        FROM
+            XH_ORDER_H XOH
+        WHERE
+            1 = 1
+        AND XOH.ORDER_STATUS = '01'
+        AND XOH.LAST_CREATE_TIME between #{startTime} and #{endTime}
+        GROUP BY
+            DATE_FORMAT(
+                XOH.LAST_CREATE_TIME,
+                '%Y-%m'
+            )
+        ORDER BY XOH.LAST_CREATE_TIME ASC
+    </select>
+
+    <!--获取订单年度销售-->
+    <select id="countEndOrderYear" resultType="java.util.Map" parameterType="java.util.Map">
+        SELECT
+        sum(price) AS sum,
+        DATE_FORMAT(
+        XOH.LAST_CREATE_TIME,
+        '%Y'
+        ) AS moon
+        FROM
+        XH_ORDER_H XOH
+        WHERE
+        1 = 1
+        AND XOH.ORDER_STATUS = '01'
+        AND XOH.LAST_CREATE_TIME between #{startTime} and #{endTime}
+        GROUP BY
+        DATE_FORMAT(
+        XOH.LAST_CREATE_TIME,
+        '%Y'
+        )
+        ORDER BY XOH.LAST_CREATE_TIME ASC
+    </select>
+
+    <!--获取有效客户列表-->
+    <select id="selectCustomer" resultType="java.util.Map" parameterType="java.util.Map">
+        SELECT
+            su.NICK_NAME AS nickName
+        FROM
+            system_user su
+        WHERE
+            1 = 1
+        AND su.IS_VALID = 'Y'
+        ORDER BY su.CREATE_TIME DESC
+        LIMIT 5
+    </select>
+
+    <!--获取标签商品-->
+    <select id="selectLableGoods" resultType="java.util.Map" parameterType="java.util.Map">
+        SELECT
+            XGM.NAME AS goodsName,
+            XL.NAME AS lableName,
+            XSM.NAME AS shopName
+        FROM
+            XH_GOODS_MAIN XGM
+        INNER JOIN XH_GOODS_LABLE XGL ON XGL.GOODS_ID = XGM.ID
+        LEFT JOIN XH_LABLE XL ON XL.ID = XGL.LABLE_ID
+        LEFT JOIN XH_SHOPS_MAIN XSM ON XSM.ID = XGM.SHOP_ID
+        ORDER BY XGM.CREATE_TIME DESC
+        LIMIT 5
+    </select>
+
+    <!--昨日热销商品-->
+    <select id="selectZrSaleGoods" resultType="java.util.Map" parameterType="java.util.Map">
+        SELECT
+            count(XOSP.GOODS_ID) AS goodsCount,
+            XGM.NAME AS goodsName
+        FROM
+            XH_ORDER_SALE_P XOSP
+        LEFT JOIN XH_GOODS_MAIN XGM ON XGM.ID = XOSP.GOODS_ID
+        WHERE
+            1 = 1 AND DATE_FORMAT(
+                XOSP.CREATE_TIME,
+                '%Y-%m-%d'
+            ) = #{time}
+        <if test="shopId!=null and shopId != ''">
+            AND XGM.SHOP_ID = #{shopId}
+        </if>
+        GROUP BY XOSP.GOODS_ID
+        ORDER BY goodsCount DESC
+        LIMIT 6
+    </select>
+
+    <!--获取有效商品总数-->
+    <select id="selectOrderType" resultType="java.util.Map" parameterType="java.util.Map">
+        SELECT count(*) AS count FROM XH_ORDER_H XOH
+        <if test="flag == true">
+            LEFT JOIN XH_ORDER_SALE_P XOSP ON XOSP.ID = XOH.ID
+            WHERE XOH.ORDER_STATUS = '01' AND XOH.TYPE != '02'
+            AND (SELECT count(*) FROM XH_ORDER_COMMENT WHERE ORDER_ID = XOH.ID) = 0
+        </if>
+        <if test="flag == false">
+            WHERE 1=1
+            <if test="type!=null and type != ''">
+                AND XOH.TYPE = #{type}
+            </if>
+            <if test="orderStatus!=null and orderStatus != ''">
+                AND XOH.ORDER_STATUS = #{orderStatus}
+            </if>
+            <if test="payStatus!=null and payStatus != ''">
+                AND XOH.PAY_STATUS = #{payStatus}
+            </if>
+            <if test="deliveryStatus!=null and deliveryStatus != ''">
+                AND XOH.DELIVERY_STATUS = #{deliveryStatus}
+            </if>
+        </if>
+        AND XOH.SHOP_ID = #{shopId}
+    </select>
+
+    <!--昨日新增收入-->
+    <select id="selectZrIncome" resultType="java.util.Map" parameterType="java.util.Map">
+      SELECT
+        SUM(XOH.PRICE) AS price
+    FROM
+        XH_ORDER_H XOH
+    WHERE
+        1 = 1
+    AND XOH.PAY_STATUS = '01'
+    AND XOH.PRICE > 0
+    AND DATE_FORMAT(
+        XOH.LAST_CREATE_TIME,
+        '%Y-%m-%d'
+    ) = #{time}
+        <if test="shopId!=null and shopId != ''">
+            AND XOH.SHOP_ID = #{shopId}
+        </if>
+    </select>
+
+    <!--昨日新增订单-->
+    <select id="selectZrOrder" resultType="java.util.Map" parameterType="java.util.Map">
+      SELECT
+            count(*) AS count
+        FROM
+            XH_ORDER_H XOH
+        WHERE
+            1 = 1
+        AND DATE_FORMAT(
+            XOH.LAST_CREATE_TIME,
+            '%Y-%m-%d'
+        ) = #{time}
+        <if test="shopId!=null and shopId != ''">
+            AND XOH.SHOP_ID = #{shopId}
+        </if>
+    </select>
+
+</mapper>
