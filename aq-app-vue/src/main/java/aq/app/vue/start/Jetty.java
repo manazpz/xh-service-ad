@@ -1,5 +1,6 @@
 package aq.app.vue.start;
 
+import aq.app.vue.webSocket.MyWebSocketHandler;
 import org.eclipse.jetty.security.HashLoginService;
 import org.eclipse.jetty.server.*;
 import org.eclipse.jetty.util.thread.QueuedThreadPool;
@@ -53,6 +54,9 @@ public class Jetty {
         root.setResourceBase(getScheduleHome() + "/web");
         root.setDescriptor(getScheduleHome() + "/web/WEB-INF/web.xml");
         root.setParentLoaderPriority(true);
+
+        MyWebSocketHandler myWebSocketHandler = new MyWebSocketHandler();
+        root.setHandler(myWebSocketHandler);
 
         server.setHandler(root);
         authorizeConfig(server);
@@ -117,7 +121,6 @@ public class Jetty {
             requestLog.setExtended(false);
             requestLog.setLogTimeZone("GMT");
             requestLog.setLogLatency(true);
-            server.setRequestLog(requestLog);
         }
     }
 
@@ -140,7 +143,6 @@ public class Jetty {
         String secretFile = System.getProperty("secretFile");
         secretFile = secretFile == null ? getScheduleHome() + "/resources/authorize.properties" : secretFile;
         loginService.setConfig(secretFile);
-        loginService.setHotReload(false);
         server.addBean(loginService);
     }
 }

@@ -8,7 +8,7 @@
         <maven.compiler.source>1.8</maven.compiler.source>
         <maven.compiler.target>1.8</maven.compiler.target>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-        <jetty.dependency.version>9.3.4.RC1</jetty.dependency.version>
+        <jetty.dependency.version>9.4.12.v20180830</jetty.dependency.version>
         <project.aq.parent>aq</project.aq.parent>
         <project.aq.parent.version>1.0</project.aq.parent.version>
     </properties>
@@ -336,5 +336,10 @@
             <version>1.2.0</version>
         </dependency>
 
+        <dependency>
+            <groupId>org.eclipse.jetty.websocket</groupId>
+            <artifactId>websocket-server</artifactId>
+            <version>9.2.23.v20171218</version>
+        </dependency>
     </dependencies>
 </project>
