@@ -103,7 +103,7 @@ public class ShopServiceImpl extends BaseServiceImpl  implements ShopService {
                             shopMap.put("foundingTime", DateTime.compareDate(shopMap.get("foundingTime").toString()));
                         if(!StringUtil.isEmpty(res.get("shopFiles")))
                             shopMap.put("img", ((List<Map>)res.get("shopFiles")).get(0).get("url"));
-                        shopDao.updateShop(shopMap);
+                        shopDao.insertShop(shopMap);
                     }
                     //插入证件信息
                     if(!StringUtil.isEmpty(res.get("paper"))) {

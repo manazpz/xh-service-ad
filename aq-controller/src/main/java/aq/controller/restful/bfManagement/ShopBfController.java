@@ -48,4 +48,11 @@ public class ShopBfController extends aq.controller.restful.System {
         writerJson(response,out,shopBfService.querySettlement(jsonObject));
     }
 
+    //新增店铺
+    @RequestMapping(value = "/insert",method = RequestMethod.POST)
+    public void shopInsert(HttpServletRequest request, HttpServletResponse response, PrintWriter out) throws Exception {
+        JsonObject jsonObject = HttpUtil.getParameterMap(request);
+        writerJson(response,out,shopBfService.insertShop(request,jsonObject));
+    }
+
 }

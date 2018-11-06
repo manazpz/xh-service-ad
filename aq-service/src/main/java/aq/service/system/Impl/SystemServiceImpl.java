@@ -7,6 +7,7 @@ import aq.common.oss.Oss;
 import aq.common.other.Rtn;
 import aq.common.util.*;
 import aq.dao.config.ConfigDao;
+import aq.dao.shop.ShopDao;
 import aq.dao.system.SystemDao;
 import aq.service.base.Impl.BaseServiceImpl;
 import aq.service.system.Func;
@@ -37,6 +38,9 @@ public class SystemServiceImpl extends BaseServiceImpl  implements SystemService
     private SystemDao sysDao;
 
     @Resource
+    private ShopDao shopDao;
+
+    @Resource
     private ConfigDao configDao;
 
     @Transactional(rollbackFor = {RuntimeException.class, Exception.class})
@@ -59,6 +63,17 @@ public class SystemServiceImpl extends BaseServiceImpl  implements SystemService
                     rtn.setCode(497);
                     rtn.setMessage("用户不存在！");
                 }else {
+                    if("SD".equals(mapList.get(0).get("STATUS"))) {
+                        map.clear();
+                        map.put("userId",mapList.get(0).get("ID"));
+                        map.put("status","01");
+                        List<Map<String, Object>> shops = shopDao.selectShop(map);
+                        if(shops.size() < 1) {
+                            rtn.setCode(404);
+                            rtn.setMessage("验证未通过，等待审核！");
+                            return Func.functionRtnToJsonObject.apply(rtn);
+                        }
+                    }
                     //验证密码
                     String encryptPwd = MD5.getMD5String(password),
                             okPwd = mapList.get(0).get("PASSWORD").toString();
@@ -151,11 +166,14 @@ public class SystemServiceImpl extends BaseServiceImpl  implements SystemService
             Map<String, Object> userMap = users.get(0);
             map.clear();
             map.put("administratorId",userMap.get("id"));
-            map.put("type","MENU");
             List<Map> list = sysDao.selectSysPermissionUser(map);
             list.forEach(obj->{
                 if(!StringUtil.isEmpty(obj.get("module"))) {
-                    roles.add(obj.get("module").toString());
+                    if("AM".equals(obj.get("module"))) {
+                        roles.add(userMap.get("statusKey"));
+                    }else {
+                        roles.add(obj.get("module").toString());
+                    }
                 }
             });
             userMap.put("roles",roles);
