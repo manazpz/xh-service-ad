@@ -1,6 +1,7 @@
 package aq.app.vue.start;
 
-import aq.app.vue.webSocket.MyWebSocketHandler;
+
+import aq.app.vue.webSocket.WebSocketHandlerTest;
 import org.eclipse.jetty.security.HashLoginService;
 import org.eclipse.jetty.server.*;
 import org.eclipse.jetty.util.thread.QueuedThreadPool;
@@ -55,7 +56,8 @@ public class Jetty {
         root.setDescriptor(getScheduleHome() + "/web/WEB-INF/web.xml");
         root.setParentLoaderPriority(true);
 
-        MyWebSocketHandler myWebSocketHandler = new MyWebSocketHandler();
+//        MyWebSocketHandler myWebSocketHandler = new MyWebSocketHandler();
+        WebSocketHandlerTest myWebSocketHandler = new WebSocketHandlerTest();
         root.setHandler(myWebSocketHandler);
 
         server.setHandler(root);

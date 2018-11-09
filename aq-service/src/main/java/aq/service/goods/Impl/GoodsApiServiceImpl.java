@@ -454,4 +454,29 @@ public class GoodsApiServiceImpl extends BaseServiceImpl  implements GoodsApiSer
         rtn.setData(data);
         return  Func.functionRtnToJsonObject.apply(rtn);
     }
+
+
+    @Transactional(rollbackFor = {RuntimeException.class, Exception.class})
+    @Override
+    public JsonObject queryGoodsComment(JsonObject jsonObject) {
+        Rtn rtn = new Rtn("Goods");
+        JsonObject data = new JsonObject();
+        JsonArray jsonArray = new JsonArray();
+        Map<String,Object> res = new HashMap<>();
+        Map<String,Object> comment = new HashMap<>();
+        Map<String,Object> replay = new HashMap<>();
+        List<Map<String, Object>> commentList = new ArrayList();
+        List<Map<String, Object>> replayList = new ArrayList();
+        List list = new ArrayList();
+        res.clear();
+        res = GsonHelper.getInstance().fromJson(jsonObject,Map.class);
+        List<Map<String, Object>> goodsComment = goodsDao.selectGoodsComment(res);
+        rtn.setCode(200);
+        rtn.setMessage("success");
+        jsonArray =  GsonHelper.getInstanceJsonparser().parse(GsonHelper.getInstance().toJson(goodsComment)).getAsJsonArray();
+        data.addProperty("total",goodsComment.size());
+        data.add("items",jsonArray);
+        rtn.setData(data);
+        return  Func.functionRtnToJsonObject.apply(rtn);
+    }
 }

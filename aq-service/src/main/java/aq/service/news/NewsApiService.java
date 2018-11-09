@@ -16,5 +16,4 @@ public interface NewsApiService extends BaseService {
 
     //新增订单日志
     int instertorderLog(Map<String, Object> map);
-
 }

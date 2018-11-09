@@ -159,8 +159,8 @@
     <!--新增评论-->
     <insert id="insertRate" >
         INSERT INTO XH_ORDER_COMMENT
-        VALUES(#{goodsId},#{no},#{types},#{ref_no},#{revierer},#{content},#{star},#{remarks},
-        #{createUserId},#{createTime,jdbcType=TIMESTAMP},#{lastCreateUserId},#{lastCreateTime,jdbcType=TIMESTAMP})
+        VALUES(#{goodsId},#{no},#{status},#{types},#{ref_no},#{revierer},#{content},#{star},#{orderId},#{remarks},
+        #{createTime,jdbcType=TIMESTAMP})
     </insert>
 
 
@@ -171,10 +171,12 @@
             XO.GOODS_ID AS goodsId,
             XO.NO AS no,
             XO.TYPES AS types,
+            XO.STATUS AS status,
             XO.REF_NO AS ref_no,
             XO.REVIERER AS revierer,
             XO.CONTENT AS content,
             XO.STAR AS star,
+            XO.ORDER_ID AS orderId,
             XO.REMARKS AS remarks,
             DATE_FORMAT(
                 XO.CREATE_TIME,
@@ -189,6 +191,9 @@
         <if test="no!=null and no != ''">
             AND XO.NO = #{no}
         </if>
+        <if test="status!=null and status != ''">
+            AND XO.STATUS = #{status}
+        </if>
     </select>
 
 
@@ -199,5 +204,18 @@
         VALUES(#{id},#{orderId},#{types},#{total_fee},#{payWay},#{remarks},'','','',
         #{createUserId},#{createTime,jdbcType=TIMESTAMP},#{lastCreateUserId},#{lastCreateTime,jdbcType=TIMESTAMP})
     </insert>
+
+
+
+    <!--更新评论信息-->
+    <update id="updateRate" parameterType="java.util.Map">
+        UPDATE XH_ORDER_COMMENT XO
+        <trim prefix="set" suffixOverrides=",">
+            <if test="status!=null and status != ''">
+                XO.STATUS = #{status},
+            </if>
+        </trim>
+        WHERE XO.GOODS_ID = #{goodsId} AND XO.NO = #{no}
+    </update>
 
 </mapper>

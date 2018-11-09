@@ -35,4 +35,7 @@ public interface OrderDao {
     //新增支付明细
     int insertBlance(Map<String,Object> map);
 
+    //更新评论信息
+    int updateRate(Map<String,Object> map);
+
 }

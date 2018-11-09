@@ -114,6 +114,12 @@
         <if test="wxQuery != null and wxQuery != ''">
             AND (lower(XGM. NAME) LIKE CONCAT('%', lower(#{wxQuery}), '%') OR lower(XB.NAME) LIKE CONCAT('%', lower(#{wxQuery}), '%'))
         </if>
+        <if test="ids!=null and ids!=''">
+            AND XGM.ID in
+            <foreach collection="ids" index="index" item="item" open="(" separator="," close=")">
+                #{item.basicId}
+            </foreach>
+        </if>
         <if test="noGoodsIds!=null and noGoodsIds!=''">
             AND XGM.ID NOT in
             <foreach collection="noGoodsIds" index="index" item="item" open="(" separator="," close=")">
@@ -396,5 +402,48 @@
     <delete id="deleteGoodsLable"  parameterType="java.util.Map" >
         DELETE FROM XH_GOODS_LABLE WHERE LABLE_ID = #{lableId} AND GOODS_ID = #{goodsId}
     </delete>
+
+
+
+    <!--查询商品评论-->
+    <select id="selectGoodsComment" resultType="java.util.Map" parameterType="java.util.Map">
+        SELECT
+            XO.GOODS_ID AS goodsId,
+            XG. NAME AS goodsName,
+            XO. NO AS NO,
+            XO.TYPES AS types,
+            XO.STATUS AS status,
+            XO.REF_NO AS ref_no,
+            su.NICK_NAME AS nick_name,
+            sa.NICK_NAME AS revierer_nick_name,
+            su.ID AS user_id,
+            XO.CONTENT AS content,
+            XO.STAR AS star,
+            XO.ORDER_ID AS orderId,
+            XOH.NUMBER AS number,
+            DATE_FORMAT(
+            XO.CREATE_TIME,
+            '%Y-%m-%d %H:%i:%S'
+            ) AS createTime
+        FROM
+        XH_ORDER_COMMENT XO
+        LEFT JOIN system_user su ON su.ID = XO.REVIERER
+        LEFT JOIN XH_GOODS_MAIN XG ON XG.ID = XO.GOODS_ID
+        LEFT JOIN XH_ORDER_H XOH ON XOH.ID = XO.ORDER_ID
+        LEFT JOIN system_administrator sa ON sa.ID = XO.REVIERER
+        WHERE 1=1
+        <if test="goodsId!=null and goodsId != ''">
+            AND XO.GOODS_ID = #{goodsId}
+        </if>
+        <if test="orderId!=null and orderId != ''">
+            AND XO.ORDER_ID = #{orderId}
+        </if>
+        <if test="type!=null and type != ''">
+            AND XO.TYPES = #{type}
+        </if>
+        <if test="status!=null and status != ''">
+            AND XO.STATUS = #{status}
+        </if>
+    </select>
 
 </mapper>

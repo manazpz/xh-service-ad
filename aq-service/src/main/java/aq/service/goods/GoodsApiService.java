@@ -44,4 +44,7 @@ public interface GoodsApiService extends BaseService {
     //新增回收方式
     JsonObject insertrecoveryListUser(JsonObject jsonObject);
 
+    //查询商品评论列表
+    JsonObject queryGoodsComment(JsonObject jsonObject);
+
 }

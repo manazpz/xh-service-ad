@@ -236,7 +236,7 @@ public class OrderApiServiceImpl extends BaseServiceImpl  implements OrderApiSer
             res.put("buyer",userinfo.get(0).get("id"));
         }
         res.put("type","01");//01: 订单  02 ： 物流   03： 优惠券   04 ：  活动
-        res.put("status","01");//01: 未付款 02: 已付款  03： 取消订单 04： 已收款
+        res.put("status","01");//01: 未付款 02: 已付款  03： 取消订单 04： 已收款  05:已收货
         res.put("createTime",new Date());
         newsDao.insertOrderLog(res);
         res.clear();
@@ -260,14 +260,14 @@ public class OrderApiServiceImpl extends BaseServiceImpl  implements OrderApiSer
         Map<String,Object> rest = new HashMap<>();
         res = GsonHelper.getInstance().fromJson(jsonObject,Map.class);
         orderDao.updateOrder(res);
-        rest.put("openId",res.get("openId"));
+        rest.put("openid",res.get("openId"));
         List<Map<String, Object>> maps = userDao.selectUserInfos(rest);
         if(maps.size()> 0 ){
             rest.put("buyer",maps.get(0).get("id"));
         }
         rest.put("id",UUIDUtil.getUUID());
         rest.put("orderId",res.get("id"));
-        rest.put("status",res.get("type"));
+        rest.put("status",res.get("status"));
         rest.put("type","01");
         rest.put("createTime",new Date());
         newsDao.insertOrderLog(rest);
@@ -297,6 +297,7 @@ public class OrderApiServiceImpl extends BaseServiceImpl  implements OrderApiSer
                     res.put("no",10);
                 }
                 res.put("createTime",new Date());
+                res.put("status","N");
                 orderDao.insertRate(res);
                 rtn.setCode(200);
                 rtn.setMessage("success");

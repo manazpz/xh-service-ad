@@ -132,4 +132,12 @@ public class GoodsApiController extends aq.controller.restful.System {
     public void insertrecoveryListUser(@RequestBody JsonObject requestJson,HttpServletRequest request, HttpServletResponse response, PrintWriter out) throws Exception {
         writerJson(response,out,goodsService.insertrecoveryListUser(requestJson));
     }
+
+
+    //查询商品评论信息
+    @RequestMapping(value = "/queryGoodsComment",method = RequestMethod.GET)
+    public void queryGoodsComment(HttpServletRequest request, HttpServletResponse response, PrintWriter out) throws Exception {
+        JsonObject jsonObject = HttpUtil.getParameterMap(request);
+        writerJson(response,out,goodsService.queryGoodsComment(jsonObject));
+    }
 }

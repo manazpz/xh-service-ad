@@ -64,4 +64,11 @@ public interface GoodsDao {
     //删除商品-标签对应表
     int deleteGoodsLable(Map<String,Object> map);
 
+
+
+    /**********************************************************************************/
+
+    //查询商品评论
+    List<Map<String,Object>> selectGoodsComment(Map<String,Object> map);
+
 }
