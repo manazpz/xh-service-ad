@@ -218,4 +218,27 @@
         WHERE XO.GOODS_ID = #{goodsId} AND XO.NO = #{no}
     </update>
 
+
+
+    <!--查询物流信息- -->
+    <select id="selectLogistical" resultType="java.util.Map" parameterType="java.util.Map">
+        SELECT
+            XL.LOG_CODE AS log_code,
+            XL.LOG_NAME AS log_name,
+            XL.LOG_COM_CODE AS com_code
+        FROM
+        XH_LOGISTICS XL
+        WHERE 1=1
+        <if test="id!=null and id != ''">
+            AND XL.ID = #{id}
+        </if>
+    </select>
+
+
+    <!--新增物流信息-->
+    <insert id="insertLogistics" >
+        INSERT INTO XH_LOGISTICS
+        VALUES(#{id},#{name},#{com_code},#{code})
+    </insert>
+
 </mapper>

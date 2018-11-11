@@ -322,6 +322,27 @@ public class OrderApiServiceImpl extends BaseServiceImpl  implements OrderApiSer
         return  Func.functionRtnToJsonObject.apply(rtn);
     }
 
+
+    @Override
+    public JsonObject queryLogistical(JsonObject jsonObject) {
+        Rtn rtn = new Rtn("order");
+        HashMap req = new HashMap();
+        JsonObject data = new JsonObject();
+        JsonArray jsonArray = new JsonArray();
+        req.clear();
+        req.put("id",jsonObject.get("id").getAsString());
+        List list = orderDao.selectLogistical(req);
+        jsonArray =  GsonHelper.getInstanceJsonparser().parse(GsonHelper.getInstance().toJson(list)).getAsJsonArray();
+        data.addProperty("total",list.size());
+        data.add("items",jsonArray);
+        rtn.setCode(200);
+        rtn.setMessage("success");
+        rtn.setData(data);
+        return  Func.functionRtnToJsonObject.apply(rtn);
+    }
+
+
+
     @Transactional(rollbackFor = {RuntimeException.class, Exception.class})
     @Override
     public List<Map<String, Object>> selectOrder(Map<String, Object> map) {

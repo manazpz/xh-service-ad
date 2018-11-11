@@ -32,6 +32,9 @@ public interface OrderApiService extends BaseService {
     //新增支付明细
     JsonObject insertBlance(JsonObject jsonObject);
 
+    //查询物流明细
+    JsonObject queryLogistical(JsonObject jsonObject);
+
 
 
 }

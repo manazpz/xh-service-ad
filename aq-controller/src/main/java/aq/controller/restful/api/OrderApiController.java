@@ -56,4 +56,11 @@ public class OrderApiController extends aq.controller.restful.System {
     public void insertRate(@RequestBody JsonObject requestJson, HttpServletRequest request, HttpServletResponse response, PrintWriter out){
         writerJson(response,out,orderApiService.insertRate(requestJson));
     }
+
+    //查询订单
+    @RequestMapping(value = "/logistics",method = RequestMethod.GET)
+    public void logisticalList(HttpServletRequest request, HttpServletResponse response, PrintWriter out) throws Exception {
+        JsonObject jsonObject = HttpUtil.getParameterMap(request);
+        writerJson(response,out,orderApiService.queryLogistical(jsonObject));
+    }
 }

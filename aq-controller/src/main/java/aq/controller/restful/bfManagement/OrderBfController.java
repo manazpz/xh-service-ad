@@ -42,4 +42,11 @@ public class OrderBfController extends aq.controller.restful.System {
         writerJson(response,out,orderBfService.updateOrder(requestJson));
     }
 
+    //新增物流信息
+    @RequestMapping(value = "/insertLogistics",method = RequestMethod.POST)
+    @ResponseBody
+    public void insertLogistics(@RequestBody JsonObject requestJson, HttpServletRequest request, HttpServletResponse response, PrintWriter out){
+        writerJson(response,out,orderBfService.insertLogistics(requestJson));
+    }
+
 }

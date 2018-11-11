@@ -136,4 +136,22 @@ public class OrderBfServiceImpl extends BaseServiceImpl  implements OrderBfServi
         }
         return  Func.functionRtnToJsonObject.apply(rtn);
     }
+
+
+    @Override
+    public JsonObject insertLogistics(JsonObject jsonObject) {
+        AbsAccessUser user = Factory.getContext().user();
+        Rtn rtn = new Rtn("order");
+        if (user == null) {
+            rtn.setCode(10000);
+            rtn.setMessage("未登录！");
+        }else {
+            Map<String,Object> res = new HashMap<>();
+            res = GsonHelper.getInstance().fromJson(jsonObject,Map.class);
+            orderDao.insertLogistics(res);
+            rtn.setCode(200);
+            rtn.setMessage("success");
+        }
+        return  Func.functionRtnToJsonObject.apply(rtn);
+    }
 }

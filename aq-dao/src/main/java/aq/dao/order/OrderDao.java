@@ -38,4 +38,10 @@ public interface OrderDao {
     //更新评论信息
     int updateRate(Map<String,Object> map);
 
+    //查询物流信息
+    List<Map<String,Object>> selectLogistical(Map<String,Object> map);
+
+    //新增物流信息
+    int insertLogistics(Map<String,Object> map);
+
 }

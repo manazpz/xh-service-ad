@@ -1,9 +1,5 @@
 package aq.app.vue.start;
 
-import aq.app.vue.webSocket.MyWebSocketHandler;
-import org.eclipse.jetty.server.Server;
-import org.eclipse.jetty.server.handler.ContextHandler;
-
 public class Main {
 
     private static Main instance;
