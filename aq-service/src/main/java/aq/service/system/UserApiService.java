@@ -20,4 +20,7 @@ public interface UserApiService extends BaseService {
     //发送验证码
     JsonObject sendCode(JsonObject jsonObject);
 
+    //新增意见反馈
+    JsonObject insertSuggestion(JsonObject jsonObject);
+
 }

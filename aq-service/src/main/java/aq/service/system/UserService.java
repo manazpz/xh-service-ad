@@ -58,4 +58,7 @@ public interface UserService extends BaseService {
 
     //更新客服
     JsonObject updateCustomService(JsonObject jsonObject);
+
+    //查询用户反馈信息
+    JsonObject querySuggestion(JsonObject jsonObject);
 }

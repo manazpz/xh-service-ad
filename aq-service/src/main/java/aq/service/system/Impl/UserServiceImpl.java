@@ -310,4 +310,12 @@ public class UserServiceImpl extends BaseServiceImpl implements UserService {
         rtn.setMessage("success");
         return Func.functionRtnToJsonObject.apply(rtn);
     }
+
+    @Override
+    public JsonObject querySuggestion(JsonObject jsonObject) {
+        jsonObject.addProperty("service","customer");
+        return query(jsonObject,(map)->{
+            return userDao.selectSuggestion(map);
+        });
+    }
 }

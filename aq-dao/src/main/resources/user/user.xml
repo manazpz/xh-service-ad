@@ -423,4 +423,33 @@
         WHERE sb.ID = #{id}
     </update>
 
+
+    <!--新增用户反馈-->
+    <insert id="insertSuggestion" >
+        INSERT INTO XH_SUGGESTION
+        VALUES(#{id},#{user_id},#{content},#{createTime,jdbcType=TIMESTAMP})
+    </insert>
+
+
+    <!--查询用户反馈信息-->
+    <select id="selectSuggestion" resultType="java.util.Map" parameterType="java.util.Map">
+        SELECT
+            XU.ID AS id,
+            su.NICK_NAME AS nick_name,
+            XU.CONTENT AS content,
+            DATE_FORMAT(XU.CREATE_TIME,'%Y-%m-%d %H:%i:%S') AS createTime
+        FROM
+            XH_SUGGESTION XU
+        LEFT JOIN system_user su ON su.ID = XU.USER_ID
+        WHERE
+        1 = 1
+        ORDER BY XU.CREATE_TIME ASC
+        <if test="nick_name != null">
+            AND su.NICK_NAME = #{nick_name}
+        </if>
+        <if test="sort != null">
+            ,#{sort}
+        </if>
+    </select>
+
 </mapper>

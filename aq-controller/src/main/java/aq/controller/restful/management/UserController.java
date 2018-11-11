@@ -133,4 +133,13 @@ public class UserController extends aq.controller.restful.System {
         writerJson(response,out,userService.updateCustomService(requestJson));
     }
 
+
+    //查询客服信息
+    @RequestMapping(value = "/querySuggestion",method = RequestMethod.GET)
+    @ResponseBody
+    public void querySuggestion(HttpServletRequest request, HttpServletResponse response, PrintWriter out){
+        JsonObject jsonObject = HttpUtil.getParameterMap(request);
+        writerJson(response,out,userService.querySuggestion(jsonObject));
+    }
+
 }

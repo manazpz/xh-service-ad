@@ -47,4 +47,10 @@ public class UserApiController extends aq.controller.restful.System {
     public void sendCode(@RequestBody JsonObject requestJson, HttpServletRequest request, HttpServletResponse response, PrintWriter out){
         writerJson(response,out,userApiService.sendCode(requestJson));
     }
+
+    //新增意见反馈
+    @RequestMapping(value = "/insertSuggestion",method = RequestMethod.POST)
+    public void insertSuggestion(@RequestBody JsonObject requestJson, HttpServletRequest request, HttpServletResponse response, PrintWriter out){
+        writerJson(response,out,userApiService.insertSuggestion(requestJson));
+    }
 }

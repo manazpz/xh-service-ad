@@ -83,4 +83,10 @@ public interface UserDao {
     //更新用户证件信息
     int updateUsersPaper(Map<String,Object> map);
 
+    //新增用户反馈
+    int insertSuggestion(Map<String,Object> map);
+
+    //查询用户反馈信息
+    List<Map<String,Object>> selectSuggestion(Map<String,Object> map);
+
 }

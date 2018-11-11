@@ -106,4 +106,30 @@ public class UserApiServiceImpl extends BaseServiceImpl implements UserApiServic
         }
         return  Func.functionRtnToJsonObject.apply(rtn);
     }
+
+
+    @Override
+    public JsonObject insertSuggestion(JsonObject jsonObject) {
+        Rtn rtn = new Rtn("User");
+        Map<String,Object> res = new HashMap<>();
+        Map<String,Object> rest = new HashMap<>();
+        res = GsonHelper.getInstance().fromJson(jsonObject,Map.class);
+        rest.put("openid",res.get("openId"));
+        List<Map<String, Object>> maps = userDao.selectUserInfos(rest);
+        if(maps.size()>0){
+            rest.clear();
+            rest.put("id",UUIDUtil.getUUID());
+            rest.put("user_id",maps.get(0).get("id"));
+            rest.put("content",res.get("content"));
+            rest.put("createTime",new Date());
+            userDao.insertSuggestion(rest);
+            rtn.setCode(200);
+            rtn.setMessage("success");
+        }else{
+            rtn.setCode(500);
+            rtn.setMessage("error");
+        }
+
+        return  Func.functionRtnToJsonObject.apply(rtn);
+    }
 }
