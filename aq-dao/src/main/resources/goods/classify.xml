@@ -75,6 +75,9 @@
             <if test="remarks!=null and remarks!=''">
                 REMARKS = #{remarks},
             </if>
+            <if test="px!=null and px!=''">
+                PX = #{px},
+            </if>
             <if test="lastCreateUserId!=null and lastCreateUserId!=''">
                 LAST_CREATE_USER = #{lastCreateUserId},
             </if>

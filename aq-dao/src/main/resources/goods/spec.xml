@@ -42,6 +42,12 @@
         <if test="name!=null and name != ''">
             AND XSM.GROU_NAME = #{name}
         </if>
+        <if test="px!=null and px != ''">
+            AND XSM.PX = #{px}
+        </if>
+        <if test="specName!=null and specName != ''">
+            AND XSM.SPEC_NAME = #{specName}
+        </if>
         ORDER BY XSM.GROU_NAME
     </select>
 
@@ -58,7 +64,7 @@
         #{parameter},
         #{remarks},
         #{multi},
-        #{obligate1},
+        #{model},
         #{obligate2},
         #{createUser},
         #{createTime,jdbcType=TIMESTAMP},

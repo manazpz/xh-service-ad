@@ -409,6 +409,8 @@ public class GoodsServiceImpl extends BaseServiceImpl  implements GoodsService {
                 jsonArray =  GsonHelper.getInstanceJsonparser().parse(GsonHelper.getInstance().toJson(specParameter)).getAsJsonArray();
             }
             data.addProperty("tipsType",list.get(0).get("tipsType").toString());
+            data.addProperty("groupName",list.get(0).get("grouName").toString());
+            data.addProperty("specName",list.get(0).get("specName").toString());
         }
         rtn.setCode(200);
         rtn.setMessage("success");
