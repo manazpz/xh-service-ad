@@ -53,6 +53,15 @@
         </mvc:interceptor>
     </mvc:interceptors>
 
+    <mvc:interceptors>
+        <mvc:interceptor>
+            <mvc:mapping path="/api/**" />
+            <bean  class="aq.app.vue.interceptor.SiteFilter">
+                <property name="whitelist" value="${server.http.whiteList}"></property>
+            </bean>
+        </mvc:interceptor>
+    </mvc:interceptors>
+
     <bean class="org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandlerMapping"/>
 
     <!--Message Converter Http请求中的JSON数据转换器-->
