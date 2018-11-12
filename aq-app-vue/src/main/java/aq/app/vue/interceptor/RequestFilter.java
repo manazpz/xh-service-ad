@@ -62,18 +62,18 @@ public class RequestFilter extends aq.common.interceptor.RequestFilter {
                     users = userJson.get("data").getAsJsonObject();
                 }
 
-                //判断站点
-                if (!"AD".equals(users.get("statusKey").getAsString())) {
-                    res.addProperty("type","WS");
-                    JsonObject webJson = systemService.querySwitch(res);
-                    if(webJson != null && ((JsonObject)webJson.get("data")).get("items").getAsJsonArray().size() > 0) {
-                        JsonObject item = (JsonObject) ((JsonObject)webJson.get("data")).get("items").getAsJsonArray().get(0);
-                        if("N".equals(item.get("isSwitch").getAsString())) {
-                            response.sendError(HttpServletResponse.SC_FORBIDDEN, "Web Close");
-                            return false;
-                        }
-                    }
-                }
+//                //判断站点
+//                if (!"AD".equals(users.get("statusKey").getAsString())) {
+//                    res.addProperty("type","WS");
+//                    JsonObject webJson = systemService.querySwitch(res);
+//                    if(webJson != null && ((JsonObject)webJson.get("data")).get("items").getAsJsonArray().size() > 0) {
+//                        JsonObject item = (JsonObject) ((JsonObject)webJson.get("data")).get("items").getAsJsonArray().get(0);
+//                        if("N".equals(item.get("isSwitch").getAsString())) {
+//                            response.sendError(HttpServletResponse.SC_FORBIDDEN, "Web Close");
+//                            return false;
+//                        }
+//                    }
+//                }
 
                 //获取权限
                 PermissionCollection ap = null;
