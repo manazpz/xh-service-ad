@@ -42,6 +42,9 @@
         <if test="cascade == 'Y'">
             AND (XC.PARENT_ID IS NULL or XC.PARENT_ID = '')
         </if>
+        <if test="obligate1 != null">
+            AND XC.OBLIGATE1 = #{obligate1}
+        </if>
         ORDER BY XC.PX ASC
     </select>
 
@@ -61,28 +64,28 @@
 
     <!--更新分类-->
     <update id="updateClassify" parameterType="java.util.Map">
-        UPDATE XH_CLASSIFY
+        UPDATE XH_CLASSIFY XC
         <trim prefix="set" suffixOverrides=",">
             <if test="name!=null and name!=''">
-                NAME = #{name},
+                XC.NAME = #{name},
             </if>
             <if test="model!=null and model!=''">
-                MODEL = #{model},
+                XC.MODEL = #{model},
             </if>
             <if test="parameter!=null and parameter!=''">
-                PARAMETER = #{parameter},
+                XC.PARAMETER = #{parameter},
             </if>
             <if test="remarks!=null and remarks!=''">
-                REMARKS = #{remarks},
+                XC.REMARKS = #{remarks},
             </if>
             <if test="px!=null and px!=''">
-                PX = #{px},
+                XC.PX = #{px},
             </if>
             <if test="lastCreateUserId!=null and lastCreateUserId!=''">
-                LAST_CREATE_USER = #{lastCreateUserId},
+                XC.LAST_CREATE_USER = #{lastCreateUserId},
             </if>
             <if test="lastCreateTime!=null and lastCreateTime!=''">
-                LAST_CREATE_TIME = #{lastCreateTime,jdbcType=TIMESTAMP},
+                XC.LAST_CREATE_TIME = #{lastCreateTime,jdbcType=TIMESTAMP},
             </if>
         </trim>
         WHERE ID = #{id}

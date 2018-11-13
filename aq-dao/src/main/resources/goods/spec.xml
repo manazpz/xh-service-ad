@@ -7,7 +7,7 @@
     <select id="selectSpec" resultType="java.util.Map" parameterType="java.util.Map">
         SELECT
         XSM.ID AS id,
-        XSM.GROU_NAME AS grouName,
+        XC.NAME AS grouName,
         XSM.SPEC_NAME AS specName,
         XSM.TIPS_TYPE AS tipsType,
         XSM.TIPS_TEXT AS tipsText,
@@ -32,6 +32,7 @@
         XH_SPEC_MAIN XSM
         LEFT JOIN system_administrator cu ON cu.ID = XSM.CREATE_USER
         LEFT JOIN system_administrator lcu ON lcu.ID = XSM.LAST_CREATE_USER
+        LEFT JOIN XH_CLASSIFY XC ON XC.ID = XSM.OBLIGATE2
         WHERE 1=1
         <if test="id!=null and id != ''">
             AND XSM.ID = #{id}
@@ -40,7 +41,10 @@
             AND XSM.OBLIGATE1 = #{model}
         </if>
         <if test="name!=null and name != ''">
-            AND XSM.GROU_NAME = #{name}
+            AND XC.NAME = #{name}
+        </if>
+        <if test="parentId!=null and parentId != ''">
+            AND XSM.OBLIGATE2 = #{parentId}
         </if>
         <if test="px!=null and px != ''">
             AND XSM.PX = #{px}

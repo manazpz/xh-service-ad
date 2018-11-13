@@ -126,7 +126,7 @@ public class GoodsServiceImpl extends BaseServiceImpl  implements GoodsService {
         rest.put("name", res.get("name"));
         rest.put("model", res.get("model"));
         rest.put("px", res.get("px"));
-        rest.put("obligate",res.get("obligate"));
+        rest.put("obligate1",res.get("index"));
         rest.put("remarks", res.get("remarks"));
         rest.put("createTime",new Date());
         rest.put("lastCreateTime",new Date());
@@ -146,9 +146,14 @@ public class GoodsServiceImpl extends BaseServiceImpl  implements GoodsService {
         Map<String,Object> res = new HashMap<>();
         JsonObject data = new JsonObject();
         JsonArray jsonArray = new JsonArray();
-        res.put("cascade", 'Y');
+        if (StringUtil.isEmpty(jsonObject.get("cascade"))) {
+            res.put("cascade", 'Y');
+        }
         if (!StringUtil.isEmpty(jsonObject.get("model"))) {
             res.put("model", jsonObject.get("model").getAsString());
+        }
+        if (!StringUtil.isEmpty(jsonObject.get("obligate1"))) {
+            res.put("obligate1", jsonObject.get("obligate1").getAsString());
         }
         List<Map<String, Object>> req1 = classifyDao.selectClassify(res);
         for(Map obj1:req1) {
@@ -192,17 +197,26 @@ public class GoodsServiceImpl extends BaseServiceImpl  implements GoodsService {
     public JsonObject updateClassify(JsonObject jsonObject) {
         AbsAccessUser user = Factory.getContext().user();
         Rtn rtn = new Rtn("goods");
+        JsonObject jsonObjects = new JsonObject();
         Map<String,Object> res = new HashMap<>();
         Map<String,Object> rest = new HashMap<>();
         Map<String,Object> rests = new HashMap<>();
         res = GsonHelper.getInstance().fromJson(jsonObject,Map.class);
-        res.put("id", res.get("id"));
-        res.put("model", res.get("model"));
+//        rest.put("id",res.get("id"));
+//        rest.put("model",res.get("model"));
+//        rest.put("name",res.get("name"));
+//        rest.put("px",res.get("px"));
+//        rest.put("remarks",res.get("remarks"));
+        if(res.get("parameter")!= null){
+            jsonObjects =  GsonHelper.getInstanceJsonparser().parse(GsonHelper.getInstance().toJson(res.get("parameter"))).getAsJsonObject();
+            res.put("parameter",jsonObjects.toString());
+        }
         res.put("updateTime",new Date());
         res.put("lastCreateUser",user.getUserId());
         classifyDao.updateClassify(res);
         if(res.get("parentId") == null){
-            rest.put("parentId",res.get("id"));
+            rest.clear();
+            rest.put("parentId",res.get("parentId"));
             List<Map<String, Object>> maps = classifyDao.selectClassify(rest);
             if(maps.size()>0){
                 for(Map obj:maps) {
@@ -303,7 +317,14 @@ public class GoodsServiceImpl extends BaseServiceImpl  implements GoodsService {
         AbsAccessUser user = Factory.getContext().user();
         Rtn rtn = new Rtn("goods");
         Map<String,Object> res = new HashMap<>();
+        Map<String,Object> rest = new HashMap<>();
         res = GsonHelper.getInstance().fromJson(jsonObject,Map.class);
+        rest.put("id",res.get("grouName"));
+        List<Map<String, Object>> classify = classifyDao.selectClassify(rest);
+        if(classify.size()>0){
+            res.put("obligate2",res.get("grouName"));
+            res.put("grouName",classify.get(0).get("name"));
+        }
         res.put("id", UUIDUtil.getUUID());
         res.put("createTime",new Date());
         res.put("lastCreateTime",new Date());

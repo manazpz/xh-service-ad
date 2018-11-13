@@ -61,7 +61,7 @@ public class GoodsController extends aq.controller.restful.System {
         writerJson(response,out,goodsService.queryclassify(jsonObject));
     }
 
-    //新增商品分类
+    //编辑商品分类
     @RequestMapping(value = "/updateClassify",method = RequestMethod.POST)
     @ResponseBody
     public void updateClassify(@RequestBody JsonObject requestJson, HttpServletRequest request, HttpServletResponse response, PrintWriter out){
