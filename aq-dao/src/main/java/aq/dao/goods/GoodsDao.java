@@ -71,4 +71,15 @@ public interface GoodsDao {
     //查询商品评论
     List<Map<String,Object>> selectGoodsComment(Map<String,Object> map);
 
+    /**********************************************************************************/
+
+    //插入首页商品
+    int insertHomeGoods(Map<String,Object> map);
+
+    //查询首页商品
+    List<Map<String,Object>> selectHomeGoods(Map<String,Object> map);
+
+    //更新首页商品
+    int updateHomeGoods(Map<String,Object> map);
+
 }

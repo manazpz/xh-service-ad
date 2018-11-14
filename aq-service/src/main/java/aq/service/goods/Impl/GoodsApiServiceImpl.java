@@ -7,6 +7,7 @@ import aq.dao.goods.ClassifyDao;
 import aq.dao.goods.GoodsDao;
 import aq.dao.goods.SpecDao;
 import aq.dao.resource.ResourceDao;
+import aq.dao.user.CustomerDao;
 import aq.dao.user.UserDao;
 import aq.service.base.Impl.BaseServiceImpl;
 import aq.service.goods.GoodsApiService;
@@ -43,6 +44,9 @@ public class GoodsApiServiceImpl extends BaseServiceImpl  implements GoodsApiSer
     @Resource
     private UserDao userDao;
 
+    @Resource
+    private CustomerDao customerDao;
+
     @Transactional(rollbackFor = {RuntimeException.class, Exception.class})
     @Override
     public JsonObject queryGoods(JsonObject jsonObject) {
@@ -77,26 +81,40 @@ public class GoodsApiServiceImpl extends BaseServiceImpl  implements GoodsApiSer
 
     @Override
     public JsonObject queryLableGoods(JsonObject jsonObject) {
-        jsonObject.addProperty("service","goods");
-        return query(jsonObject,(map)->{
-            Map res = new HashMap();
-            if(StringUtil.isEmpty(map.get("model"))) {
-                ArrayList req = new ArrayList();
-                map.put("model","01");
-                List<Map<String, Object>> newGoods = goodsDao.selectGoods(map);
-                map.put("model","02");
-                PageHelper.startPage(1,1);
-                PageInfo oldPageInfo = new PageInfo(goodsDao.selectGoods(map));
-                res.clear();
-                res.put("oldGoods",oldPageInfo.getList());
-                res.put("newGoods",newGoods);
-                req.add(res);
-                return req;
+        Rtn rtn = new Rtn("Goods");
+        Map<String,Object> res = new HashMap<>();
+        Map<String,Object> ress = new HashMap<>();
+        Map<String,Object> req = new HashMap<>();
+        res = GsonHelper.getInstance().fromJson(jsonObject,Map.class);
+        res.put("model","01");
+        req.clear();
+        List<Map<String, Object>> newHomeGoods = goodsDao.selectHomeGoods(res);
+        if(newHomeGoods.size()>0) {
+            ress.clear();
+            ress.put("id",newHomeGoods.get(0).get("goodsId"));
+            req.put("newGoods",goodsDao.selectGoods(ress));
+        }else {
+            PageHelper.startPage(1,1);
+            PageInfo newPageInfo = new PageInfo(goodsDao.selectGoods(res));
+            req.put("newGoods",newPageInfo.getList());
+        }
 
-            }else {
-                return goodsDao.selectGoods(map);
-            }
-        });
+        res.put("model","02");
+        List<Map<String, Object>> oldHomeGoods = goodsDao.selectHomeGoods(res);
+        if(oldHomeGoods.size()>0) {
+            ress.clear();
+            ress.put("id",oldHomeGoods.get(0).get("goodsId"));
+            req.put("oldGoods",goodsDao.selectGoods(ress));
+        }else {
+            PageHelper.startPage(1,1);
+            PageInfo oldPageInfo = new PageInfo(goodsDao.selectGoods(res));
+            req.put("oldGoods",oldPageInfo.getList());
+        }
+        rtn.setCode(200);
+        rtn.setMessage("success");
+        JsonObject data = GsonHelper.getInstanceJsonparser().parse(GsonHelper.getInstance().toJson(req)).getAsJsonObject();
+        rtn.setData(data);
+        return  Func.functionRtnToJsonObject.apply(rtn);
     }
 
     @Transactional(rollbackFor = {RuntimeException.class, Exception.class})
@@ -479,4 +497,23 @@ public class GoodsApiServiceImpl extends BaseServiceImpl  implements GoodsApiSer
         rtn.setData(data);
         return  Func.functionRtnToJsonObject.apply(rtn);
     }
+
+    @Override
+    public JsonObject updateHomeGoods(JsonObject jsonObject) {
+        Rtn rtn = new Rtn("Goods");
+        Map<String,Object> res = new HashMap<>();
+        res = GsonHelper.getInstance().fromJson(jsonObject,Map.class);
+        List<Map<String, Object>> homeGoods = goodsDao.selectHomeGoods(res);
+        if(homeGoods.size()>0) {
+            res.put("id",homeGoods.get(0).get("id"));
+            goodsDao.updateHomeGoods(res);
+        }else {
+            res.put("id",UUIDUtil.getUUID());
+            goodsDao.insertHomeGoods(res);
+        }
+        rtn.setCode(200);
+        rtn.setMessage("success");
+        return  Func.functionRtnToJsonObject.apply(rtn);
+    }
+
 }

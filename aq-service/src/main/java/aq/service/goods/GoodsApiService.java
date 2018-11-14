@@ -47,4 +47,7 @@ public interface GoodsApiService extends BaseService {
     //查询商品评论列表
     JsonObject queryGoodsComment(JsonObject jsonObject);
 
+    //更新首页商品历史记录
+    JsonObject updateHomeGoods(JsonObject jsonObject);
+
 }

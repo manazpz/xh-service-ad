@@ -446,4 +446,45 @@
         </if>
     </select>
 
+    <!--插入首页商品-->
+    <insert id="insertHomeGoods" >
+        INSERT INTO XH_HOME_GOODS
+        VALUES(#{id},
+        #{openId},
+        #{goodsId},
+        #{model})
+    </insert>
+
+    <!--查询首页商品-->
+    <select id="selectHomeGoods" resultType="java.util.Map" parameterType="java.util.Map">
+        SELECT
+            XHG.ID AS id,
+            XHG.OPEN_ID AS openId,
+            XHG.GOODS_ID AS goodsId,
+            XHG.MODEL AS model
+        FROM
+        XH_HOME_GOODS XHG
+        WHERE 1=1
+        <if test="id!=null and id != ''">
+            AND XHG.ID = #{id}
+        </if>
+        <if test="model!=null and model != ''">
+            AND XHG.MODEL = #{model}
+        </if>
+        <if test="openId!=null and openId != ''">
+            AND XHG.OPEN_ID = #{openId}
+        </if>
+    </select>
+
+    <!--更新首页商品-->
+    <update id="updateHomeGoods" parameterType="java.util.Map">
+        UPDATE XH_HOME_GOODS XHG
+        <trim prefix="set" suffixOverrides=",">
+            <if test="goodsId!=null and goodsId != ''">
+                XHG.GOODS_ID = #{goodsId},
+            </if>
+        </trim>
+        WHERE XHG.ID = #{id}
+    </update>
+
 </mapper>
