@@ -61,6 +61,14 @@ public class GoodsController extends aq.controller.restful.System {
         writerJson(response,out,goodsService.queryclassify(jsonObject));
     }
 
+    //查询商品分类
+    @ResponseBody
+    @RequestMapping(value = "/classifyTreeList",method = RequestMethod.GET)
+    public void classifyTreeList(HttpServletRequest request, HttpServletResponse response, PrintWriter out) throws Exception {
+        JsonObject jsonObject = HttpUtil.getParameterMap(request);
+        writerJson(response,out,goodsService.queryclassifyTree(jsonObject));
+    }
+
     //编辑商品分类
     @RequestMapping(value = "/updateClassify",method = RequestMethod.POST)
     @ResponseBody

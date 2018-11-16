@@ -49,4 +49,19 @@ public class OrderBfController extends aq.controller.restful.System {
         writerJson(response,out,orderBfService.insertLogistics(requestJson));
     }
 
+    //查询订单明细列表
+    @ResponseBody
+    @RequestMapping(value = "/orderReturnList",method = RequestMethod.GET)
+    public void orderReturnList(HttpServletRequest request, HttpServletResponse response, PrintWriter out) throws Exception {
+        JsonObject jsonObject = HttpUtil.getParameterMap(request);
+        writerJson(response,out,orderBfService.queryOrderReturnList(jsonObject));
+    }
+
+
+    //更新退货订单信息
+    @RequestMapping(value = "/updataOrderReturn",method = RequestMethod.POST)
+    @ResponseBody
+    public void updataOrderReturn(@RequestBody JsonObject requestJson, HttpServletRequest request, HttpServletResponse response, PrintWriter out){
+        writerJson(response,out,orderBfService.updataOrderReturn(requestJson));
+    }
 }

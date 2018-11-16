@@ -154,4 +154,51 @@ public class OrderBfServiceImpl extends BaseServiceImpl  implements OrderBfServi
         }
         return  Func.functionRtnToJsonObject.apply(rtn);
     }
+
+
+    @Transactional(rollbackFor = {RuntimeException.class, Exception.class})
+    @Override
+    public JsonObject queryOrderReturnList(JsonObject jsonObject) {
+        AbsAccessUser user = Factory.getContext().user();
+        Rtn rtn = new Rtn("order");
+        jsonObject.addProperty("service","order");
+        if (user == null) {
+            rtn.setCode(10000);
+            rtn.setMessage("未登录！");
+        }else {
+            Map<String,Object> res = new HashMap<>();
+            Map<String,Object> ress = new HashMap<>();
+            ress.clear();
+            ress.put("userId",user.getUserId());
+            List<Map<String, Object>> shops = shopDao.selectShop(ress);
+            if(shops.size() < 1) {
+                rtn.setCode(10000);
+                rtn.setMessage("无店铺！");
+            }else {
+                jsonObject.addProperty("shopId",shops.get(0).get("id").toString());
+                return query(jsonObject,(map)->{
+                    List<Map<String, Object>> orders = orderDao.selectorderReturn(map);
+                    return orders;
+                });
+            }
+        }
+        return  Func.functionRtnToJsonObject.apply(rtn);
+    }
+
+    @Override
+    public JsonObject updataOrderReturn(JsonObject jsonObject) {
+        AbsAccessUser user = Factory.getContext().user();
+        Rtn rtn = new Rtn("order");
+        if (user == null) {
+            rtn.setCode(10000);
+            rtn.setMessage("未登录！");
+        }else {
+            Map<String,Object> res = new HashMap<>();
+            res = GsonHelper.getInstance().fromJson(jsonObject,Map.class);
+            orderDao.updataOrderReturn(res);
+            rtn.setCode(200);
+            rtn.setMessage("success");
+        }
+        return  Func.functionRtnToJsonObject.apply(rtn);
+    }
 }

@@ -14,6 +14,7 @@
             XC.REMARKS AS remarks,
             XC.CREATE_USER AS createUserId,
             XC.PX AS px,
+            XC.OBLIGATE1 AS obligate1,
             cu.NICK_NAME AS createUserName,
             XC.LAST_CREATE_USER AS lastCreateUserId,
             lcu.NICK_NAME AS lastCreateUserName,
@@ -109,6 +110,32 @@
         #{lastCreateUser},
         #{lastCreateTime,jdbcType=TIMESTAMP})
     </insert>
+
+
+    <!--查询分类-->
+    <select id="selectClassifyTree" resultType="java.util.Map" parameterType="java.util.Map">
+        SELECT
+        XC.ID AS id,
+        XC.PARENT_ID AS parentId,
+        XC. NAME AS label
+
+        FROM
+        XH_CLASSIFY XC
+        WHERE 1=1
+        <if test="id != null">
+            AND XC.ID = #{id}
+        </if>
+        <if test="model != null">
+            AND XC.MODEL = #{model}
+        </if>
+        <if test="parentId != null">
+            AND XC.PARENT_ID = #{parentId}
+        </if>
+        <if test="obligate1 != null">
+            AND XC.OBLIGATE1 = #{obligate1}
+        </if>
+        ORDER BY XC.PX ASC
+    </select>
 
 
 </mapper>

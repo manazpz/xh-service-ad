@@ -44,4 +44,13 @@ public interface OrderDao {
     //新增物流信息
     int insertLogistics(Map<String,Object> map);
 
+    //新增退货申请信息
+    int insertReturn(Map<String,Object> map);
+
+    //查询退货申请信息
+    List<Map<String,Object>> selectorderReturn(Map<String,Object> map);
+
+    //更新退货申请信息
+    int updataOrderReturn(Map<String,Object> map);
+
 }

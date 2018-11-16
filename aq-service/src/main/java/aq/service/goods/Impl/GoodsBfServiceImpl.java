@@ -288,13 +288,24 @@ public class GoodsBfServiceImpl extends BaseServiceImpl  implements GoodsBfServi
             rtn.setMessage("未登录！");
         }else {
             Map<String,Object> res = new HashMap<>();
+            Map<String,Object> rest = new HashMap<>();
             res = GsonHelper.getInstance().fromJson(jsonObject,Map.class);
-            res.put("lastCreateUserId", user.getUserId());
-            res.put("lastCreateTime",new Date());
-            res.put("specParameter",StringUtil.isEmpty(jsonObject.get("parameter"))?"":jsonObject.get("parameter").getAsJsonArray().toString());
-            goodsDao.updateGoods(res);
-            rtn.setCode(200);
-            rtn.setMessage("success");
+            rest.put("id",res.get("id"));
+            List<Map<String, Object>> maps = goodsDao.selectGoods(rest);
+            if(maps.size()>0){
+                if("Y".equals(maps.get(0).get("obligate1"))){
+                    res.put("lastCreateUserId", user.getUserId());
+                    res.put("lastCreateTime",new Date());
+                    res.put("specParameter",StringUtil.isEmpty(jsonObject.get("parameter"))?"":jsonObject.get("parameter").getAsJsonArray().toString());
+                    goodsDao.updateGoods(res);
+                    rtn.setCode(200);
+                    rtn.setMessage("success");
+                }else{
+                    rtn.setCode(404);
+                    rtn.setMessage("操作失败，商品尚未审核通过！");
+                }
+            }
+
         }
         return Func.functionRtnToJsonObject.apply(rtn);
     }

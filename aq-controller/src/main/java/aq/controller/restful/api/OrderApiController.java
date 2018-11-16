@@ -63,4 +63,11 @@ public class OrderApiController extends aq.controller.restful.System {
         JsonObject jsonObject = HttpUtil.getParameterMap(request);
         writerJson(response,out,orderApiService.queryLogistical(jsonObject));
     }
+
+    //新增退款信息
+    @RequestMapping(value = "/insertReturn",method = RequestMethod.POST)
+    @ResponseBody
+    public void insertReturn(@RequestBody JsonObject requestJson, HttpServletRequest request, HttpServletResponse response, PrintWriter out){
+        writerJson(response,out,orderApiService.insertReturn(requestJson));
+    }
 }

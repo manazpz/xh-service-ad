@@ -35,6 +35,9 @@ public interface OrderApiService extends BaseService {
     //查询物流明细
     JsonObject queryLogistical(JsonObject jsonObject);
 
+    //新增退款信息
+    JsonObject insertReturn(JsonObject jsonObject);
+
 
 
 }

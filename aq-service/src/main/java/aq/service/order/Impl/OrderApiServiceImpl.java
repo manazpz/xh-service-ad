@@ -174,6 +174,7 @@ public class OrderApiServiceImpl extends BaseServiceImpl  implements OrderApiSer
         }
         if(listold.size()>0  && listnew.size()>0){
             rest.put("type", "03");
+            rest.put("paystatus", "01");//付款状态 :01：未付款    02：已付款  03：已取消
         }else if(listold.size() == 0 && listnew.size() >0){
             rest.put("type", "01");
             rest.put("paystatus", "01");//付款状态 :01：未付款    02：已付款  03：已取消
@@ -341,6 +342,41 @@ public class OrderApiServiceImpl extends BaseServiceImpl  implements OrderApiSer
         return  Func.functionRtnToJsonObject.apply(rtn);
     }
 
+
+    @Override
+    public JsonObject insertReturn(JsonObject jsonObject) {
+        Rtn rtn = new Rtn("order");
+        Map<String,Object> res = new HashMap<>();
+        Map<String,Object> rest = new HashMap<>();
+        res = GsonHelper.getInstance().fromJson(jsonObject,Map.class);
+        if(!"".equals(res.get("openId"))){
+            rest.put("openid",res.get("openId"));
+            List<Map<String, Object>> userinfo = userDao.selectUserInfos(rest);
+            if(userinfo.size()>0){
+                rest.clear();
+                rest.put("id",res.get("id"));
+                List<Map<String, Object>> maps = orderDao.selectorderList(rest);
+                if(maps.size()>0){
+                    rest.put("price", maps.get(0).get("price"));
+                    rest.put("shopId", maps.get(0).get("shopId"));
+                }
+                List<Map<String, Object>> maps1 = orderDao.selectorderReturn(rest);
+                if(maps1.size()>0){
+                    rest.put("no", 10*maps1.size()+10);
+                }else{
+                    rest.put("no", 10);
+                }
+                rest.put("number", "R"+UUIDUtil.getRandomOrderId());
+                rest.put("reason", res.get("reason"));
+                rest.put("createTime", new Date());
+                rest.put("createUserId",userinfo.get(0).get("id"));
+                orderDao.insertReturn(rest);
+                rtn.setCode(200);
+                rtn.setMessage("success");
+            }
+        }
+        return  Func.functionRtnToJsonObject.apply(rtn);
+    }
 
 
     @Transactional(rollbackFor = {RuntimeException.class, Exception.class})

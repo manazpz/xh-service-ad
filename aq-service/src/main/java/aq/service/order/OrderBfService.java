@@ -17,5 +17,12 @@ public interface OrderBfService extends BaseService {
     //新增订单物流信息
     JsonObject insertLogistics(JsonObject jsonObject);
 
+    //查询退货信息列表
+    JsonObject queryOrderReturnList(JsonObject jsonObject);
+
+    //更新退货信息
+    JsonObject updataOrderReturn(JsonObject jsonObject);
+
+
 
 }

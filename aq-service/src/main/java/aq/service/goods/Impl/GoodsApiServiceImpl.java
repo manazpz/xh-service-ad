@@ -143,6 +143,7 @@ public class GoodsApiServiceImpl extends BaseServiceImpl  implements GoodsApiSer
                     rest.clear();
                     rest.put("classifyId",obj3.get("id"));
                     rest.put("status","01");
+                    rest.put("obligate1","Y");
                     rest.put("model",StringUtil.isEmpty(jsonObject.get("model"))?"":jsonObject.get("model").getAsString());
                     List<Map<String, Object>> goods = goodsDao.selectGoods(rest);
                     obj2.put("goods",goods);

@@ -23,5 +23,7 @@ public interface ClassifyDao {
     //新增规格
     int insertClassify(Map<String,Object> map);
 
+    //查询树形分类
+    List<Map<String,Object>> selectClassifyTree(Map<String,Object> map);
 
 }

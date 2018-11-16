@@ -126,7 +126,7 @@ public class GoodsServiceImpl extends BaseServiceImpl  implements GoodsService {
         rest.put("name", res.get("name"));
         rest.put("model", res.get("model"));
         rest.put("px", res.get("px"));
-        rest.put("obligate1",res.get("index"));
+        rest.put("obligate1",Integer.parseInt(res.get("index").toString())+1);
         rest.put("remarks", res.get("remarks"));
         rest.put("createTime",new Date());
         rest.put("lastCreateTime",new Date());
@@ -144,6 +144,7 @@ public class GoodsServiceImpl extends BaseServiceImpl  implements GoodsService {
     public JsonObject queryclassify(JsonObject jsonObject) {
         Rtn rtn = new Rtn("Goods");
         Map<String,Object> res = new HashMap<>();
+        Map<String,Object> rest = new HashMap<>();
         JsonObject data = new JsonObject();
         JsonArray jsonArray = new JsonArray();
         if (StringUtil.isEmpty(jsonObject.get("cascade"))) {
@@ -151,9 +152,6 @@ public class GoodsServiceImpl extends BaseServiceImpl  implements GoodsService {
         }
         if (!StringUtil.isEmpty(jsonObject.get("model"))) {
             res.put("model", jsonObject.get("model").getAsString());
-        }
-        if (!StringUtil.isEmpty(jsonObject.get("obligate1"))) {
-            res.put("obligate1", jsonObject.get("obligate1").getAsString());
         }
         List<Map<String, Object>> req1 = classifyDao.selectClassify(res);
         for(Map obj1:req1) {
@@ -181,6 +179,33 @@ public class GoodsServiceImpl extends BaseServiceImpl  implements GoodsService {
                 }
                 obj2.put("children",req3);
             }
+            obj1.put("children",req2);
+        }
+        rtn.setCode(200);
+        rtn.setMessage("success");
+        jsonArray =  GsonHelper.getInstanceJsonparser().parse(GsonHelper.getInstance().toJson(req1)).getAsJsonArray();
+        data.add("items",jsonArray);
+        rtn.setData(data);
+        return  Func.functionRtnToJsonObject.apply(rtn);
+    }
+
+
+
+    @Transactional(rollbackFor = {RuntimeException.class, Exception.class})
+    @Override
+    public JsonObject queryclassifyTree(JsonObject jsonObject) {
+        Rtn rtn = new Rtn("Goods");
+        Map<String,Object> res = new HashMap<>();
+        Map<String,Object> rest = new HashMap<>();
+        JsonObject data = new JsonObject();
+        JsonArray jsonArray = new JsonArray();
+        res = GsonHelper.getInstance().fromJson(jsonObject,Map.class);
+        res.put("obligate1","1");
+        List<Map<String, Object>> req1 = classifyDao.selectClassifyTree(res);
+        for(Map obj1:req1) {
+            res.clear();
+            res.put("parentId",obj1.get("id"));
+            List<Map<String, Object>> req2 = classifyDao.selectClassifyTree(res);
             obj1.put("children",req2);
         }
         rtn.setCode(200);

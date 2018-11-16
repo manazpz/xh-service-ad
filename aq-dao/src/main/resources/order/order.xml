@@ -9,6 +9,7 @@
             XO.ID AS id,
             XO.NUMBER AS number,
             XO.TYPE AS type,
+            XO.SHOP_ID AS shopId,
             XO.PAY_STATUS AS payStatus,
             XO.ORDER_STATUS AS orderStatus,
             XO.DELIVERY_STATUS AS deliveryStatus,
@@ -240,5 +241,74 @@
         INSERT INTO XH_LOGISTICS
         VALUES(#{id},#{name},#{com_code},#{code})
     </insert>
+
+
+    <!--新增退货申请-->
+    <insert id="insertReturn" >
+        INSERT INTO XH_ORDER_RETURN_H
+        VALUES(#{id},#{no},#{number},#{reason},#{shopId},'Z','02',#{price},'','','','',#{createUserId},#{createTime,jdbcType=TIMESTAMP})
+    </insert>
+
+
+
+    <!--查询退货申请- -->
+    <select id="selectorderReturn" resultType="java.util.Map" parameterType="java.util.Map">
+        SELECT
+            XO.ID AS id,
+            XH.NUMBER AS number,
+            XH.PAY_STATUS AS payStatus,
+            XH.ORDER_STATUS AS orderStatus,
+            su.NICK_NAME AS buyer,
+            XO.SHOP_ID AS shopId,
+            XO.NO AS no,
+            XO.AUDIT AS audit,
+            XO.STATUS AS status,
+            XH.PRICE AS price,
+            XO. REASON AS reason,
+            DATE_FORMAT(
+            XO.CREATE_TIME,
+            '%Y-%m-%d %H:%i:%S'
+            ) AS createTime
+        FROM
+            XH_ORDER_RETURN_H XO
+        INNER JOIN system_user su ON su.ID = XO.CREATE_USER
+        LEFT JOIN XH_ORDER_H XH ON XH.ID = XO.ID
+        WHERE
+        1 = 1
+        <if test="id!=null and id != ''">
+            AND XO.ID = #{id}
+        </if>
+        <if test="shopId!=null and shopId != ''">
+            AND XO.SHOP_ID = #{shopId}
+        </if>
+        <if test="number!=null and number != ''">
+            AND XO.NUMBER = #{number}
+        </if>
+        <if test="status!=null and status != ''">
+            AND XO.STATUS = #{status}
+        </if>
+        <if test="payStatus!=null and payStatus != ''">
+            AND XH.PAY_STATUS = #{payStatus}
+        </if>
+        <if test="orderStatus!=null and orderStatus != ''">
+            AND XH.ORDER_STATUS = #{orderStatus}
+        </if>
+    </select>
+
+
+
+    <!--更新退货订单信息-->
+    <update id="updataOrderReturn" parameterType="java.util.Map">
+        UPDATE XH_ORDER_RETURN_H XO
+        <trim prefix="set" suffixOverrides=",">
+            <if test="audit!=null and audit != ''">
+                XO.AUDIT = #{audit},
+            </if>
+            <if test="status!=null and status != ''">
+                XO.STATUS = #{status},
+            </if>
+        </trim>
+        WHERE XO.ID = #{id} AND XO.NO = #{no}
+    </update>
 
 </mapper>
