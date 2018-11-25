@@ -287,6 +287,17 @@ public class UserServiceImpl extends BaseServiceImpl implements UserService {
     }
 
     @Override
+    public void updateUserInfos(Map<String, Object> map) {
+        Map<String,Object> res = new HashMap<>();
+        res.clear();
+        res.put("nickName",map.get("nickname"));
+        res.put("openid",map.get("openid"));
+        res.put("headPortrait",map.get("head_portrait"));
+        userDao.updateUserInfos(res);
+        System.out.print("=================执行更新用户信息================");
+    }
+
+    @Override
     public List<Map<String, Object>> queryUserInfos(Map<String, Object> map) {
         return  userDao.selectUserInfos(map);
     }

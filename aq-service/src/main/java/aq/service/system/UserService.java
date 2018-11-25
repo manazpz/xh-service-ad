@@ -50,6 +50,9 @@ public interface UserService extends BaseService {
     //新增用户信息
     void insertUserInfos(Map<String, Object> map);
 
+    //更新用户信息
+    void updateUserInfos(Map<String, Object> map);
+
     //查询用户信息
     List<Map<String, Object>> queryUserInfos(Map<String, Object> map);
 

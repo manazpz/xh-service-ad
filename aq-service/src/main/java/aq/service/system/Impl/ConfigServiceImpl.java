@@ -92,8 +92,8 @@ public class ConfigServiceImpl extends BaseServiceImpl  implements ConfigService
             PayRequest payRequest = new PayRequest();
             payRequest.setOpenid(map.get("openId").toString());
             payRequest.setPayTypeEnum(BestPayTypeEnum.WXPAY_H5);
-//            payRequest.setOrderAmount(Double.parseDouble(map.get("price").toString()));
-            payRequest.setOrderAmount(0.01);
+            payRequest.setOrderAmount(Double.parseDouble(map.get("price").toString()));
+//            payRequest.setOrderAmount(0.01);
             if(listold.size()>0){
                 for(int i=0; i< listold.size(); i++) {
                     goodsName += listold.get(i).get("goodsName")+ ";";

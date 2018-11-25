@@ -312,12 +312,18 @@
         </if>
     </select>
 
-    <!--更新默认回收方式-->
+    <!--更新用户基本信息-->
     <update id="updateUserInfos" parameterType="java.util.Map">
         UPDATE system_user su
         <trim prefix="set" suffixOverrides=",">
             <if test="phone!=null and phone != ''">
                 su.PHONE = #{phone},
+            </if>
+            <if test="nickName!=null and nickName != ''">
+                su.NICK_NAME = #{nickName},
+            </if>
+            <if test="headPortrait!=null and headPortrait != ''">
+                su.HEAD_PORTRAIT = #{headPortrait},
             </if>
         </trim>
         WHERE su.openId = #{openid}
