@@ -50,6 +50,31 @@ public interface GoodsDao {
 
     /**********************************************************************************/
 
+    /**********************************************************************************/
+
+    //查询品牌分类
+    List<Map<String,Object>> selectBrandClass(Map<String,Object> map);
+
+    //查询品牌分类关联表
+    List<Map<String,Object>> selectBrandCorr(Map<String,Object> map);
+
+    //添加品牌分类
+    int insertBrandClass(Map<String,Object> map);
+
+    //添加品牌分类对应表
+    int insertBrandCorr(Map<String,Object> map);
+
+    //删除品牌分类对应表
+    int deleteBrandCorr(Map<String,Object> map);
+
+    //更新品牌分类
+    int updateBrandClass(Map<String,Object> map);
+
+    //删除品牌分类
+    int deleteBrandClass(Map<String,Object> map);
+
+    /**********************************************************************************/
+
     //查询标签
     List<Map<String,Object>> selectLable(Map<String,Object> map);
 

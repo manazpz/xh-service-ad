@@ -3,6 +3,8 @@ package aq.controller.restful.management;
 import aq.common.util.HttpUtil;
 import aq.common.util.StringUtil;
 import aq.service.goods.GoodsService;
+import aq.service.resource.ResourceBfService;
+import aq.service.resource.ResourceService;
 import com.google.gson.JsonObject;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
@@ -10,6 +12,7 @@ import org.springframework.web.bind.annotation.*;
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import java.io.IOException;
 import java.io.PrintWriter;
 
 
@@ -18,6 +21,9 @@ import java.io.PrintWriter;
 public class GoodsController extends aq.controller.restful.System {
     @Resource
     protected GoodsService goodsService;
+
+    @Resource
+    protected ResourceService resourceService;
 
     //查询商品
     @RequestMapping(value = "/list",method = RequestMethod.GET)
@@ -69,6 +75,14 @@ public class GoodsController extends aq.controller.restful.System {
         writerJson(response,out,goodsService.queryclassifyTree(jsonObject));
     }
 
+    //查询品牌分类
+    @ResponseBody
+    @RequestMapping(value = "/getBrandTree",method = RequestMethod.GET)
+    public void getBrandTree(HttpServletRequest request, HttpServletResponse response, PrintWriter out) throws Exception {
+        JsonObject jsonObject = HttpUtil.getParameterMap(request);
+        writerJson(response,out,goodsService.queryBrandTree(jsonObject));
+    }
+
     //编辑商品分类
     @RequestMapping(value = "/updateClassify",method = RequestMethod.POST)
     @ResponseBody
@@ -79,8 +93,30 @@ public class GoodsController extends aq.controller.restful.System {
     //添加品牌
     @RequestMapping(value = "/insertBrand",method = RequestMethod.POST)
     @ResponseBody
-    public void insertBrand(@RequestBody JsonObject requestJson, HttpServletRequest request, HttpServletResponse response, PrintWriter out){
+    public void insertBrand(@RequestBody JsonObject requestJson, HttpServletRequest request, HttpServletResponse response, PrintWriter out) throws IOException {
         writerJson(response,out,goodsService.insertBrand(requestJson));
+    }
+
+    //添加品牌分类
+    @RequestMapping(value = "/insertBrandClass",method = RequestMethod.POST)
+    @ResponseBody
+    public void insertBrandClass(@RequestBody JsonObject requestJson, HttpServletRequest request, HttpServletResponse response, PrintWriter out) throws IOException {
+        writerJson(response,out,goodsService.insertBrandClass(requestJson));
+    }
+
+    //查询商品品牌分类
+    @ResponseBody
+    @RequestMapping(value = "/brandClassList",method = RequestMethod.GET)
+    public void brandClassList(HttpServletRequest request, HttpServletResponse response, PrintWriter out) throws Exception {
+        JsonObject jsonObject = HttpUtil.getParameterMap(request);
+        writerJson(response,out,goodsService.querybrandClassList(jsonObject));
+    }
+
+    //删除品牌分类
+    @RequestMapping(value = "/deleteBrandClass",method = RequestMethod.POST)
+    @ResponseBody
+    public void deleteBrandClass(@RequestBody JsonObject requestJson, HttpServletRequest request, HttpServletResponse response, PrintWriter out){
+        writerJson(response,out,goodsService.deleteBrandClass(requestJson));
     }
 
     //查询商品品牌
@@ -89,6 +125,13 @@ public class GoodsController extends aq.controller.restful.System {
     public void brandList(HttpServletRequest request, HttpServletResponse response, PrintWriter out) throws Exception {
         JsonObject jsonObject = HttpUtil.getParameterMap(request);
         writerJson(response,out,goodsService.querybrandList(jsonObject));
+    }
+
+    //更新品牌分类
+    @RequestMapping(value = "/updateBrandClass",method = RequestMethod.POST)
+    @ResponseBody
+    public void updateBrandClass(@RequestBody JsonObject requestJson, HttpServletRequest request, HttpServletResponse response, PrintWriter out){
+        writerJson(response,out,goodsService.updateBrandClass(requestJson));
     }
 
     //更新品牌

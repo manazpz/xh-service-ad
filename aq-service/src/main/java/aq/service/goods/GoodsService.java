@@ -26,17 +26,29 @@ public interface GoodsService extends BaseService {
     //查询商品分类
     JsonObject updateClassify(JsonObject jsonObject);
 
-    //查询商品品牌分类
+    //查询商品品牌
     JsonObject querybrandList(JsonObject jsonObject);
+
+    //查询商品品牌分类
+    JsonObject querybrandClassList(JsonObject jsonObject);
 
     //新增商品品牌
     JsonObject insertBrand(JsonObject jsonObject);
 
+    //新增商品品牌
+    JsonObject insertBrandClass(JsonObject jsonObject);
+
     //更新商品品牌
     JsonObject updateBrand(JsonObject jsonObject);
 
+    //更新商品品牌分类
+    JsonObject updateBrandClass(JsonObject jsonObject);
+
     //更新商品品牌
     JsonObject deleteBrand(JsonObject jsonObject);
+
+    //更新商品品牌
+    JsonObject deleteBrandClass(JsonObject jsonObject);
 
     //更新商品品牌
     JsonObject queryspec(JsonObject jsonObject);
@@ -65,7 +77,10 @@ public interface GoodsService extends BaseService {
     //更新后台品牌
     JsonObject deleteClassify(JsonObject jsonObject);
 
-    //更新后台品牌
+    //查询对应分类
     JsonObject queryclassifyTree(JsonObject jsonObject);
+
+    //查询对应品牌
+    JsonObject queryBrandTree(JsonObject jsonObject);
 
 }

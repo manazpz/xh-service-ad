@@ -356,6 +356,7 @@ public class GoodsBfServiceImpl extends BaseServiceImpl  implements GoodsBfServi
         Map<String,Object> res = new HashMap<>();
         JsonObject data = new JsonObject();
         JsonArray jsonArray = new JsonArray();
+        res = GsonHelper.getInstance().fromJson(jsonObject,Map.class);
         res.put("cascade", 'Y');
         List<Map<String, Object>> req1 = classifyDao.selectClassify(res);
         for(Map obj1:req1) {
@@ -433,6 +434,48 @@ public class GoodsBfServiceImpl extends BaseServiceImpl  implements GoodsBfServi
                                     reqMap.put("param",specParamList);
                                     reqList.add(reqMap);
                                 }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+        jsonArray =  GsonHelper.getInstanceJsonparser().parse(GsonHelper.getInstance().toJson(reqList)).getAsJsonArray();
+        rtn.setCode(200);
+        rtn.setMessage("success");
+        data.add("items",jsonArray);
+        rtn.setData(data);
+        return  Func.functionRtnToJsonObject.apply(rtn);
+    }
+
+
+    @Transactional(rollbackFor = {RuntimeException.class, Exception.class})
+    @Override
+    public JsonObject selectClassifyBrandParam(JsonObject jsonObject) {
+        Rtn rtn = new Rtn("Goods");
+        ArrayList reqList = new ArrayList();
+        Map<String,Object> res = new HashMap<>();
+        JsonObject data = new JsonObject();
+        JsonArray jsonArray = new JsonArray();
+        res.clear();
+        res.put("id",jsonObject.get("id").getAsString());
+        List<Map<String, Object>> classifyList = classifyDao.selectClassify(res);
+        for (Map obj:classifyList) {
+            String classifyStr = obj.get("parameter").toString();
+            if(!StringUtil.isEmpty(classifyStr)) {
+                Map classifyMap = GsonHelper.getInstance().fromJson(classifyStr, Map.class);
+                if(!StringUtil.isEmpty(classifyMap.get("brand"))) {
+                    List<Map> brand = GsonHelper.getInstance().fromJson(classifyMap.get("brand").toString(), List.class);
+                    for (Map obj1:brand) {
+                        Map reqMap = new HashMap();
+                        if(!StringUtil.isEmpty(obj1.get("id"))) {
+                            res.clear();
+                            res.put("id", obj1.get("id"));
+                            List<Map<String, Object>> brandList = goodsDao.selectBrand(res);
+                            if(brandList.size()>0){
+                                reqMap.put("id",brandList.get(0).get("id"));
+                                reqMap.put("name",brandList.get(0).get("name"));
+                                reqList.add(reqMap);
                             }
                         }
                     }

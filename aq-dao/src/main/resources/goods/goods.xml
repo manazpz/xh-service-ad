@@ -356,6 +356,88 @@
         DELETE FROM XH_BRAND WHERE ID = #{id}
     </delete>
 
+
+    <!--查询品牌分类-->
+    <select id="selectBrandClass" resultType="java.util.Map" parameterType="java.util.Map">
+        SELECT
+        XB.ID AS id,
+        XB.NAME AS label,
+        DATE_FORMAT(
+        XB.CREATE_TIME,
+        '%Y-%m-%d %H:%i:%S'
+        ) AS createTime
+        FROM
+        XH_BRAND_CLASSIFY XB
+        WHERE 1=1
+        <if test="id!=null and id != ''">
+            AND XB.ID = #{id}
+        </if>
+        <if test="label !=null and label != ''">
+            AND XB.NAME = #{label}
+        </if>
+        ORDER BY XB.CREATE_TIME DESC
+    </select>
+
+
+    <!--新增品牌分类-->
+    <insert id="insertBrandClass" >
+        INSERT INTO XH_BRAND_CLASSIFY
+        VALUES(#{id},
+        #{label},
+        #{createTime,jdbcType=TIMESTAMP})
+    </insert>
+
+
+    <!--新增品牌分类对应表-->
+    <insert id="insertBrandCorr" >
+        INSERT INTO XH_BRAND_CORR
+        VALUES(#{brand_id},#{classId})
+    </insert>
+
+    <!--查询品牌分类对应表-->
+    <select id="selectBrandCorr" resultType="java.util.Map" parameterType="java.util.Map">
+        SELECT
+            XB.BRAND_ID AS id,
+            XB.CLASS_ID AS parentId,
+            XBR.NAME AS label,
+            XBC.NAME AS className
+        FROM
+        XH_BRAND_CORR XB
+        LEFT JOIN XH_BRAND XBR ON XBR.ID = XB.BRAND_ID
+        LEFT JOIN XH_BRAND_CLASSIFY XBC ON XBC.ID = XB.CLASS_ID
+        WHERE 1=1
+        <if test="id!=null and id != ''">
+            AND XB.BRAND_ID = #{id}
+        </if>
+        <if test="classId !=null and classId != ''">
+            AND XB.CLASS_ID = #{classId}
+        </if>
+    </select>
+
+
+    <!--删除品牌分类关联表-->
+    <delete id="deleteBrandCorr"  parameterType="java.util.Map" >
+        DELETE FROM XH_BRAND_CORR WHERE BRAND_ID = #{brand_id}
+    </delete>
+
+
+    <!--更新品牌分类-->
+    <update id="updateBrandClass" parameterType="java.util.Map">
+        UPDATE XH_BRAND_CLASSIFY XB
+        <trim prefix="set" suffixOverrides=",">
+            <if test="name!=null and name != ''">
+                XB.NAME = #{name},
+            </if>
+        </trim>
+        WHERE XB.ID = #{id}
+    </update>
+
+
+    <!--删除品牌分类-->
+    <delete id="deleteBrandClass"  parameterType="java.util.Map" >
+        DELETE FROM XH_BRAND_CLASSIFY WHERE ID = #{id}
+    </delete>
+
     <!--查询标签-->
     <select id="selectLable" resultType="java.util.Map" parameterType="java.util.Map">
         SELECT

@@ -32,6 +32,9 @@ public interface GoodsBfService extends BaseService {
     //查询分类规格参数
     JsonObject selectClassifySpecParam(JsonObject jsonObject);
 
+    //查询分类品牌参数
+    JsonObject selectClassifyBrandParam(JsonObject jsonObject);
+
     //查询商品分类规格参数
     JsonObject selectGoodsClassifyCascade(JsonObject jsonObject);
 

@@ -196,7 +196,6 @@ public class GoodsServiceImpl extends BaseServiceImpl  implements GoodsService {
     public JsonObject queryclassifyTree(JsonObject jsonObject) {
         Rtn rtn = new Rtn("Goods");
         Map<String,Object> res = new HashMap<>();
-        Map<String,Object> rest = new HashMap<>();
         JsonObject data = new JsonObject();
         JsonArray jsonArray = new JsonArray();
         res = GsonHelper.getInstance().fromJson(jsonObject,Map.class);
@@ -207,6 +206,30 @@ public class GoodsServiceImpl extends BaseServiceImpl  implements GoodsService {
             res.put("parentId",obj1.get("id"));
             List<Map<String, Object>> req2 = classifyDao.selectClassifyTree(res);
             obj1.put("children",req2);
+        }
+        rtn.setCode(200);
+        rtn.setMessage("success");
+        jsonArray =  GsonHelper.getInstanceJsonparser().parse(GsonHelper.getInstance().toJson(req1)).getAsJsonArray();
+        data.add("items",jsonArray);
+        rtn.setData(data);
+        return  Func.functionRtnToJsonObject.apply(rtn);
+    }
+
+    @Transactional(rollbackFor = {RuntimeException.class, Exception.class})
+    @Override
+    public JsonObject queryBrandTree(JsonObject jsonObject) {
+        Rtn rtn = new Rtn("Goods");
+        Map<String,Object> res = new HashMap<>();
+        JsonObject data = new JsonObject();
+        JsonArray jsonArray = new JsonArray();
+        res = GsonHelper.getInstance().fromJson(jsonObject,Map.class);
+        List<Map<String, Object>> req1 = goodsDao.selectBrandClass(res);
+        for(Map obj1:req1) {
+            res.clear();
+            res.put("classId",obj1.get("id"));
+            List<Map<String, Object>> req2 = goodsDao.selectBrandCorr(res);
+            obj1.put("children",req2);
+            obj1.put("parentId","");
         }
         rtn.setCode(200);
         rtn.setMessage("success");
@@ -227,11 +250,6 @@ public class GoodsServiceImpl extends BaseServiceImpl  implements GoodsService {
         Map<String,Object> rest = new HashMap<>();
         Map<String,Object> rests = new HashMap<>();
         res = GsonHelper.getInstance().fromJson(jsonObject,Map.class);
-//        rest.put("id",res.get("id"));
-//        rest.put("model",res.get("model"));
-//        rest.put("name",res.get("name"));
-//        rest.put("px",res.get("px"));
-//        rest.put("remarks",res.get("remarks"));
         if(res.get("parameter")!= null){
             jsonObjects =  GsonHelper.getInstanceJsonparser().parse(GsonHelper.getInstance().toJson(res.get("parameter"))).getAsJsonObject();
             res.put("parameter",jsonObjects.toString());
@@ -273,7 +291,35 @@ public class GoodsServiceImpl extends BaseServiceImpl  implements GoodsService {
     public JsonObject querybrandList(JsonObject jsonObject) {
         jsonObject.addProperty("service","goods");
         return query(jsonObject,(map)->{
-            return goodsDao.selectBrand(map);
+            List<Map<String, Object>> maps = goodsDao.selectBrand(map);
+            for (Map obj : maps) {
+                Map<String,Object> res = new HashMap<>();
+                res.put("type","PP");
+                res.put("refId",obj.get("id"));
+                List<Map<String, Object>> resource = resourceDao.selectResource(res);
+                res.clear();
+                res.put("id",obj.get("id"));
+                List<Map<String, Object>> maps1 = goodsDao.selectBrandCorr(res);
+                if(resource.size()>0){
+                    obj.put("imgUrl",resource.get(0).get("url"));
+                }
+                if(maps1.size()>0){
+                    obj.put("checkList",maps1);
+                }else{
+                    obj.put("checkList","");
+                }
+            }
+            return maps;
+        });
+    }
+
+
+    @Transactional(rollbackFor = {RuntimeException.class, Exception.class})
+    @Override
+    public JsonObject querybrandClassList(JsonObject jsonObject) {
+        jsonObject.addProperty("service","goods");
+        return query(jsonObject,(map)->{
+            return goodsDao.selectBrandClass(map);
         });
     }
 
@@ -285,17 +331,61 @@ public class GoodsServiceImpl extends BaseServiceImpl  implements GoodsService {
         Rtn rtn = new Rtn("goods");
         Map<String,Object> res = new HashMap<>();
         res = GsonHelper.getInstance().fromJson(jsonObject,Map.class);
-        res.put("id", UUIDUtil.getUUID());
+        String uuid = UUIDUtil.getUUID();
+        res.put("id", uuid);
+        res.put("official", res.get("officialWebsite"));
         res.put("createTime",new Date());
         res.put("lastCreateTime",new Date());
         res.put("createUser",user.getUserId());
         res.put("lastCreateUser",user.getUserId());
         goodsDao.insertBrand(res);
+        if(res.get("classId") instanceof List){
+            List classId = (List) res.get("classId");
+            for(int i=0; i<classId.size(); i++){
+                HashMap maps = new HashMap();
+                maps.put("brand_id",uuid);
+                maps.put("classId",classId.get(i));
+                goodsDao.insertBrandCorr(maps);
+            }
+        }
+        if (res.get("file")!= null) {
+            HashMap resourceMap = new HashMap();
+            resourceMap.clear();
+            Map file = GsonHelper.getInstance().fromJson(GsonHelper.getInstance().toJson(res.get("file")), Map.class);
+            if(file.size()>0){
+                resourceMap.put("id",file.get("id"));
+                resourceMap.put("name", file.get("name"));
+                resourceMap.put("url",file.get("url"));
+                resourceMap.put("extend",file.get("extend"));
+                resourceMap.put("size",file.get("size"));
+                resourceMap.put("type","PP");
+                resourceMap.put("refId",uuid);
+                resourceMap.put("createUserId", user.getUserId());
+                resourceMap.put("lastCreateUserId", user.getUserId());
+                resourceMap.put("createTime", new Date());
+                resourceMap.put("lastCreateTime", new Date());
+                resourceDao.insertResourcet(resourceMap);
+            }
+        }
         rtn.setCode(200);
         rtn.setMessage("success");
         return Func.functionRtnToJsonObject.apply(rtn);
     }
 
+
+    @Override
+    public JsonObject insertBrandClass(JsonObject jsonObject) {
+        Rtn rtn = new Rtn("goods");
+        Map<String,Object> res = new HashMap<>();
+        res.clear();
+        res = GsonHelper.getInstance().fromJson(jsonObject,Map.class);
+        res.put("id",UUIDUtil.getUUID());
+        res.put("createTime",new Date());
+        goodsDao.insertBrandClass(res);
+        rtn.setCode(200);
+        rtn.setMessage("success");
+        return Func.functionRtnToJsonObject.apply(rtn);
+    }
 
     @Transactional(rollbackFor = {RuntimeException.class, Exception.class})
     @Override
@@ -303,14 +393,68 @@ public class GoodsServiceImpl extends BaseServiceImpl  implements GoodsService {
         AbsAccessUser user = Factory.getContext().user();
         Rtn rtn = new Rtn("goods");
         Map<String,Object> res = new HashMap<>();
+        Map<String,Object> rest = new HashMap<>();
         res = GsonHelper.getInstance().fromJson(jsonObject,Map.class);
         res.put("id", res.get("id"));
+        res.put("official", res.get("officialWebsite"));
         res.put("updateTime",new Date());
         res.put("lastCreateUser",user.getUserId());
         goodsDao.updateBrand(res);
+        rest.clear();
+        rest.put("type","PP");
+        rest.put("refId",res.get("id"));
+        if(res.get("classId") instanceof List){
+            List classId = (List) res.get("classId");
+            HashMap map = new HashMap();
+            map.put("brand_id",res.get("id"));
+            goodsDao.deleteBrandCorr(map);
+            for(int i=0; i<classId.size(); i++){
+                map.put("classId",classId.get(i));
+                goodsDao.insertBrandCorr(map);
+            }
+        }
+        if (res.get("file")!= null) {
+            HashMap resourceMap = new HashMap();
+            Map file = GsonHelper.getInstance().fromJson(GsonHelper.getInstance().toJson(res.get("file")), Map.class);
+            if(file.size()>0){
+                List<Map<String, Object>> maps = resourceDao.selectResource(rest);
+                if(maps.size()>0){
+                    HashMap map = new HashMap();
+                    map.put("id",maps.get(0).get("id"));
+                    resourceDao.deleteResource(map);
+                }
+                resourceMap.clear();
+                resourceMap.put("id",file.get("id"));
+                resourceMap.put("name", file.get("name"));
+                resourceMap.put("url",file.get("url"));
+                resourceMap.put("extend",file.get("extend"));
+                resourceMap.put("size",file.get("size"));
+                resourceMap.put("type","PP");
+                resourceMap.put("refId",res.get("id"));
+                resourceMap.put("createUserId", user.getUserId());
+                resourceMap.put("lastCreateUserId", user.getUserId());
+                resourceMap.put("createTime", new Date());
+                resourceMap.put("lastCreateTime", new Date());
+                resourceDao.insertResourcet(resourceMap);
+            }
+        }
         rtn.setCode(200);
         rtn.setMessage("success");
         return Func.functionRtnToJsonObject.apply(rtn);
+    }
+
+    @Override
+    public JsonObject updateBrandClass(JsonObject jsonObject) {
+        Rtn rtn = new Rtn("goods");
+        Map<String, Object> res = new HashMap<>();
+        res = GsonHelper.getInstance().fromJson(jsonObject, Map.class);
+        res.put("id", res.get("id"));
+        res.put("name", res.get("label"));
+        goodsDao.updateBrandClass(res);
+        rtn.setCode(200);
+        rtn.setMessage("success");
+        return Func.functionRtnToJsonObject.apply(rtn);
+
     }
 
 
@@ -322,6 +466,21 @@ public class GoodsServiceImpl extends BaseServiceImpl  implements GoodsService {
         res.clear();
         res = GsonHelper.getInstance().fromJson(jsonObject,Map.class);
         goodsDao.deleteBrand(res);
+        res.put("brand_id",res.get("id"));
+        goodsDao.deleteBrandCorr(res);
+        rtn.setCode(200);
+        rtn.setMessage("success");
+        return Func.functionRtnToJsonObject.apply(rtn);
+    }
+
+    @Transactional(rollbackFor = {RuntimeException.class, Exception.class})
+    @Override
+    public JsonObject deleteBrandClass(JsonObject jsonObject) {
+        Rtn rtn = new Rtn("goods");
+        Map<String,Object> res = new HashMap<>();
+        res.clear();
+        res = GsonHelper.getInstance().fromJson(jsonObject,Map.class);
+        goodsDao.deleteBrandClass(res);
         rtn.setCode(200);
         rtn.setMessage("success");
         return Func.functionRtnToJsonObject.apply(rtn);

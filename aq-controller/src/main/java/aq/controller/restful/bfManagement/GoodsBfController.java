@@ -118,6 +118,12 @@ public class GoodsBfController extends aq.controller.restful.System {
         writerJson(response,out,goodsBfService.selectClassifySpecParam(StringUtil.toJsonObject("id",id)));
     }
 
+    //分类品牌参数
+    @RequestMapping(value = "/classify/brand/param/{id}",method = RequestMethod.GET)
+    public void selectClassifyBrandParam(@PathVariable(value = "id") String id,HttpServletRequest request, HttpServletResponse response, PrintWriter out) throws Exception {
+        writerJson(response,out,goodsBfService.selectClassifyBrandParam(StringUtil.toJsonObject("id",id)));
+    }
+
     //品牌列表
     @RequestMapping(value = "/brands",method = RequestMethod.GET)
     public void brandList(HttpServletRequest request, HttpServletResponse response, PrintWriter out) throws Exception {
