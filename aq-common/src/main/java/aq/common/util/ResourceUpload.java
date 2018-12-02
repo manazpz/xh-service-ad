@@ -78,10 +78,11 @@ public class ResourceUpload {
      * @param bucketName
      * @param key
      */
-    public void deleteFileToOSS(String bucketName, String path, String key) {
+    public void deleteFileToOSS(String bucketName, String path,String towPath, String key) {
+        String towBucketName = StringUtil.isEmpty(towPath)?"":towPath+"/";
         ObjectListing ObjectListing = ossClient.listObjects(bucketName);
         List<OSSObjectSummary> listDeletes = ObjectListing.getObjectSummaries();
-        ossClient.deleteObject(bucketName, path+"/"+key);
+        ossClient.deleteObject(bucketName, towBucketName+path+"/"+key);
     }
 
     /**
@@ -91,7 +92,8 @@ public class ResourceUpload {
      * @throws ClientException
      * @throws FileNotFoundException
      */
-    public Oss uploadFile(MultipartFile file, String path, String name,String bucketName){
+    public Oss uploadFile(MultipartFile file, String path,String towPath, String name,String bucketName){
+        String towBucketName = StringUtil.isEmpty(towPath)?"":towPath+"/";
         Oss oss = new Oss();
         Map map = new HashMap();
         if(file == null && file.getSize() <= 0) {
@@ -106,7 +108,7 @@ public class ResourceUpload {
         String fileName = name+"."+file.getOriginalFilename().split("\\.")[1];
         //文件大小
         Long fileSize = file.getSize();
-        String key = path+"/"+fileName;
+        String key = towBucketName+path+"/"+fileName;
 
         try {
             InputStream is = file.getInputStream();

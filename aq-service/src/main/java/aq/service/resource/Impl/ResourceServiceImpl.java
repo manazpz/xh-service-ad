@@ -57,7 +57,7 @@ public class ResourceServiceImpl extends BaseServiceImpl  implements ResourceSer
             Map<String, Object> tppMap = tpp.get(0);
             ResourceUpload resourceUpload = new ResourceUpload(tppMap.get("endpoint").toString(),tppMap.get("accessKeyId").toString(),tppMap.get("accessKeySecret").toString());
             String uuid = UUIDUtil.getUUID();
-            Oss oss = resourceUpload.uploadFile(file,request.getParameter("path"),uuid,tppMap.get("backetName").toString());
+            Oss oss = resourceUpload.uploadFile(file,request.getParameter("path"),tppMap.get("towPath").toString(),uuid,tppMap.get("backetName").toString());
             if("success".equals(oss.getCode())){
                 String fileurl = resourceUpload.getFileUrl(oss.getResult().get("FILEURL").toString(),tppMap.get("backetName").toString());
                 res.clear();
@@ -93,7 +93,7 @@ public class ResourceServiceImpl extends BaseServiceImpl  implements ResourceSer
         }else {
             Map<String, Object> tppMap = tpp.get(0);
             ResourceUpload resourceUpload = new ResourceUpload(tppMap.get("endpoint").toString(),tppMap.get("accessKeyId").toString(),tppMap.get("accessKeySecret").toString());
-            resourceUpload.deleteFileToOSS(tppMap.get("backetName").toString(),jsonObject.get("path").getAsString(),jsonObject.get("id").getAsString()+"."+jsonObject.get("extend").getAsString());
+            resourceUpload.deleteFileToOSS(tppMap.get("backetName").toString(),jsonObject.get("path").getAsString(),tppMap.get("towPath").toString(),jsonObject.get("id").getAsString()+"."+jsonObject.get("extend").getAsString());
             rtn.setCode(200);
             rtn.setMessage("success");
         }
@@ -101,14 +101,14 @@ public class ResourceServiceImpl extends BaseServiceImpl  implements ResourceSer
     }
 
     @Override
-    public JsonObject uploadFiles(ResourceUpload resourceUpload, List<MultipartFile> files, String path, String id, String backetName) throws IOException {
+    public JsonObject uploadFiles(ResourceUpload resourceUpload, List<MultipartFile> files, String path,String towPath, String id, String backetName) throws IOException {
         Rtn rtn = new Rtn("Resource");
         JsonObject data = new JsonObject();
         List fileData = new ArrayList();
         if(files != null) {
             for (MultipartFile obj : files) {
                 String uuid = StringUtil.isEmpty(id)? UUIDUtil.getUUID() : id;
-                Oss oss = resourceUpload.uploadFile(obj,path,uuid,backetName.toString());
+                Oss oss = resourceUpload.uploadFile(obj,path,towPath,uuid,backetName.toString());
                 if("success".equals(oss.getCode())){
                     Map<String,Object> ress = new HashMap<>();
                     String fileurl = resourceUpload.getFileUrl(oss.getResult().get("FILEURL").toString(),backetName);
@@ -133,7 +133,7 @@ public class ResourceServiceImpl extends BaseServiceImpl  implements ResourceSer
     }
 
     @Override
-    public JsonObject deleteFiles(ResourceUpload resourceUpload,List<Map> afileList,List<Map> fileList,String path, String backetName) {
+    public JsonObject deleteFiles(ResourceUpload resourceUpload,List<Map> afileList,List<Map> fileList,String path,String towPath, String backetName) {
         Rtn rtn = new Rtn("Resource");
         Map<String,Object> res = new HashMap<>();
         JsonObject data = new JsonObject();
@@ -152,7 +152,7 @@ public class ResourceServiceImpl extends BaseServiceImpl  implements ResourceSer
             }
         }
         for (Map obj : ress) {
-            resourceUpload.deleteFileToOSS(backetName,path,obj.get("id")+"."+obj.get("extend"));
+            resourceUpload.deleteFileToOSS(backetName,path,towPath,obj.get("id")+"."+obj.get("extend"));
         }
         rtn.setCode(200);
         rtn.setMessage("success");
@@ -255,7 +255,7 @@ public class ResourceServiceImpl extends BaseServiceImpl  implements ResourceSer
         }else {
             Map<String, Object> tppMap = tpp.get(0);
             ResourceUpload resourceUpload = new ResourceUpload(tppMap.get("endpoint").toString(),tppMap.get("accessKeyId").toString(),tppMap.get("accessKeySecret").toString());
-            resourceUpload.deleteFileToOSS(tppMap.get("backetName").toString(),jsonObject.get("path").getAsString(),jsonObject.get("id").getAsString()+"."+jsonObject.get("extend").getAsString());
+            resourceUpload.deleteFileToOSS(tppMap.get("backetName").toString(),jsonObject.get("path").getAsString(),tppMap.get("towPath").toString(),jsonObject.get("id").getAsString()+"."+jsonObject.get("extend").getAsString());
             res.clear();
             res.put("id", jsonObject.get("id").getAsString());
             resourceDao.deleteResource(res);

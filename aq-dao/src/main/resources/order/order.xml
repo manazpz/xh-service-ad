@@ -60,7 +60,7 @@
         <if test="startTime!=null and startTime != '' and endTime!=null and endTime != ''">
             AND XO.CREATE_TIME between #{startTime} and #{endTime}
         </if>
-        ORDER BY XR.TYPE ASC
+        ORDER BY XR.TYPE ASC,su.ID ASC
     </select>
 
     <!--添加订单-->

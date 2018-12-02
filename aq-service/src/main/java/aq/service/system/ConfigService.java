@@ -38,4 +38,16 @@ public interface ConfigService extends BaseService {
     //删除第三方平台配置表
     JsonObject deleteTppConfig(JsonObject jsonObject);
 
+    //新增首页标签
+    JsonObject insertHomeLabel(JsonObject jsonObject);
+
+    //查询首页标签
+    JsonObject selectHomeLabel(JsonObject jsonObject);
+
+    //修改首页标签
+    JsonObject updateHomeLabel(JsonObject jsonObject);
+
+    //删除首页标签
+    JsonObject deleteHomeLabel(JsonObject jsonObject);
+
 }

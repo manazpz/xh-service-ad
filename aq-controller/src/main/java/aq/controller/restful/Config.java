@@ -91,4 +91,32 @@ public class Config extends Base {
         writerJson(response,out,configService.deleteTppConfig(requestJson));
     }
 
+    //查询首页标签
+    @ResponseBody
+    @RequestMapping(value = "homeLabels", method=RequestMethod.GET)
+    public void  homeLabels(HttpServletRequest request, HttpServletResponse response, PrintWriter out) throws Exception{
+        writerJson(response,out,configService.selectHomeLabel(HttpUtil.getParameterMap(request)));
+    }
+
+    //新增首页标签
+    @RequestMapping(value = "/insertHomeLabel",method = RequestMethod.POST)
+    @ResponseBody
+    public void insertHomeLabel(@RequestBody JsonObject requestJson, HttpServletRequest request, HttpServletResponse response, PrintWriter out){
+        writerJson(response,out,configService.insertHomeLabel(requestJson));
+    }
+
+    //更新首页标签
+    @RequestMapping(value = "/updateHomeLabel",method = RequestMethod.POST)
+    @ResponseBody
+    public void updateHomeLabel(@RequestBody JsonObject requestJson, HttpServletRequest request, HttpServletResponse response, PrintWriter out){
+        writerJson(response,out,configService.updateHomeLabel(requestJson));
+    }
+
+    //删除首页标签
+    @RequestMapping(value = "/deleteHomeLabel",method = RequestMethod.POST)
+    @ResponseBody
+    public void deleteHomeLabel(@RequestBody JsonObject requestJson, HttpServletRequest request, HttpServletResponse response, PrintWriter out){
+        writerJson(response,out,configService.deleteHomeLabel(requestJson));
+    }
+
 }

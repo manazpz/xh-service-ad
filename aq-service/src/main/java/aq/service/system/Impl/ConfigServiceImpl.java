@@ -13,7 +13,6 @@ import aq.service.base.Impl.BaseServiceImpl;
 import aq.service.system.ConfigService;
 import aq.service.system.Func;
 import com.google.gson.Gson;
-import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 import com.google.gson.reflect.TypeToken;
 import com.lly835.bestpay.config.WxPayH5Config;
@@ -247,6 +246,49 @@ public class ConfigServiceImpl extends BaseServiceImpl  implements ConfigService
         res.clear();
         res = GsonHelper.getInstance().fromJson(jsonObject,Map.class);
         configDao.deleteTppConfig(res);
+        rtn.setCode(200);
+        rtn.setMessage("success");
+        return  Func.functionRtnToJsonObject.apply(rtn);
+    }
+
+    @Override
+    public JsonObject insertHomeLabel(JsonObject jsonObject) {
+        Rtn rtn = new Rtn("Config");
+        Map<String,Object> res = new HashMap<>();
+        res = GsonHelper.getInstance().fromJson(jsonObject,Map.class);
+        res.put("id", UUIDUtil.getUUID());
+        configDao.insertHomeLable(res);
+        rtn.setCode(200);
+        rtn.setMessage("success");
+        return Func.functionRtnToJsonObject.apply(rtn);
+    }
+
+    @Override
+    public JsonObject selectHomeLabel(JsonObject jsonObject) {
+        jsonObject.addProperty("service","Config");
+        return query(jsonObject,(map)->{
+            return configDao.selectHomeLable(map);
+        });
+    }
+
+    @Override
+    public JsonObject updateHomeLabel(JsonObject jsonObject) {
+        Rtn rtn = new Rtn("Config");
+        Map<String,Object> res = new HashMap<>();
+        res = GsonHelper.getInstance().fromJson(jsonObject,Map.class);
+        configDao.updateHomeLable(res);
+        rtn.setCode(200);
+        rtn.setMessage("success");
+        return Func.functionRtnToJsonObject.apply(rtn);
+    }
+
+    @Override
+    public JsonObject deleteHomeLabel(JsonObject jsonObject) {
+        Rtn rtn = new Rtn("Config");
+        Map<String,Object> res = new HashMap<>();
+        res.clear();
+        res = GsonHelper.getInstance().fromJson(jsonObject,Map.class);
+        configDao.deleteHomeLable(res);
         rtn.setCode(200);
         rtn.setMessage("success");
         return  Func.functionRtnToJsonObject.apply(rtn);

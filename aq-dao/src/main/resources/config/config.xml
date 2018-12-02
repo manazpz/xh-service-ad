@@ -71,7 +71,7 @@
     <!--插入第三方配置表-->
     <insert id="insertTppConfig" >
         INSERT INTO system_tpp_config
-        VALUES(#{id},#{name},#{platform},#{accessKeyId},#{accessKeySecret},#{mchid},#{keyword},#{endpoint},#{backetName},null,null,#{returnUrl})
+        VALUES(#{id},#{name},#{platform},#{accessKeyId},#{accessKeySecret},#{mchid},#{keyword},#{endpoint},#{backetName}#{towPath},null,null,#{returnUrl})
     </insert>
 
     <!--查询第三方配置表-->
@@ -86,6 +86,7 @@
         stc.ACCESS_KEY_SECRET AS accessKeySecret,
         stc.ENDPOINT AS endpoint,
         stc.BACKET_NAME AS backetName,
+        stc.TOW_PATH AS towPath,
         stc.ACCESS_TOKEN AS accessToken,
         DATE_FORMAT(
         stc.UPDATE_TIME,
@@ -130,6 +131,9 @@
             <if test="backetName!=null and backetName != ''">
                 sc.BACKET_NAME = #{backetName},
             </if>
+            <if test="towPath!=null">
+                sc.TOW_PATH = #{towPath},
+            </if>
             <if test="returnUrl!=null and returnUrl != ''">
                 sc.RETURN_URL = #{returnUrl},
             </if>
@@ -140,6 +144,46 @@
     <!--删除第三方配置表-->
     <delete id="deleteTppConfig"  parameterType="java.util.Map" >
         DELETE FROM system_tpp_config WHERE ID = #{id}
+    </delete>
+
+    <!--新增首页标签-->
+    <insert id="insertHomeLable" >
+        INSERT INTO system_home_label
+        VALUES(#{id},#{title},'N',#{no})
+    </insert>
+
+    <!--查询首页标签-->
+    <select id="selectHomeLable" resultType="java.util.Map" parameterType="java.util.Map">
+        SELECT
+        stc.ID AS id,
+        stc.TITLE AS title,
+        stc.IS_ENABLE AS isEnable,
+        stc.NO AS no
+        FROM system_home_label stc
+        WHERE 1=1
+        ORDER BY stc.NO ASC
+    </select>
+
+    <!--编辑首页标签-->
+    <update id="updateHomeLable" parameterType="java.util.Map">
+        UPDATE system_home_label sc
+        <trim prefix="set" suffixOverrides=",">
+            <if test="title!=null and title != ''">
+                sc.TITLE = #{title},
+            </if>
+            <if test="isEnable!=null and isEnable != ''">
+                sc.IS_ENABLE = #{isEnable},
+            </if>
+            <if test="no!=null and no != ''">
+                sc.NO = #{no},
+            </if>
+        </trim>
+        WHERE sc.ID = #{id}
+    </update>
+
+    <!--删除首页标签-->
+    <delete id="deleteHomeLable"  parameterType="java.util.Map" >
+        DELETE FROM system_home_label WHERE ID = #{id}
     </delete>
 
 </mapper>

@@ -344,7 +344,7 @@ public class SystemServiceImpl extends BaseServiceImpl  implements SystemService
                     Map<String, Object> tppMap = tpp.get(0);
                     ResourceUpload resourceUpload = new ResourceUpload(tppMap.get("endpoint").toString(),tppMap.get("accessKeyId").toString(),tppMap.get("accessKeySecret").toString());
                     for (MultipartFile obj : files) {
-                        Oss oss = resourceUpload.uploadFile(obj,"head",user.getUserId(),tppMap.get("backetName").toString());
+                        Oss oss = resourceUpload.uploadFile(obj,"head",tppMap.get("towPath").toString(),user.getUserId(),tppMap.get("backetName").toString());
                         if("success".equals(oss.getCode())){
                             Map<String,Object> ress = new HashMap<>();
                             String fileurl = resourceUpload.getFileUrl(oss.getResult().get("FILEURL").toString(),tppMap.get("backetName").toString());

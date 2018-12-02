@@ -135,19 +135,19 @@ public class ShopBfServiceImpl extends BaseServiceImpl  implements ShopBfService
             MultipartHttpServletRequest multipartRequest = (MultipartHttpServletRequest) request;
             List<MultipartFile> paperImgs = multipartRequest.getMultiFileMap().get("paperImgs");
             if (paperImgs!=null&&paperImgs.size() > 0) {
-                JsonObject uploadFileObject = resourceService.uploadFiles(resourceUpload, paperImgs, jsonObject.get("paperPath").getAsString(), "", tppMap.get("backetName").toString());
+                JsonObject uploadFileObject = resourceService.uploadFiles(resourceUpload, paperImgs, jsonObject.get("paperPath").getAsString(),tppMap.get("towPath").toString(), "", tppMap.get("backetName").toString());
                 if (uploadFileObject.get("data").getAsJsonObject().get("files") != null)
                     jsonObject.add("paperFiles", uploadFileObject.get("data").getAsJsonObject().get("files").getAsJsonArray());
             }
             List<MultipartFile> shopImgs = multipartRequest.getMultiFileMap().get("shopImgs");
             if (shopImgs!=null&&shopImgs.size() > 0) {
-                JsonObject uploadFileObject = resourceService.uploadFiles(resourceUpload, shopImgs, jsonObject.get("shopPath").getAsString(), shopId, tppMap.get("backetName").toString());
+                JsonObject uploadFileObject = resourceService.uploadFiles(resourceUpload, shopImgs, jsonObject.get("shopPath").getAsString(),tppMap.get("towPath").toString(), shopId, tppMap.get("backetName").toString());
                 if (uploadFileObject.get("data").getAsJsonObject().get("files") != null)
                     jsonObject.add("shopFiles", uploadFileObject.get("data").getAsJsonObject().get("files").getAsJsonArray());
             }
             List<MultipartFile> userSps = multipartRequest.getMultiFileMap().get("userSps");
             if (userSps!=null&&userSps.size() > 0) {
-                JsonObject uploadFileObject = resourceService.uploadFiles(resourceUpload, userSps, jsonObject.get("userPath").getAsString(), "", tppMap.get("backetName").toString());
+                JsonObject uploadFileObject = resourceService.uploadFiles(resourceUpload, userSps, jsonObject.get("userPath").getAsString(),tppMap.get("towPath").toString(), "", tppMap.get("backetName").toString());
                 if (uploadFileObject.get("data").getAsJsonObject().get("files") != null)
                     jsonObject.add("spFiles", uploadFileObject.get("data").getAsJsonObject().get("files").getAsJsonArray());
             }

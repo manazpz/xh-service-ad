@@ -134,6 +134,20 @@ public class OrderApiServiceImpl extends BaseServiceImpl  implements OrderApiSer
                 req.add(obj);
             }
         }
+//        Collections.sort(req, new Comparator<Map<String, Object>>() {
+//            @Override
+//            public int compare(Map<String, Object> o1, Map<String, Object> o2) {
+//
+//                String type1 = o1.get("type").toString() ;//name1是从你list里面拿出来的一个
+//                String type2 = o2.get("type").toString() ; //name1是从你list里面拿出来的第二个name
+//
+//                String address1 = ((Map)o1.get("address")).get("areaString").toString() ;//name1是从你list里面拿出来的一个
+//                String addresse2 = ((Map)o2.get("address")).get("areaString").toString() ; //name1是从你list里面拿出来的第二个name
+//                int i1 = type1.compareTo(type2);
+//                int i2 = address1.compareTo(addresse2);
+//
+//            }
+//        });
         rtn.setCode(200);
         rtn.setMessage("success");
         jsonArray =  GsonHelper.getInstanceJsonparser().parse(GsonHelper.getInstance().toJson(req)).getAsJsonArray();

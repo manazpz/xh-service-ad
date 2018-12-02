@@ -68,19 +68,19 @@ public class ShopServiceImpl extends BaseServiceImpl  implements ShopService {
                 MultipartHttpServletRequest multipartRequest = (MultipartHttpServletRequest) request;
                 List<MultipartFile> paperImgs = multipartRequest.getMultiFileMap().get("paperImgs");
                 if (paperImgs!=null&&paperImgs.size() > 0) {
-                    JsonObject uploadFileObject = resourceService.uploadFiles(resourceUpload, paperImgs, jsonObject.get("paperPath").getAsString(), "", tppMap.get("backetName").toString());
+                    JsonObject uploadFileObject = resourceService.uploadFiles(resourceUpload, paperImgs, jsonObject.get("paperPath").getAsString(),tppMap.get("towPath").toString(), "", tppMap.get("backetName").toString());
                     if (uploadFileObject.get("data").getAsJsonObject().get("files") != null)
                         jsonObject.add("paperFiles", uploadFileObject.get("data").getAsJsonObject().get("files").getAsJsonArray());
                 }
                 List<MultipartFile> shopImgs = multipartRequest.getMultiFileMap().get("shopImgs");
                 if (shopImgs!=null&&shopImgs.size() > 0) {
-                    JsonObject uploadFileObject = resourceService.uploadFiles(resourceUpload, shopImgs, jsonObject.get("shopPath").getAsString(), shopId, tppMap.get("backetName").toString());
+                    JsonObject uploadFileObject = resourceService.uploadFiles(resourceUpload, shopImgs, jsonObject.get("shopPath").getAsString(),tppMap.get("towPath").toString(), shopId, tppMap.get("backetName").toString());
                     if (uploadFileObject.get("data").getAsJsonObject().get("files") != null)
                         jsonObject.add("shopFiles", uploadFileObject.get("data").getAsJsonObject().get("files").getAsJsonArray());
                 }
                 List<MultipartFile> userSps = multipartRequest.getMultiFileMap().get("userSps");
                 if (userSps!=null&&userSps.size() > 0) {
-                    JsonObject uploadFileObject = resourceService.uploadFiles(resourceUpload, userSps, jsonObject.get("userPath").getAsString(), "", tppMap.get("backetName").toString());
+                    JsonObject uploadFileObject = resourceService.uploadFiles(resourceUpload, userSps, jsonObject.get("userPath").getAsString(),tppMap.get("towPath").toString(), "", tppMap.get("backetName").toString());
                     if (uploadFileObject.get("data").getAsJsonObject().get("files") != null)
                         jsonObject.add("spFiles", uploadFileObject.get("data").getAsJsonObject().get("files").getAsJsonArray());
                 }
@@ -253,7 +253,7 @@ public class ShopServiceImpl extends BaseServiceImpl  implements ShopService {
                     //店铺图片更新
                     List<MultipartFile> shopImgs = multipartRequest.getMultiFileMap().get("shopFiles");
                     if (shopImgs!=null&&shopImgs.size() > 0) {
-                        JsonObject uploadFileObject = resourceService.uploadFiles(resourceUpload, shopImgs, res.get("shopPath").toString(), shopId, tppMap.get("backetName").toString());
+                        JsonObject uploadFileObject = resourceService.uploadFiles(resourceUpload, shopImgs, res.get("shopPath").toString(),tppMap.get("towPath").toString(), shopId, tppMap.get("backetName").toString());
                         if (uploadFileObject.get("data").getAsJsonObject().get("files") != null)
                             res.put("updateShopFiles", uploadFileObject.get("data").getAsJsonObject().get("files").getAsJsonArray());
                     }
@@ -262,12 +262,12 @@ public class ShopServiceImpl extends BaseServiceImpl  implements ShopService {
                     List<Map> paperImgs1 = StringUtil.isEmpty(res.get("paperImgs"))? new ArrayList<>() : GsonHelper.getInstance().fromJson(res.get("paperImgs").toString(), List.class);
                     List<Map> apaperImgs1 = StringUtil.isEmpty(res.get("apaperImgs"))? new ArrayList<>() : GsonHelper.getInstance().fromJson(res.get("apaperImgs").toString(), List.class);
                     if (paperImgs!=null&&paperImgs.size() > 0) {
-                        JsonObject uploadFileObject = resourceService.uploadFiles(resourceUpload, paperImgs, res.get("paperPath").toString(), "", tppMap.get("backetName").toString());
+                        JsonObject uploadFileObject = resourceService.uploadFiles(resourceUpload, paperImgs, res.get("paperPath").toString(),tppMap.get("towPath").toString(), "", tppMap.get("backetName").toString());
                         if (uploadFileObject.get("data").getAsJsonObject().get("files") != null)
                             res.put("updatePaperFiles", uploadFileObject.get("data").getAsJsonObject().get("files").getAsJsonArray());
                     }
                     if(paperImgs1.size() > 0 && apaperImgs1.size() > 0) {
-                        JsonObject delFileObject = resourceService.deleteFiles(resourceUpload,apaperImgs1,paperImgs1,res.get("paperPath").toString(),tppMap.get("backetName").toString());
+                        JsonObject delFileObject = resourceService.deleteFiles(resourceUpload,apaperImgs1,paperImgs1,res.get("paperPath").toString(),tppMap.get("towPath").toString(),tppMap.get("backetName").toString());
                         if (delFileObject.get("data").getAsJsonObject().get("delFiles") != null)
                             res.put("delPaperFiles",delFileObject.get("data").getAsJsonObject().get("delFiles").getAsJsonArray());
                     }
@@ -276,12 +276,12 @@ public class ShopServiceImpl extends BaseServiceImpl  implements ShopService {
                     List<Map> userSps1 = StringUtil.isEmpty(res.get("userSps"))? new ArrayList<>() : GsonHelper.getInstance().fromJson(res.get("userSps").toString(), List.class);
                     List<Map> auserSps1 = StringUtil.isEmpty(res.get("auserSps"))? new ArrayList<>() : GsonHelper.getInstance().fromJson(res.get("auserSps").toString(), List.class);
                     if (userSps!=null&&userSps.size() > 0) {
-                        JsonObject uploadFileObject = resourceService.uploadFiles(resourceUpload, userSps, res.get("userPath").toString(), "", tppMap.get("backetName").toString());
+                        JsonObject uploadFileObject = resourceService.uploadFiles(resourceUpload, userSps, res.get("userPath").toString(),tppMap.get("towPath").toString(), "", tppMap.get("backetName").toString());
                         if (uploadFileObject.get("data").getAsJsonObject().get("files") != null)
                             res.put("updateSpFiles", uploadFileObject.get("data").getAsJsonObject().get("files").getAsJsonArray());
                     }
                     if(userSps1.size() > 0 && auserSps1.size() > 0) {
-                        JsonObject delFileObject = resourceService.deleteFiles(resourceUpload,auserSps1,userSps1,res.get("userPath").toString(),tppMap.get("backetName").toString());
+                        JsonObject delFileObject = resourceService.deleteFiles(resourceUpload,auserSps1,userSps1,res.get("userPath").toString(),tppMap.get("towPath").toString(),tppMap.get("backetName").toString());
                         if (delFileObject.get("data").getAsJsonObject().get("delFiles") != null)
                             res.put("delSpFiles",delFileObject.get("data").getAsJsonObject().get("delFiles").getAsJsonArray());
                     }

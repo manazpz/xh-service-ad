@@ -34,4 +34,16 @@ public interface ConfigDao {
     //删除第三方配置表
     int deleteTppConfig(Map<String,Object> map);
 
+    //新增首页标签
+    int insertHomeLable(Map<String,Object> map);
+
+    //查询首页标签
+    List<Map<String,Object>> selectHomeLable(Map<String,Object> map);
+
+    //编辑首页标签
+    int updateHomeLable(Map<String,Object> map);
+
+    //删除首页标签
+    int deleteHomeLable(Map<String,Object> map);
+
 }

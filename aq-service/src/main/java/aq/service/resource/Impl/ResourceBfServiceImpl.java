@@ -59,7 +59,7 @@ public class ResourceBfServiceImpl extends BaseServiceImpl  implements ResourceB
                 ResourceUpload resourceUpload = new ResourceUpload(tppMap.get("endpoint").toString(),tppMap.get("accessKeyId").toString(),tppMap.get("accessKeySecret").toString());
                 for (MultipartFile obj : files) {
                     String uuid = StringUtil.isEmpty(request.getParameter("id"))? UUIDUtil.getUUID() : request.getParameter("id");
-                    Oss oss = resourceUpload.uploadFile(obj,request.getParameter("path"),uuid,tppMap.get("backetName").toString());
+                    Oss oss = resourceUpload.uploadFile(obj,request.getParameter("path"),tppMap.get("towPath").toString(),uuid,tppMap.get("backetName").toString());
                     if("success".equals(oss.getCode())){
                         Map<String,Object> ress = new HashMap<>();
                         String fileurl = resourceUpload.getFileUrl(oss.getResult().get("FILEURL").toString(),tppMap.get("backetName").toString());
@@ -124,7 +124,7 @@ public class ResourceBfServiceImpl extends BaseServiceImpl  implements ResourceB
             Map<String, Object> tppMap = tpp.get(0);
             ResourceUpload resourceUpload = new ResourceUpload(tppMap.get("endpoint").toString(),tppMap.get("accessKeyId").toString(),tppMap.get("accessKeySecret").toString());
             for (Map obj : ress) {
-                resourceUpload.deleteFileToOSS(tppMap.get("backetName").toString(),jsonObject.get("path").getAsString(),obj.get("id")+"."+obj.get("extend"));
+                resourceUpload.deleteFileToOSS(tppMap.get("backetName").toString(),jsonObject.get("path").getAsString(),tppMap.get("towPath").toString(),obj.get("id")+"."+obj.get("extend"));
             }
             rtn.setCode(200);
             rtn.setMessage("success");

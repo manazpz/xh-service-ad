@@ -148,7 +148,7 @@ public class StatementServiceImpl extends BaseServiceImpl implements StatementSe
         }else {
             Map<String, Object> tppMap = tpp.get(0);
             ResourceUpload resourceUpload = new ResourceUpload(tppMap.get("endpoint").toString(),tppMap.get("accessKeyId").toString(),tppMap.get("accessKeySecret").toString());
-            resourceUpload.deleteFileToOSS(tppMap.get("backetName").toString(),jsonObject.get("path").getAsString(),jsonObject.get("imgId").getAsString()+"."+jsonObject.get("imgExtend").getAsString());
+            resourceUpload.deleteFileToOSS(tppMap.get("backetName").toString(),jsonObject.get("path").getAsString(),tppMap.get("towPath").toString(),jsonObject.get("imgId").getAsString()+"."+jsonObject.get("imgExtend").getAsString());
             res.clear();
             res.put("id", jsonObject.get("id").getAsString());
             statementDao.deleteStatement(res);

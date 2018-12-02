@@ -23,10 +23,10 @@ public interface ResourceService extends BaseService {
     JsonObject deleteFile(JsonObject jsonObject);
 
     //多文件上传（暂无线程控制，后期修改）
-    JsonObject uploadFiles(ResourceUpload resourceUpload, List<MultipartFile> files, String path, String id, String backetName) throws IOException;
+    JsonObject uploadFiles(ResourceUpload resourceUpload, List<MultipartFile> files, String path,String towPath, String id, String backetName) throws IOException;
 
     //多文件删除
-    JsonObject deleteFiles(ResourceUpload resourceUpload, List<Map> afileList, List<Map> fileList, String path, String backetName);
+    JsonObject deleteFiles(ResourceUpload resourceUpload, List<Map> afileList, List<Map> fileList, String path,String towPath, String backetName);
 
     //查询资源
     JsonObject queryaResource(JsonObject jsonObject);
