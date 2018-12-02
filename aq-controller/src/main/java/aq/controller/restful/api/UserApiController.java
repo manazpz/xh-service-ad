@@ -25,7 +25,7 @@ public class UserApiController extends aq.controller.restful.System {
     @Resource
     protected UserApiService userApiService;
 
-    //查询已验机数据
+    //查询客户数据
     @RequestMapping(value = "/list",method = RequestMethod.GET)
     public void amslerList(HttpServletRequest request, HttpServletResponse response, PrintWriter out) throws Exception {
         JsonObject jsonObject = HttpUtil.getParameterMap(request);

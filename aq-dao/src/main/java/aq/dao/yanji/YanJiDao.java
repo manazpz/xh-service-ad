@@ -14,4 +14,10 @@ public interface YanJiDao {
     //查询已验机报告
     List<Map<String,Object>> selectAmslerList(Map<String,Object> map);
 
+    //更新验机报告
+    int updateYanJi(Map<String,Object> map);
+
+    //删除验机报告
+    int deleteYanJi(Map<String,Object> map);
+
 }

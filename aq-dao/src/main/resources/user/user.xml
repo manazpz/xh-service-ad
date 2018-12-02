@@ -189,7 +189,7 @@
         <if test="permissionId!=null and permissionId != ''">
             AND ADMINISTRATOR_ID = #{userId} AND PERMISSION_ID = #{permissionId}
         </if>
-        <if test="permissionId == null or permissionId == ''">
+        <if test="userId == null or userId == ''">
             AND ADMINISTRATOR_ID = #{userId}
         </if>
     </delete>
@@ -457,5 +457,123 @@
             ,#{sort}
         </if>
     </select>
+
+    <!--新增角色信息-->
+    <insert id="insertRole" >
+        INSERT INTO system_role
+        VALUES(#{id},#{name},#{flag},#{depict},#{createTime,jdbcType=TIMESTAMP})
+    </insert>
+
+    <!--更新角色信息-->
+    <update id="updateRole" parameterType="java.util.Map">
+        UPDATE system_role sr
+        <trim prefix="set" suffixOverrides=",">
+            <if test="name!=null and name != ''">
+                sr.NAME = #{name},
+            </if>
+            <if test="flag!=null and flag != ''">
+                sr.FLAG = #{flag},
+            </if>
+            <if test="depict!=null and depict != ''">
+                sr.DESCRIBE = #{depict},
+            </if>
+        </trim>
+        WHERE sr.ID = #{id}
+    </update>
+
+    <!--角色查询-->
+    <select id="selectRoleList" resultType="java.util.Map" parameterType="java.util.Map">
+        SELECT
+        sr.ID AS id,
+        sr.NAME AS name,
+        sr.FLAG AS flag,
+        sr.DESCRIBE AS depict,
+        DATE_FORMAT(sr.CREATE_TIME,'%Y-%m-%d %H:%i:%S') AS createTime
+        FROM
+        system_role sr
+        WHERE 1=1
+        <if test="name != null and name != ''">
+            AND sr.NAME LIKE CONCAT('%', #{name}, '%')
+        </if>
+        order BY sr.CREATE_TIME DESC
+    </select>
+
+    <!--用户角色列表-->
+    <select id="selectUserRoleList" resultType="java.lang.String" parameterType="java.util.Map">
+        SELECT
+            sr.ID
+        FROM
+            user_role ur
+        LEFT JOIN system_role sr on sr.ID = ur.ROLE_ID
+        LEFT JOIN system_administrator sa on sa.ID = ur.ADMINISTRATOR_ID
+        LEFT JOIN system_user su on su.ID = ur.ADMINISTRATOR_ID
+        WHERE
+            1 = 1
+        and (sa.ID = #{userId} or su.ID = #{userId})
+        ORDER BY
+            sr.CREATE_TIME DESC
+    </select>
+
+    <!--查询角色权限-->
+    <select id="selectRolePermission" resultType="java.util.Map" parameterType="java.util.Map">
+        SELECT
+        rp.*
+        FROM
+        role_permission rp
+        WHERE 1=1 and rp.ROLE_ID  = #{roleId}
+    </select>
+
+    <!--删除角色权限-->
+    <delete id="deleteRolePermission"  parameterType="java.util.Map" >
+        DELETE FROM role_permission WHERE 1=1
+        <if test="permissionId!=null and permissionId != ''">
+            AND ROLE_ID = #{roleId} AND PERMISSION_ID = #{permissionId}
+        </if>
+        <if test="roleId == null or roleId == ''">
+            AND ROLE_ID = #{roleId}
+        </if>
+    </delete>
+
+    <!--插入角色权限-->
+    <insert id="insertRolePermission" >
+        INSERT INTO role_permission
+        VALUES(#{roleId},#{permissionId})
+    </insert>
+
+    <!--删除用户角色-->
+    <delete id="deleteUserRole"  parameterType="java.util.Map" >
+        DELETE FROM user_role WHERE 1=1
+        <if test="roleId!=null and roleId != ''">
+            AND ROLE_ID = #{roleId} AND ADMINISTRATOR_ID = #{userId}
+        </if>
+        <if test="userId == null or userId == ''">
+            AND ADMINISTRATOR_ID = #{userId}
+        </if>
+    </delete>
+
+    <!--查询用户角色-->
+    <select id="selectUserRole" resultType="java.util.Map" parameterType="java.util.Map">
+        SELECT
+        rp.*
+        FROM
+        user_role rp
+        WHERE 1=1 and rp.ADMINISTRATOR_ID  = #{userId}
+    </select>
+
+    <!--查询用户角色（特殊）-->
+    <select id="selectUserRoleFlag" resultType="java.lang.String" parameterType="java.util.Map">
+        SELECT
+          sr.FLAG
+        FROM
+            user_role rp
+        LEFT JOIN system_role sr on sr.ID = rp.ROLE_ID
+        WHERE 1=1 and rp.ADMINISTRATOR_ID  = #{userId}
+    </select>
+
+    <!--插入用户角色-->
+    <insert id="insertUserRole" >
+        INSERT INTO user_role
+        VALUES(#{userId},#{roleId})
+    </insert>
 
 </mapper>

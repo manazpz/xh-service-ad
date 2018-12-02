@@ -64,4 +64,25 @@ public interface UserService extends BaseService {
 
     //查询用户反馈信息
     JsonObject querySuggestion(JsonObject jsonObject);
+
+    //新增角色
+    JsonObject insertRole(JsonObject jsonObject);
+
+    //更新角色
+    JsonObject updateRole(JsonObject jsonObject);
+
+    //角色列表
+    JsonObject queryRoleList(JsonObject jsonObject);
+
+    //用户角色列表
+    JsonObject queryUserRoleList(JsonObject jsonObject);
+
+    //用户角色列表
+    JsonObject selectRolePermission(JsonObject jsonObject);
+
+    //角色权限分配
+    JsonObject updateRolePermission(JsonObject jsonObject);
+
+    //用户角色分配
+    JsonObject updateUserRole(JsonObject jsonObject);
 }

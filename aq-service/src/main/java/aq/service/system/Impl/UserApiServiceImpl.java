@@ -40,6 +40,10 @@ public class UserApiServiceImpl extends BaseServiceImpl implements UserApiServic
         res.put("openid",jsonObject.get("openId").getAsString());
         List<Map<String, Object>> list = userDao.selectUserInfos(res);
         if(list.size()>0) {
+            res.clear();
+            res.put("userId",list.get(0).get("id"));
+            List roles = userDao.selectUserRoleFlag(res);
+            list.get(0).put("roles",roles);
             jsonArray =  GsonHelper.getInstanceJsonparser().parse(GsonHelper.getInstance().toJson(list)).getAsJsonArray();
         }
         rtn.setCode(200);

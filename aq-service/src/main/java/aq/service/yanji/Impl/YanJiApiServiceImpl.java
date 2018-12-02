@@ -46,7 +46,7 @@ public class YanJiApiServiceImpl extends BaseServiceImpl  implements YanJiApiSer
 
     @Override
     public JsonObject yanJi(JsonObject jsonObject) {
-        Rtn rtn = new Rtn("order");
+        Rtn rtn = new Rtn("yanji");
         JsonObject data = new JsonObject();
         JsonArray jsonArray = new JsonArray();
         Map<String,Object> res = new HashMap<>();
@@ -129,10 +129,21 @@ public class YanJiApiServiceImpl extends BaseServiceImpl  implements YanJiApiSer
         return  Func.functionRtnToJsonObject.apply(rtn);
     }
 
+    @Override
+    public JsonObject updateYanJi(JsonObject jsonObject) {
+        Rtn rtn = new Rtn("yanji");
+        Map<String,Object> res = new HashMap<>();
+        res.clear();
+        res = GsonHelper.getInstance().fromJson(jsonObject,Map.class);
+        yanJiDao.updateYanJi(res);
+        rtn.setCode(200);
+        rtn.setMessage("success");
+        return  Func.functionRtnToJsonObject.apply(rtn);
+    }
 
     @Override
     public JsonObject amslerList(JsonObject jsonObject) {
-        Rtn rtn = new Rtn("order");
+        Rtn rtn = new Rtn("yanji");
         JsonObject data = new JsonObject();
         JsonArray jsonArray = new JsonArray();
         Map<String,Object> res = new HashMap<>();

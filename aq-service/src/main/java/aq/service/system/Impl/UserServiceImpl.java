@@ -304,7 +304,7 @@ public class UserServiceImpl extends BaseServiceImpl implements UserService {
 
     @Override
     public JsonObject queryCustomService(JsonObject jsonObject) {
-        jsonObject.addProperty("service","customer");
+        jsonObject.addProperty("service","user");
         return query(jsonObject,(map)->{
             return customerDao.selectCustomerInfo(map);
         });
@@ -312,7 +312,7 @@ public class UserServiceImpl extends BaseServiceImpl implements UserService {
 
     @Override
     public JsonObject updateCustomService(JsonObject jsonObject) {
-        Rtn rtn = new Rtn("customer");
+        Rtn rtn = new Rtn("user");
         Map<String,Object> res = new HashMap<>();
         res.clear();
         res = GsonHelper.getInstance().fromJson(jsonObject,Map.class);
@@ -324,9 +324,224 @@ public class UserServiceImpl extends BaseServiceImpl implements UserService {
 
     @Override
     public JsonObject querySuggestion(JsonObject jsonObject) {
-        jsonObject.addProperty("service","customer");
+        jsonObject.addProperty("service","user");
         return query(jsonObject,(map)->{
             return userDao.selectSuggestion(map);
         });
+    }
+
+    @Override
+    public JsonObject insertRole(JsonObject jsonObject) {
+        Rtn rtn = new Rtn("user");
+        Map<String,Object> res = new HashMap<>();
+        res.clear();
+        res = GsonHelper.getInstance().fromJson(jsonObject,Map.class);
+        res.put("id",UUIDUtil.getUUID());
+        res.put("createTime",new Date());
+        userDao.insertRole(res);
+        rtn.setCode(200);
+        rtn.setMessage("success");
+        return Func.functionRtnToJsonObject.apply(rtn);
+    }
+
+    @Override
+    public JsonObject updateRole(JsonObject jsonObject) {
+        Rtn rtn = new Rtn("user");
+        Map<String,Object> res = new HashMap<>();
+        res.clear();
+        res = GsonHelper.getInstance().fromJson(jsonObject,Map.class);
+        userDao.updateRole(res);
+        rtn.setCode(200);
+        rtn.setMessage("success");
+        return Func.functionRtnToJsonObject.apply(rtn);
+    }
+
+    @Override
+    public JsonObject queryRoleList(JsonObject jsonObject) {
+        jsonObject.addProperty("service","user");
+        return query(jsonObject,(map)->{
+            return userDao.selectRoleList(map);
+        });
+    }
+
+    @Override
+    public JsonObject queryUserRoleList(JsonObject jsonObject) {
+        Rtn rtn = new Rtn("User");
+        Map<String,Object> res = new HashMap<>();
+        JsonObject data = new JsonObject();
+        JsonArray jsonArray = new JsonArray();
+        res.clear();
+        res = GsonHelper.getInstance().fromJson(jsonObject,Map.class);
+        List lists = userDao.selectUserRoleList(res);
+        jsonArray =  GsonHelper.getInstanceJsonparser().parse(GsonHelper.getInstance().toJson(lists)).getAsJsonArray();
+        rtn.setCode(200);
+        rtn.setMessage("success");
+        data.add("items",jsonArray);
+        rtn.setData(data);
+        return  Func.functionRtnToJsonObject.apply(rtn);
+    }
+
+    @Override
+    public JsonObject selectRolePermission(JsonObject jsonObject) {
+        Rtn rtn = new Rtn("User");
+        String key = "";
+        String name = "";
+        JsonObject data = new JsonObject();
+        JsonArray jsonArray1 = new JsonArray();
+        JsonArray jsonArray2 = new JsonArray();
+        Map<String,Object> res = new HashMap<>();
+        List list = new ArrayList();
+        List rep = new ArrayList();
+        res.clear();
+        List<Map<String, Object>> allPermissions = userDao.selectPermissionList(res);
+        res = GsonHelper.getInstance().fromJson(jsonObject,Map.class);
+        List<Map<String, Object>> rolePermissions = userDao.selectRolePermission(res);
+
+        for (Map<String, Object> obj2 : allPermissions) {
+            if(StringUtil.isEmpty(key)){
+                list.clear();
+                res.clear();
+                key = obj2.get("moduleKey").toString();
+                name = obj2.get("moduleName").toString();
+            }
+
+            if(!key.equals(obj2.get("moduleKey"))){
+                res.put("desc",list);
+                res.put("name",name);
+                res.put("key",key);
+                list = new ArrayList();
+                key = obj2.get("moduleKey").toString();
+                name = obj2.get("moduleName").toString();
+                rep.add(res);
+                res = new HashMap<>();
+            }
+            list.add(obj2);
+        }
+
+        if(list.size()>0) {
+            res.put("desc",list);
+            res.put("name",name);
+            res.put("key",key);
+            rep.add(res);
+            list = new ArrayList();
+        }
+
+        for (Map<String, Object> obj : rolePermissions) {
+            list.add(obj.get("PERMISSION_ID"));
+        }
+        jsonArray1 =  GsonHelper.getInstanceJsonparser().parse(GsonHelper.getInstance().toJson(rep)).getAsJsonArray();
+        jsonArray2 =  GsonHelper.getInstanceJsonparser().parse(GsonHelper.getInstance().toJson(list)).getAsJsonArray();
+        rtn.setCode(200);
+        rtn.setMessage("success");
+        data.add("items",jsonArray1);
+        data.add("checkedCities",jsonArray2);
+        rtn.setData(data);
+        return Func.functionRtnToJsonObject.apply(rtn);
+    }
+
+    @Override
+    public JsonObject updateRolePermission(JsonObject jsonObject) {
+        Rtn rtn = new Rtn("User");
+        Map<String,Object> res = new HashMap<>();
+        Map<String,Object> data = new HashMap<>();
+        List<String> add = new ArrayList();
+        List<Map<String, Object>> delete = new ArrayList();
+        data = GsonHelper.getInstance().fromJson(jsonObject,Map.class);
+        if(StringUtil.isEmpty(data.get("roleId"))){
+            rtn.setCode(60003);
+            rtn.setMessage("角色id不存在!");
+        }else {
+            String roleId = data.get("roleId").toString();
+            List<String> permissions = (List) data.get("permissions");
+            add.addAll(permissions);
+            if(permissions.size()<=0) {
+                res.clear();
+                res.put("roleId",roleId);
+                userDao.deleteRolePermission(res);
+            }else {
+                res.clear();
+                res.put("roleId",roleId);
+                List<Map<String, Object>> rolePermissions = userDao.selectRolePermission(res);
+                delete.addAll(rolePermissions);
+                for (String obj1 : permissions) {
+                    for (Map obj2 : rolePermissions) {
+                        if(obj1.equals(obj2.get("PERMISSION_ID"))) {
+                            add.remove(obj1);
+                            delete.remove(obj2);
+                        }
+                    }
+                }
+
+                for (String obj: add) {
+                    Map map = new HashMap();
+                    map.put("roleId",roleId);
+                    map.put("permissionId",obj);
+                    userDao.insertRolePermission(map);
+                }
+
+                for (Map obj: delete) {
+                    Map map = new HashMap();
+                    map.put("roleId",roleId);
+                    map.put("permissionId",obj.get("PERMISSION_ID"));
+                    userDao.deleteRolePermission(map);
+                }
+            }
+        }
+        rtn.setCode(200);
+        rtn.setMessage("success");
+        return Func.functionRtnToJsonObject.apply(rtn);
+    }
+
+    @Override
+    public JsonObject updateUserRole(JsonObject jsonObject) {
+        Rtn rtn = new Rtn("User");
+        Map<String,Object> res = new HashMap<>();
+        Map<String,Object> data = new HashMap<>();
+        List<String> add = new ArrayList();
+        List<Map<String, Object>> delete = new ArrayList();
+        data = GsonHelper.getInstance().fromJson(jsonObject,Map.class);
+        if(StringUtil.isEmpty(data.get("id"))){
+            rtn.setCode(60003);
+            rtn.setMessage("用户id不存在!");
+        }else {
+            String userId = data.get("id").toString();
+            List<String> roles = (List) data.get("roles");
+            add.addAll(roles);
+            if(roles.size()<=0) {
+                res.clear();
+                res.put("userId",userId);
+                userDao.deleteUserRole(res);
+            }else {
+                res.clear();
+                res.put("userId",userId);
+                List<Map<String, Object>> userRoles = userDao.selectUserRole(res);
+                delete.addAll(userRoles);
+                for (String obj1 : roles) {
+                    for (Map obj2 : userRoles) {
+                        if(obj1.equals(obj2.get("ROLE_ID"))) {
+                            add.remove(obj1);
+                            delete.remove(obj2);
+                        }
+                    }
+                }
+
+                for (String obj: add) {
+                    Map map = new HashMap();
+                    map.put("roleId",obj);
+                    map.put("userId",userId);
+                    userDao.insertUserRole(map);
+                }
+
+                for (Map obj: delete) {
+                    Map map = new HashMap();
+                    map.put("userId",userId);
+                    map.put("roleId",obj.get("ROLE_ID"));
+                    userDao.deleteUserRole(map);
+                }
+            }
+        }
+        rtn.setCode(200);
+        rtn.setMessage("success");
+        return Func.functionRtnToJsonObject.apply(rtn);
     }
 }

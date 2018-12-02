@@ -36,6 +36,9 @@
         <if test="orderStatus!=null and orderStatus != ''">
             AND XO.ORDER_STATUS = #{orderStatus}
         </if>
+        <if test="orderStatusT!=null and orderStatusT != ''">
+            AND XO.ORDER_STATUS ${orderStatusT}
+        </if>
         <if test="deliveryStatus!=null and deliveryStatus != ''">
             AND XO.DELIVERY_STATUS = #{deliveryStatus}
         </if>
@@ -57,6 +60,7 @@
         <if test="startTime!=null and startTime != '' and endTime!=null and endTime != ''">
             AND XO.CREATE_TIME between #{startTime} and #{endTime}
         </if>
+        ORDER BY XR.TYPE ASC
     </select>
 
     <!--添加订单-->
@@ -86,6 +90,7 @@
         XH_ORDER_SALE_P XO
         LEFT JOIN XH_GOODS_MAIN XGM ON XGM.ID = XO.GOODS_ID
         LEFT JOIN XH_CLASSIFY XC ON XC.ID = XGM.CLASSIFY_ID
+        LEFT JOIN XH_OLD_CHECK XOC ON XOC.ORDER_NUMBER = XO.ID AND XOC.NO = XO.NO
         WHERE 1=1
         <if test="id!=null and id != ''">
             AND XO.ID = #{id}
@@ -95,6 +100,9 @@
         </if>
         <if test="checkStatus!=null and checkStatus != ''">
             AND XO.CHECK_STATUS = #{checkStatus}
+        </if>
+        <if test="checkDel!=null and checkDel != ''">
+            AND XOC.IS_DELETE = #{checkDel}
         </if>
         <if test="model!=null and model != ''">
             AND XC.MODEL = #{model}

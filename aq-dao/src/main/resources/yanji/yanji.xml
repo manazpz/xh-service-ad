@@ -6,7 +6,7 @@
     <!--添加商品-->
     <insert id="insertYanJi" >
         INSERT INTO XH_OLD_CHECK
-        VALUES(#{id},#{orderNumber},#{no},#{parameter},#{bllPrice},#{remarks},'','','',#{createUserId},#{createTime,jdbcType=TIMESTAMP})
+        VALUES(#{id},#{orderNumber},#{no},#{parameter},#{bllPrice},#{remarks},'N','','',#{createUserId},#{createTime,jdbcType=TIMESTAMP})
     </insert>
 
 
@@ -34,6 +34,25 @@
         <if test="orderId!=null and orderId != ''">
             AND XO.ORDER_NUMBER = #{orderId}
         </if>
+        <if test="del!=null and del != ''">
+            AND XO.IS_DELETE = #{del}
+        </if>
     </select>
+
+    <!--更新验机-->
+    <update id="updateYanJi" parameterType="java.util.Map">
+        UPDATE XH_OLD_CHECK XO
+        <trim prefix="set" suffixOverrides=",">
+            <if test="del!=null and del != ''">
+                XO.IS_DELETE = #{del},
+            </if>
+        </trim>
+        WHERE XO.ID = #{id}
+    </update>
+
+    <!--删除验机-->
+    <delete id="deleteYanJi"  parameterType="java.util.Map" >
+        DELETE FROM XH_OLD_CHECK WHERE ID = #{id}
+    </delete>
 
 </mapper>

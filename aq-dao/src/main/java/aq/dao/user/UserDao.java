@@ -89,4 +89,37 @@ public interface UserDao {
     //查询用户反馈信息
     List<Map<String,Object>> selectSuggestion(Map<String,Object> map);
 
+    //新增角色
+    int insertRole(Map<String,Object> map);
+
+    //更新角色
+    int updateRole(Map<String,Object> map);
+
+    //角色查询
+    List<Map<String,Object>> selectRoleList(Map<String,Object> map);
+
+    //用户角色查询
+    List selectUserRoleList(Map<String,Object> map);
+
+    //角色权限查询
+    List<Map<String,Object>> selectRolePermission(Map<String,Object> map);
+
+    //新增角色权限
+    int insertRolePermission(Map<String,Object> map);
+
+    //删除角色权限
+    int deleteRolePermission(Map<String,Object> map);
+
+    //删除角色权限
+    int deleteUserRole(Map<String,Object> map);
+
+    //用户角色查询
+    List<Map<String,Object>> selectUserRole(Map<String,Object> map);
+
+    //查询用户角色（特殊）
+    List selectUserRoleFlag(Map<String,Object> map);
+
+    //新增用户角色
+    int insertUserRole(Map<String,Object> map);
+
 }

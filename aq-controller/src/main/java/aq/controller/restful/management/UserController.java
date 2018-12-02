@@ -80,15 +80,15 @@ public class UserController extends aq.controller.restful.System {
     }
 
     //查询用户权限
-    @RequestMapping(value = "/permissions/{userId}",method = RequestMethod.GET)
+    @RequestMapping(value = "/userPermission/{userId}",method = RequestMethod.GET)
     @Permission(RequireLogin=true, PermissionType = PermissionType.DATA, value = {"7496770D-6772-4CC1-9508-D07B9DD880CA"},name = {"权限-查询"})
     @ResponseBody
     public void userPermission(@PathVariable(value = "userId") String userId,HttpServletRequest request, HttpServletResponse response, PrintWriter out){
         writerJson(response,out,userService.selectUserPermission(StringUtil.toJsonObject("userId",userId)));
     }
 
-    //分配权限
-    @RequestMapping(value = "/permission/allot",method = RequestMethod.POST)
+    //用户分配权限
+    @RequestMapping(value = "/permission/userAllot",method = RequestMethod.POST)
     @Permission(RequireLogin=true, PermissionType = PermissionType.ACTION, value = {"7496770D-6772-4CC1-9508-D07B9DD880CD"},name = {"权限-分配"})
     @ResponseBody
     public void updateUserPermission(@RequestBody JsonObject requestJson, HttpServletRequest request, HttpServletResponse response, PrintWriter out){
@@ -140,6 +140,57 @@ public class UserController extends aq.controller.restful.System {
     public void querySuggestion(HttpServletRequest request, HttpServletResponse response, PrintWriter out){
         JsonObject jsonObject = HttpUtil.getParameterMap(request);
         writerJson(response,out,userService.querySuggestion(jsonObject));
+    }
+
+    //新增角色
+    @RequestMapping(value = "/insertRole",method = RequestMethod.POST)
+    @ResponseBody
+    public void insertRole(@RequestBody JsonObject requestJson, HttpServletRequest request, HttpServletResponse response, PrintWriter out){
+        writerJson(response,out,userService.insertRole(requestJson));
+    }
+
+    //更新角色
+    @RequestMapping(value = "/updateRole",method = RequestMethod.POST)
+    @ResponseBody
+    public void updateRole(@RequestBody JsonObject requestJson, HttpServletRequest request, HttpServletResponse response, PrintWriter out){
+        writerJson(response,out,userService.updateRole(requestJson));
+    }
+
+    //角色列表
+    @RequestMapping(value = "/roles",method = RequestMethod.GET)
+    @ResponseBody
+    public void roleList(HttpServletRequest request, HttpServletResponse response, PrintWriter out){
+        JsonObject jsonObject = HttpUtil.getParameterMap(request);
+        writerJson(response,out,userService.queryRoleList(jsonObject));
+    }
+
+    //用户角色列表
+    @RequestMapping(value = "/userRoles",method = RequestMethod.GET)
+    @ResponseBody
+    public void userRoles(HttpServletRequest request, HttpServletResponse response, PrintWriter out){
+        JsonObject jsonObject = HttpUtil.getParameterMap(request);
+        writerJson(response,out,userService.queryUserRoleList(jsonObject));
+    }
+
+    //查询角色权限
+    @RequestMapping(value = "/rolePermission/{roleId}",method = RequestMethod.GET)
+    @ResponseBody
+    public void rolePermission(@PathVariable(value = "roleId") String roleId,HttpServletRequest request, HttpServletResponse response, PrintWriter out){
+        writerJson(response,out,userService.selectRolePermission(StringUtil.toJsonObject("roleId",roleId)));
+    }
+
+    //角色分配权限
+    @RequestMapping(value = "/permission/roleAllot",method = RequestMethod.POST)
+    @ResponseBody
+    public void updateRolePermission(@RequestBody JsonObject requestJson, HttpServletRequest request, HttpServletResponse response, PrintWriter out){
+        writerJson(response,out,userService.updateRolePermission(requestJson));
+    }
+
+    //用户分配角色
+    @RequestMapping(value = "/role/allot",method = RequestMethod.POST)
+    @ResponseBody
+    public void updateUserRole(@RequestBody JsonObject requestJson, HttpServletRequest request, HttpServletResponse response, PrintWriter out){
+        writerJson(response,out,userService.updateUserRole(requestJson));
     }
 
 }
