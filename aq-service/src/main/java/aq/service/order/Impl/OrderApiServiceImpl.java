@@ -52,7 +52,7 @@ public class OrderApiServiceImpl extends BaseServiceImpl  implements OrderApiSer
         JsonArray jsonArray = new JsonArray();
         Map<String,Object> res = new HashMap<>();
         Map<String,Object> ress = new HashMap<>();
-        Boolean falg = false;
+        String falg = "";
         List<Map<String, Object>> req = new ArrayList();
         res = GsonHelper.getInstance().fromJson(jsonObject,Map.class);
         List<Map<String, Object>> orders = orderDao.selectorderList(res);
@@ -110,11 +110,12 @@ public class OrderApiServiceImpl extends BaseServiceImpl  implements OrderApiSer
             }
             for (Map m : oldOrder) {
                 oldSum += Double.parseDouble(m.get("guJia").toString());
-                if("02".equals(m.get("checkStatus"))){
-                    falg = true;
-                }else{
-                    falg = false;
-                }
+//                if("02".equals(m.get("checkStatus"))){
+//                    falg = true;
+//                }else{
+//                    falg = false;
+//                }
+                falg = m.get("checkStatus").toString();//01 ： 未检验   02：已检验   03：同意检测结果
             }
             newMap.put("item", newOrder);
             newMap.put("sum", newSum);
@@ -187,7 +188,7 @@ public class OrderApiServiceImpl extends BaseServiceImpl  implements OrderApiSer
             rest.put("shopid", res.get("shopid"));
         }
         if(listold.size()>0  && listnew.size()>0){
-            rest.put("type", "03");
+            rest.put("type", "03"); //type : 01: 购买新机   02： 出售旧机   03：新旧置换
             rest.put("paystatus", "01");//付款状态 :01：未付款    02：已付款  03：已取消
         }else if(listold.size() == 0 && listnew.size() >0){
             rest.put("type", "01");
@@ -251,7 +252,7 @@ public class OrderApiServiceImpl extends BaseServiceImpl  implements OrderApiSer
             res.put("buyer",userinfo.get(0).get("id"));
         }
         res.put("type","01");//01: 订单  02 ： 物流   03： 优惠券   04 ：  活动
-        res.put("status","01");//01: 未付款 02: 已付款  03： 取消订单 04： 已收款  05:已收货
+        res.put("status","01");//01: 未付款 02: 已付款  03： 取消订单 04： 已收款  05:已收货  06：确认出售
         res.put("createTime",new Date());
         newsDao.insertOrderLog(res);
         res.clear();
@@ -275,6 +276,29 @@ public class OrderApiServiceImpl extends BaseServiceImpl  implements OrderApiSer
         Map<String,Object> rest = new HashMap<>();
         res = GsonHelper.getInstance().fromJson(jsonObject,Map.class);
         orderDao.updateOrder(res);
+        rest.put("openid",res.get("openId"));
+        List<Map<String, Object>> maps = userDao.selectUserInfos(rest);
+        if(maps.size()> 0 ){
+            rest.put("buyer",maps.get(0).get("id"));
+        }
+        rest.put("id",UUIDUtil.getUUID());
+        rest.put("orderId",res.get("id"));
+        rest.put("status",res.get("status"));
+        rest.put("type","01");
+        rest.put("createTime",new Date());
+        newsDao.insertOrderLog(rest);
+        rtn.setCode(200);
+        rtn.setMessage("success");
+        return  Func.functionRtnToJsonObject.apply(rtn);
+    }
+
+    @Override
+    public JsonObject updateOrderDetail(JsonObject jsonObject) {
+        Rtn rtn = new Rtn("order");
+        Map<String,Object> res = new HashMap<>();
+        Map<String,Object> rest = new HashMap<>();
+        res = GsonHelper.getInstance().fromJson(jsonObject,Map.class);
+        orderDao.updateOrderDetail(res);
         rest.put("openid",res.get("openId"));
         List<Map<String, Object>> maps = userDao.selectUserInfos(rest);
         if(maps.size()> 0 ){

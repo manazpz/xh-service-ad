@@ -147,4 +147,12 @@ public class GoodsApiController extends aq.controller.restful.System {
     public void updateHomeGoods(@RequestBody JsonObject requestJson,HttpServletRequest request, HttpServletResponse response, PrintWriter out) throws Exception {
         writerJson(response,out,goodsService.updateHomeGoods(requestJson));
     }
+
+    //查询商品价格预测列表
+    @ResponseBody
+    @RequestMapping(value = "/forecastList",method = RequestMethod.GET)
+    public void forecastList(HttpServletRequest request, HttpServletResponse response, PrintWriter out) throws Exception {
+        JsonObject jsonObject = HttpUtil.getParameterMap(request);
+        writerJson(response,out,goodsService.queryForecastList(jsonObject));
+    }
 }

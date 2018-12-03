@@ -29,6 +29,7 @@
         sc. NAME AS unitName,
         XGM.LOGISTCS AS logistcs,
         XGM.OBLIGATE1 AS obligate1,
+        XGM.OBLIGATE2 AS obligate2,
         XGM. STATUS AS status,
         XGM.SPEC_PARAMETER AS specParameter,
         XGM.PARAMETER AS parameter,
@@ -99,6 +100,9 @@
         <if test="classifyId != null">
             AND XGM.CLASSIFY_ID = #{classifyId}
         </if>
+        <if test="obligates != null and obligates != ''">
+            AND XGM.OBLIGATE1 != #{obligates}
+        </if>
         <if test="obligate1 != null and obligate1 != ''">
             AND XGM.OBLIGATE1 = #{obligate1}
         </if>
@@ -156,6 +160,9 @@
             </if>
             <if test="obligate1!=null and obligate1!=''">
                 OBLIGATE1 = #{obligate1},
+            </if>
+            <if test="obligate2!=null and obligate2!=''">
+                OBLIGATE2 = #{obligate2},
             </if>
             <if test="status!=null and status!=''">
                 STATUS = #{status},
@@ -568,5 +575,70 @@
         </trim>
         WHERE XHG.ID = #{id}
     </update>
+
+    <!--插入商品预测价格-->
+    <insert id="insertForecast" >
+        INSERT INTO XH_FORECAST
+        VALUES(#{id},
+        #{goodsId},
+        #{month},
+        #{price},
+        #{createTime})
+    </insert>
+
+
+    <!--查询商品预测价格-->
+    <select id="selectForecastList" resultType="java.util.Map" parameterType="java.util.Map">
+        SELECT
+            XHG.ID AS id,
+            XHG.GOODS_ID AS goodsId,
+            XM.NAME AS goodsName,
+            XHG. MONTH AS month,
+            XHG.PRICE AS price,
+            DATE_FORMAT(
+            XHG.CREATE_TIME,
+            '%Y-%m-%d %H:%i:%S'
+            ) AS createTime
+        FROM
+        XH_FORECAST XHG
+        LEFT JOIN XH_GOODS_MAIN XM ON XM.CLASSIFY_ID = XHG.GOODS_ID
+        WHERE
+        1 = 1
+        <if test="id!=null and id != ''">
+            AND XHG.ID = #{id}
+        </if>
+        <if test="goodsId!=null and goodsId != ''">
+            AND XHG.GOODS_ID = #{goodsId}
+        </if>
+        <if test="month!=null and month != ''">
+            AND XHG.MONTH = #{month}
+        </if>
+        ORDER BY XHG.CREATE_TIME DESC
+    </select>
+
+    <!--删除商品预测-->
+    <delete id="deleteForecast"  parameterType="java.util.Map" >
+        DELETE FROM XH_FORECAST WHERE ID = #{id}
+    </delete>
+
+
+
+    <!--更新商品预测信息-->
+    <update id="updateForecast" parameterType="java.util.Map">
+        UPDATE XH_FORECAST XHG
+        <trim prefix="set" suffixOverrides=",">
+            <if test="goodsId!=null and goodsId != ''">
+                XHG.GOODS_ID = #{goodsId},
+            </if>
+            <if test="month!=null and month != ''">
+                XHG.MONTH = #{month},
+            </if>
+            <if test="price!=null and price != ''">
+                XHG.PRICE = #{price},
+            </if>
+        </trim>
+        WHERE XHG.ID = #{id}
+    </update>
+
 
 </mapper>

@@ -107,4 +107,23 @@ public interface GoodsDao {
     //更新首页商品
     int updateHomeGoods(Map<String,Object> map);
 
+
+
+    /**********************************************************************************/
+
+
+    //查询商品预估价格
+    List<Map<String,Object>> selectForecastList(Map<String,Object> map);
+
+    //新增商品预估价格
+    int insertForecast(Map<String,Object> map);
+
+    //删除商品预估价格
+    int deleteForecast(Map<String,Object> map);
+
+    //更新商品预估价格
+    int updateForecast(Map<String,Object> map);
+
+    /**********************************************************************************/
+
 }

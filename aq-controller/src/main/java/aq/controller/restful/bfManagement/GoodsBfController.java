@@ -151,4 +151,43 @@ public class GoodsBfController extends aq.controller.restful.System {
     public void deleteGoodsLable(@RequestBody JsonObject requestJson,HttpServletRequest request, HttpServletResponse response, PrintWriter out) throws Exception {
         writerJson(response,out,goodsBfService.deleteGoodsLable(requestJson));
     }
+
+    //查询商品分类
+    @ResponseBody
+    @RequestMapping(value = "/treeList",method = RequestMethod.GET)
+    public void treeList(HttpServletRequest request, HttpServletResponse response, PrintWriter out) throws Exception {
+        JsonObject jsonObject = HttpUtil.getParameterMap(request);
+        writerJson(response,out,goodsBfService.queryTreeList(jsonObject));
+    }
+
+    //新增商品价格预测
+    @RequestMapping(value = "/createForecast",method = RequestMethod.POST)
+    @ResponseBody
+    public void insertForecast(@RequestBody JsonObject requestJson,HttpServletRequest request, HttpServletResponse response, PrintWriter out) throws Exception {
+        writerJson(response,out,goodsBfService.insertForecast(requestJson));
+    }
+
+
+    //查询商品价格预测列表
+    @ResponseBody
+    @RequestMapping(value = "/forecastList",method = RequestMethod.GET)
+    public void forecastList(HttpServletRequest request, HttpServletResponse response, PrintWriter out) throws Exception {
+        JsonObject jsonObject = HttpUtil.getParameterMap(request);
+        writerJson(response,out,goodsBfService.queryForecastList(jsonObject));
+    }
+
+
+    //删除商品价格预测
+    @RequestMapping(value = "/deleteForecast",method = RequestMethod.POST)
+    @ResponseBody
+    public void deleteForecast(@RequestBody JsonObject requestJson,HttpServletRequest request, HttpServletResponse response, PrintWriter out) throws Exception {
+        writerJson(response,out,goodsBfService.deleteForecast(requestJson));
+    }
+
+    //更新商品价格预测
+    @RequestMapping(value = "/updateForecast",method = RequestMethod.POST)
+    @ResponseBody
+    public void updateForecast(@RequestBody JsonObject requestJson,HttpServletRequest request, HttpServletResponse response, PrintWriter out) throws Exception {
+        writerJson(response,out,goodsBfService.updateForecast(requestJson));
+    }
 }

@@ -517,4 +517,60 @@ public class GoodsApiServiceImpl extends BaseServiceImpl  implements GoodsApiSer
         return  Func.functionRtnToJsonObject.apply(rtn);
     }
 
+
+    @Transactional(rollbackFor = {RuntimeException.class, Exception.class})
+    @Override
+    public JsonObject queryForecastList(JsonObject jsonObject) {
+        Rtn rtn = new Rtn("Goods");
+        JsonObject data = new JsonObject();
+        JsonArray jsonArray = new JsonArray();
+        Map<String,Object> res = new HashMap<>();
+        Map<String,Object> rest = new HashMap<>();
+        int prices = 0;
+        List datas = new ArrayList();
+        List price = new ArrayList();
+        List all = new ArrayList();
+        res.clear();
+        res = GsonHelper.getInstance().fromJson(jsonObject,Map.class);
+        List<Map<String, Object>> maps = goodsDao.selectForecastList(res);
+        Calendar cal = Calendar.getInstance();
+        int year = cal.get(Calendar.YEAR);
+        int month = cal.get(Calendar.MONTH )+1;
+        String now = (month< 10 ? "0" +month: month+"")+ "月";
+        datas.add(now);
+        for(int i=0; i< 5; i++){
+            cal.setTime(new Date());
+            cal.set(Calendar.MONTH, cal.get(Calendar.MONTH) - i);
+            datas.add((cal.get(Calendar.MONTH)< 10 ? "0" +cal.get(Calendar.MONTH)+"月": cal.get(Calendar.MONTH)+"月"));
+        }
+        Collections.reverse(datas);
+        for(int i=0; i< maps.size(); i++){
+            rest.put(maps.get(i).get("month").toString().split("-")[1]+"月",maps.get(i).get("price"));
+        }
+        for(int i=0; i< datas.size(); i++){
+            if(rest.get(datas.get(i))==null){
+                if(prices == 0){
+                    price.add(i,0);
+                }else{
+                    price.add(i,prices);
+                }
+            }else{
+                price.add(i, Integer.parseInt(rest.get(datas.get(i)).toString()));
+                prices = Integer.parseInt(rest.get(datas.get(i)).toString());
+            }
+        }
+        res.clear();
+        res.put("datas",datas);
+        res.put("price",price);
+        all.add(res);
+        rtn.setCode(200);
+        rtn.setMessage("success");
+        jsonArray =  GsonHelper.getInstanceJsonparser().parse(GsonHelper.getInstance().toJson(all)).getAsJsonArray();
+        data.addProperty("total",all.size());
+        data.add("items",jsonArray);
+        rtn.setData(data);
+        return  Func.functionRtnToJsonObject.apply(rtn);
+    }
+
+
 }

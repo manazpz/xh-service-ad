@@ -84,6 +84,12 @@ public class GoodsServiceImpl extends BaseServiceImpl  implements GoodsService {
             res = GsonHelper.getInstance().fromJson(jsonObject,Map.class);
             res.put("lastCreateUserId", user.getUserId());
             res.put("lastCreateTime",new Date());
+            if(Boolean.valueOf(res.get("choice").toString())){
+                res.put("obligate1","Y");
+            }else if(!Boolean.valueOf(res.get("choice").toString())){
+                res.put("obligate1","R");
+                res.put("obligate2",res.get("msg"));
+            }
             res.put("specParameter",StringUtil.isEmpty(jsonObject.get("parameter"))?"":jsonObject.get("parameter").getAsJsonArray().toString());
             goodsDao.updateGoods(res);
             rtn.setCode(200);

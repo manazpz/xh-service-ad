@@ -50,4 +50,19 @@ public interface GoodsBfService extends BaseService {
     //删除标签商品
     JsonObject deleteGoodsLable(JsonObject jsonObject);
 
+    //查询商品分类
+    JsonObject queryTreeList(JsonObject jsonObject);
+
+    //新增商品价格预测
+    JsonObject insertForecast(JsonObject jsonObject);
+
+    //查询商品价格预测
+    JsonObject queryForecastList(JsonObject jsonObject);
+
+    //删除商品价格预测
+    JsonObject deleteForecast(JsonObject jsonObject);
+
+    //更新商品价格预测
+    JsonObject updateForecast(JsonObject jsonObject);
+
 }

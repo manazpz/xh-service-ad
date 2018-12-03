@@ -20,6 +20,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.annotation.Resource;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.*;
 
 /**
@@ -657,6 +659,104 @@ public class GoodsBfServiceImpl extends BaseServiceImpl  implements GoodsBfServi
         goodsDao.deleteGoodsLable(res);
         rtn.setCode(200);
         rtn.setMessage("success");
+        return Func.functionRtnToJsonObject.apply(rtn);
+    }
+
+
+    @Override
+    public JsonObject queryTreeList(JsonObject jsonObject) {
+        Rtn rtn = new Rtn("Goods");
+        Map<String,Object> res = new HashMap<>();
+        JsonObject data = new JsonObject();
+        JsonArray jsonArray = new JsonArray();
+        res = GsonHelper.getInstance().fromJson(jsonObject,Map.class);
+        res.put("obligate1","1");
+        List<Map<String, Object>> req1 = classifyDao.selectClassifyTree(res);
+        for(Map obj1:req1) {
+            res.clear();
+            res.put("parentId",obj1.get("id"));
+            List<Map<String, Object>> req2 = classifyDao.selectClassifyTree(res);
+            obj1.put("children",req2);
+            for(Map obj2:req2) {
+                res.clear();
+                res.put("parentId",obj2.get("id"));
+                List<Map<String, Object>> req3 = classifyDao.selectClassifyTree(res);
+                obj2.put("children",req3);
+            }
+        }
+        rtn.setCode(200);
+        rtn.setMessage("success");
+        jsonArray =  GsonHelper.getInstanceJsonparser().parse(GsonHelper.getInstance().toJson(req1)).getAsJsonArray();
+        data.add("items",jsonArray);
+        rtn.setData(data);
+        return  Func.functionRtnToJsonObject.apply(rtn);
+    }
+
+
+    @Transactional(rollbackFor = {RuntimeException.class, Exception.class})
+    @Override
+    public JsonObject queryForecastList(JsonObject jsonObject) {
+        jsonObject.addProperty("service","goods");
+        return query(jsonObject,(map)->{
+            return goodsDao.selectForecastList(map);
+        });
+    }
+
+    @Transactional(rollbackFor = {RuntimeException.class, Exception.class})
+    @Override
+    public JsonObject insertForecast(JsonObject jsonObject) {
+        AbsAccessUser user = Factory.getContext().user();
+        Rtn rtn = new Rtn("Goods");
+        if (user == null) {
+            rtn.setCode(10000);
+            rtn.setMessage("未登录！");
+        }else {
+            Map<String,Object> res = new HashMap<>();
+            res = GsonHelper.getInstance().fromJson(jsonObject,Map.class);
+            res.put("id",UUIDUtil.getUUID());
+            res.put("createTime",new Date());
+            goodsDao.insertForecast(res);
+            rtn.setCode(200);
+            rtn.setMessage("success");
+        }
+        return Func.functionRtnToJsonObject.apply(rtn);
+    }
+
+
+    @Transactional(rollbackFor = {RuntimeException.class, Exception.class})
+    @Override
+    public JsonObject deleteForecast(JsonObject jsonObject) {
+        AbsAccessUser user = Factory.getContext().user();
+        Rtn rtn = new Rtn("Goods");
+        if (user == null) {
+            rtn.setCode(10000);
+            rtn.setMessage("未登录！");
+        }else {
+            Map<String,Object> res = new HashMap<>();
+            res = GsonHelper.getInstance().fromJson(jsonObject,Map.class);
+            goodsDao.deleteForecast(res);
+            rtn.setCode(200);
+            rtn.setMessage("success");
+        }
+        return Func.functionRtnToJsonObject.apply(rtn);
+    }
+
+
+    @Transactional(rollbackFor = {RuntimeException.class, Exception.class})
+    @Override
+    public JsonObject updateForecast(JsonObject jsonObject) {
+        AbsAccessUser user = Factory.getContext().user();
+        Rtn rtn = new Rtn("Goods");
+        if (user == null) {
+            rtn.setCode(10000);
+            rtn.setMessage("未登录！");
+        }else {
+            Map<String,Object> res = new HashMap<>();
+            res = GsonHelper.getInstance().fromJson(jsonObject,Map.class);
+            goodsDao.updateForecast(res);
+            rtn.setCode(200);
+            rtn.setMessage("success");
+        }
         return Func.functionRtnToJsonObject.apply(rtn);
     }
 }
