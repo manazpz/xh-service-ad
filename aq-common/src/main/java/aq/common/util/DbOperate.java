@@ -9,7 +9,7 @@ import java.util.*;
  * 数据库备份与还原
  */
 public class DbOperate {
-
+    //"cmd /c" windows下exec加上cmd
     /**
      * 备份数据库db
      *
@@ -20,6 +20,10 @@ public class DbOperate {
      * @param backName
      */
     public static void dbBackUp(String root, String pwd, String dbName, String backPath, String backName) throws Exception {
+        File saveFile = new File(backPath);
+        if (!saveFile.exists()) {// 如果目录不存在
+            saveFile.mkdirs();// 创建文件夹
+        }
         String pathSql = backPath + backName;
         File fileSql = new File(pathSql);
         //创建备份sql文件
@@ -37,7 +41,7 @@ public class DbOperate {
         System.out.println("cmd命令为：" + sb.toString());
         Runtime runtime = Runtime.getRuntime();
         System.out.println("开始备份：" + dbName);
-        Process process = runtime.exec("cmd /c" + sb.toString());
+        Process process = runtime.exec(sb.toString());
         System.out.println("备份成功!");
     }
 
@@ -61,7 +65,7 @@ public class DbOperate {
         Runtime runtime = Runtime.getRuntime();
         System.out.println("开始还原数据");
         try {
-            Process process = runtime.exec("cmd /c" + sb.toString());
+            Process process = runtime.exec(sb.toString());
             InputStream is = process.getInputStream();
             BufferedReader bf = new BufferedReader(new InputStreamReader(is, "utf8"));
             String line = null;

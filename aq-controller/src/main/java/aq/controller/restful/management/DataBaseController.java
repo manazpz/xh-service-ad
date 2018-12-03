@@ -1,5 +1,6 @@
 package aq.controller.restful.management;
 
+import aq.common.constants.APPConstants;
 import aq.common.other.Rtn;
 import aq.common.util.DbOperate;
 import aq.common.util.GsonHelper;
@@ -21,6 +22,7 @@ import java.util.List;
 @Controller
 @RequestMapping("/dataBase")
 public class DataBaseController extends aq.controller.restful.System {
+//    "F:/sql/"
 
     @Value("#{jdbcConfig['jdbc.master.username']}")
     private String SQL_ROOT;
@@ -36,7 +38,7 @@ public class DataBaseController extends aq.controller.restful.System {
         Rtn rtn = new Rtn("dataBase");
         JsonObject data = new JsonObject();
         JsonArray jsonArray = new JsonArray();
-        List fileName = DbOperate.getFileName("F:/sql/");
+        List fileName = DbOperate.getFileName(APPConstants.SQL_PATH);
         jsonArray =  GsonHelper.getInstanceJsonparser().parse(GsonHelper.getInstance().toJson(fileName)).getAsJsonArray();
         rtn.setCode(200);
         rtn.setMessage("success");
@@ -51,7 +53,7 @@ public class DataBaseController extends aq.controller.restful.System {
         Rtn rtn = new Rtn("dataBase");
         String backName = new SimpleDateFormat("yyyy-MM-dd-HH-mm-ss").format(new Date())+".sql";
         try {
-            DbOperate.dbBackUp(SQL_ROOT,SQL_PWD,SQL_BACK_NAME,"F:/sql/",backName);
+            DbOperate.dbBackUp(SQL_ROOT,SQL_PWD,SQL_BACK_NAME, APPConstants.SQL_PATH,backName);
             rtn.setCode(200);
             rtn.setMessage("success");
         } catch (Exception e) {
@@ -67,7 +69,7 @@ public class DataBaseController extends aq.controller.restful.System {
     public void recovery(@RequestBody JsonObject requestJson,HttpServletRequest request, HttpServletResponse response, PrintWriter out){
         Rtn rtn = new Rtn("dataBase");
         try {
-            DbOperate.dbRestore(SQL_ROOT,SQL_PWD,SQL_BACK_NAME,"F://sql/"+requestJson.get("fileName").getAsString());
+            DbOperate.dbRestore(SQL_ROOT,SQL_PWD,SQL_BACK_NAME,APPConstants.SQL_PATH+requestJson.get("fileName").getAsString());
             rtn.setCode(200);
             rtn.setMessage("success");
         } catch (Exception e) {

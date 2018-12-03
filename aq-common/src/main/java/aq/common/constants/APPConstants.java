@@ -20,7 +20,10 @@ public final class APPConstants {
 
 
     //支付回调
-    public static final String WX_NOTIFY = HTTP + SPBILL_CREATE_IP + ":8083/aq/api/wx/notify";
+    public static final String WX_NOTIFY = FILE_SERVICE_URL + ":8083/aq/api/wx/notify";
+
+    //数据库备份
+    public static final String SQL_PATH = "../../sql/";
 
 
 }
