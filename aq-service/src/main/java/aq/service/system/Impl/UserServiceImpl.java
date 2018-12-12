@@ -319,6 +319,23 @@ public class UserServiceImpl extends BaseServiceImpl implements UserService {
     }
 
     @Override
+    public JsonObject queryAllCustomService(JsonObject jsonObject) {
+        Rtn rtn = new Rtn("user");
+        Map<String,Object> res = new HashMap<>();
+        JsonObject data = new JsonObject();
+        JsonArray jsonArray = new JsonArray();
+        res.clear();
+        res = GsonHelper.getInstance().fromJson(jsonObject,Map.class);
+        List<Map<String, Object>> lists = customerDao.selectCustomerInfo(res);
+        jsonArray =  GsonHelper.getInstanceJsonparser().parse(GsonHelper.getInstance().toJson(lists)).getAsJsonArray();
+        rtn.setCode(200);
+        rtn.setMessage("success");
+        data.add("items",jsonArray);
+        rtn.setData(data);
+        return  Func.functionRtnToJsonObject.apply(rtn);
+    }
+
+    @Override
     public JsonObject updateCustomService(JsonObject jsonObject) {
         Rtn rtn = new Rtn("user");
         Map<String,Object> res = new HashMap<>();

@@ -59,6 +59,9 @@ public interface UserService extends BaseService {
     //查询客服信息
     JsonObject queryCustomService(JsonObject jsonObject);
 
+    //查询所有客服信息
+    JsonObject queryAllCustomService(JsonObject jsonObject);
+
     //更新客服
     JsonObject updateCustomService(JsonObject jsonObject);
 

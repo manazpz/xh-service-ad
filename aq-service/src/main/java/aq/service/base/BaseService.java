@@ -18,4 +18,7 @@ public interface BaseService {
     //查询
     JsonObject query(JsonObject jsonObject, Function<Map<String,Object>,List<Map<String,Object>>> func);
 
+    //不分页查询
+    JsonObject queryNoPage(JsonObject jsonObject, Function<Map<String,Object>,List<Map<String,Object>>> func);
+
 }
