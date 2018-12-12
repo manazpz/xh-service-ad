@@ -283,6 +283,10 @@ public class UserServiceImpl extends BaseServiceImpl implements UserService {
         res.put("nickName",map.get("nickname"));
         res.put("openid",map.get("openid"));
         res.put("headPortrait",map.get("head_portrait"));
+        res.put("sex",map.get("sex"));
+        res.put("country",map.get("country"));
+        res.put("province",map.get("province"));
+        res.put("city",map.get("city"));
         userDao.insertUsers(res);
     }
 
@@ -293,6 +297,10 @@ public class UserServiceImpl extends BaseServiceImpl implements UserService {
         res.put("nickName",map.get("nickname"));
         res.put("openid",map.get("openid"));
         res.put("headPortrait",map.get("head_portrait"));
+        res.put("sex",map.get("sex"));
+        res.put("country",map.get("country"));
+        res.put("province",map.get("province"));
+        res.put("city",map.get("city"));
         userDao.updateUserInfos(res);
         System.out.print("=================执行更新用户信息================");
     }

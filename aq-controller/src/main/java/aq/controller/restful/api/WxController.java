@@ -109,17 +109,24 @@ public class WxController extends aq.controller.restful.System {
                 + "&lang=zh_CN";
         Map<String, Object> userInfo = gson.fromJson(new JsonParser().parse(HttpUtil.get(infoUrl)).getAsJsonObject(), new TypeToken<Map<String, Object>>() {
         }.getType());
+        System.out.print("userInfo=========="+userInfo);
         res.clear();
         res.put("openid",userInfo.get("openid"));
         res.put("nickname",userInfo.get("nickname"));
         res.put("head_portrait",userInfo.get("headimgurl"));
+        double sex = Double.parseDouble(userInfo.get("sex").toString());
+        res.put("sex",(int)Math.ceil(sex));
+        res.put("country",userInfo.get("country"));
+        res.put("province",userInfo.get("province"));
+        res.put("city",userInfo.get("city"));
         List<Map<String, Object>> mapsuser = userService.queryUserInfos(res);
         if(mapsuser.size()<=0){
             userService.insertUserInfos(res);
         }else{
-            if(!res.get("nickname").equals(mapsuser.get(0).get("nickName")) || !res.get("head_portrait").equals(mapsuser.get(0).get("headPortrait"))){
-                userService.updateUserInfos(res);
-            }
+            userService.updateUserInfos(res);
+//            if(!res.get("nickname").equals(mapsuser.get(0).get("nickName")) || !res.get("head_portrait").equals(mapsuser.get(0).get("headPortrait"))){
+//                userService.updateUserInfos(res);
+//            }
         }
         res.clear();
         res.put("code",200);

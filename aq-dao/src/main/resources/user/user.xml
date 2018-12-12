@@ -269,7 +269,7 @@
     <!--新增微信授权用户信息-->
     <insert id="insertUsers" >
         INSERT INTO system_user
-        VALUES(#{id},#{nickName},#{headPortrait},#{userName},#{password},#{openid},#{phone},#{status},#{createTime,jdbcType=TIMESTAMP}
+        VALUES(#{id},#{nickName},#{headPortrait},#{userName},#{password},#{openid},#{sex},#{country},#{province},#{city},#{phone},#{status},#{createTime,jdbcType=TIMESTAMP}
         ,#{updateTime,jdbcType=TIMESTAMP},'Y',#{remark})
     </insert>
 
@@ -324,6 +324,18 @@
             </if>
             <if test="headPortrait!=null and headPortrait != ''">
                 su.HEAD_PORTRAIT = #{headPortrait},
+            </if>
+            <if test="sex!=null and sex != ''">
+                su.SEX = #{sex},
+            </if>
+            <if test="country!=null and country != ''">
+                su.COUNTRY = #{country},
+            </if>
+            <if test="province!=null and province != ''">
+                su.PROVINCE = #{province},
+            </if>
+            <if test="city!=null and city != ''">
+                su.CITY = #{city},
             </if>
         </trim>
         WHERE su.openId = #{openid}
