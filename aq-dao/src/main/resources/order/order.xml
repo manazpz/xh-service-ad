@@ -42,6 +42,9 @@
         <if test="deliveryStatus!=null and deliveryStatus != ''">
             AND XO.DELIVERY_STATUS = #{deliveryStatus}
         </if>
+        <if test="type!=null and type != ''">
+            AND XO.TYPE = #{type}
+        </if>
         <if test="openId!=null and openId != ''">
             AND su.openId = #{openId}
         </if>

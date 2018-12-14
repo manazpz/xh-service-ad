@@ -46,6 +46,7 @@
         <mapper resource="news/news.xml"/>
         <mapper resource="statistics/statistics.xml"/>
         <mapper resource="report/customerR.xml"/>
+        <mapper resource="report/report.xml"/>
     </mappers>
 
 </configuration> 

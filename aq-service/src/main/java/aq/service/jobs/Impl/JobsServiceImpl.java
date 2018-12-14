@@ -49,7 +49,7 @@ public class JobsServiceImpl extends BaseServiceImpl  implements JobsService {
         res.put("lastCreateTime",lastday);
         List<Map<String, Object>> orders = orderDao.selectorderList(res);
         for (Map m : orders) {
-            if("01".equals(m.get("payStatus"))){//超时未付款
+            if("01".equals(m.get("payStatus"))&& !"03".equals(m.get("orderStatus")) ){//超时未付款
                 rest.put("paystatus","03");
             }
             if("04".equals(m.get("deliveryStatus"))){ //超时未收货
