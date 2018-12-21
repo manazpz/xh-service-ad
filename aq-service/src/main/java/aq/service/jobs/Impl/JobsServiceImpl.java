@@ -51,6 +51,7 @@ public class JobsServiceImpl extends BaseServiceImpl  implements JobsService {
         for (Map m : orders) {
             if("01".equals(m.get("payStatus"))&& !"03".equals(m.get("orderStatus")) ){//超时未付款
                 rest.put("paystatus","03");
+                rest.put("orderstatus","02");
             }
             if("04".equals(m.get("deliveryStatus"))){ //超时未收货
                 rest.put("deliverystatus","05");
