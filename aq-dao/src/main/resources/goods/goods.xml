@@ -91,6 +91,9 @@
         <if test="isDel != null">
             AND XGM.IS_DELETE = #{isDel}
         </if>
+        <if test="currentStock != null">
+            AND SK.CURRENT_STOCK != '0'
+        </if>
         <if test="id != null">
             AND XGM.ID = #{id}
         </if>
@@ -246,6 +249,9 @@
         WHERE 1=1
         <if test="id != null">
             AND XAB.ID = #{id}
+        </if>
+        <if test="goodsId != null">
+            AND XGM.ID = #{goodsId}
         </if>
         <if test="openId != null">
             AND XAB.CREATE_USER = #{openId}
@@ -445,6 +451,15 @@
         DELETE FROM XH_BRAND_CLASSIFY WHERE ID = #{id}
     </delete>
 
+
+
+
+    <!--新增-标签-->
+    <insert id="instertLable" >
+        INSERT INTO XH_LABLE
+        VALUES(#{id},#{name},#{value},#{createUser},#{createTime,jdbcType=TIMESTAMP})
+    </insert>
+
     <!--查询标签-->
     <select id="selectLable" resultType="java.util.Map" parameterType="java.util.Map">
         SELECT
@@ -463,6 +478,7 @@
         <if test="id != null">
             AND XGL.ID = #{id}
         </if>
+        ORDER BY XGL.VALUE ASC
     </select>
 
     <!--新增商品-标签-->
@@ -580,8 +596,9 @@
     <insert id="insertForecast" >
         INSERT INTO XH_FORECAST
         VALUES(#{id},
+        #{classify_id},
         #{goodsId},
-        #{month},
+        #{date},
         #{price},
         #{createTime})
     </insert>
@@ -591,9 +608,10 @@
     <select id="selectForecastList" resultType="java.util.Map" parameterType="java.util.Map">
         SELECT
             XHG.ID AS id,
+            XHG.CLASSIFY_ID AS classify_id,
             XHG.GOODS_ID AS goodsId,
             XM.NAME AS goodsName,
-            XHG. MONTH AS month,
+            XHG.DATE AS date,
             XHG.PRICE AS price,
             DATE_FORMAT(
             XHG.CREATE_TIME,
@@ -601,17 +619,26 @@
             ) AS createTime
         FROM
         XH_FORECAST XHG
-        LEFT JOIN XH_GOODS_MAIN XM ON XM.CLASSIFY_ID = XHG.GOODS_ID
+        LEFT JOIN XH_GOODS_MAIN XM ON XM.CLASSIFY_ID = XHG.CLASSIFY_ID
         WHERE
         1 = 1
         <if test="id!=null and id != ''">
             AND XHG.ID = #{id}
         </if>
+        <if test="classify_id!=null and classify_id != ''">
+            AND XHG.CLASSIFY_ID = #{classify_id}
+        </if>
         <if test="goodsId!=null and goodsId != ''">
             AND XHG.GOODS_ID = #{goodsId}
         </if>
-        <if test="month!=null and month != ''">
-            AND XHG.MONTH = #{month}
+        <if test="date!=null and date != ''">
+            AND XHG.DATE = #{date,jdbcType=TIMESTAMP}
+        </if>
+        <if test="startTime != null and startTime != '' and endTime != null and endTime != ''">
+            AND XHG.DATE between #{startTime,jdbcType=TIMESTAMP} and #{endTime,jdbcType=TIMESTAMP}
+        </if>
+        <if test="startTime != null and startTime != '' and endTime != null and endTime != ''">
+            AND XHG.DATE between #{startTime,jdbcType=TIMESTAMP} and #{endTime,jdbcType=TIMESTAMP}
         </if>
         ORDER BY XHG.CREATE_TIME DESC
     </select>
@@ -627,11 +654,14 @@
     <update id="updateForecast" parameterType="java.util.Map">
         UPDATE XH_FORECAST XHG
         <trim prefix="set" suffixOverrides=",">
+            <if test="classify_id!=null and classify_id != ''">
+                XHG.CLASSIFY_ID = #{classify_id},
+            </if>
             <if test="goodsId!=null and goodsId != ''">
                 XHG.GOODS_ID = #{goodsId},
             </if>
-            <if test="month!=null and month != ''">
-                XHG.MONTH = #{month},
+            <if test="date!=null and date != ''">
+                XHG.DATE = #{date},
             </if>
             <if test="price!=null and price != ''">
                 XHG.PRICE = #{price},
@@ -639,6 +669,86 @@
         </trim>
         WHERE XHG.ID = #{id}
     </update>
+
+
+    <!--插入预测属性-->
+    <insert id="insertForecastMain" >
+        INSERT INTO XH_FORECAST_MAIN
+        VALUES(#{id},
+        #{classify_id},
+        #{goodsId},
+        #{name},
+        #{begin},
+        #{end},
+        #{createTime,jdbcType=TIMESTAMP})
+    </insert>
+
+
+
+    <!--查询商品预测属性-->
+    <select id="selectForecastMainList" resultType="java.util.Map" parameterType="java.util.Map">
+        SELECT
+        XHG.ID AS id,
+        XHG.CLASSIFY_ID AS classify_id,
+        XHG.GOODS_ID AS goodsId,
+        XM.NAME AS goodsName,
+        XHG.NAME AS name,
+        XHG.BEGIN AS begin,
+        XHG.END AS end,
+        DATE_FORMAT(
+        XHG.CREATE_TIME,
+        '%Y-%m-%d %H:%i:%S'
+        ) AS createTime
+        FROM
+        XH_FORECAST_MAIN XHG
+        LEFT JOIN XH_GOODS_MAIN XM ON XM.CLASSIFY_ID = XHG.CLASSIFY_ID
+        WHERE
+        1 = 1
+        <if test="id!=null and id != ''">
+            AND XHG.ID = #{id}
+        </if>
+        <if test="classify_id!=null and classify_id != ''">
+            AND XHG.CLASSIFY_ID = #{classify_id}
+        </if>
+        <if test="goodsId!=null and goodsId != ''">
+            AND XHG.GOODS_ID = #{goodsId}
+        </if>
+        <if test="name!=null and name != ''">
+            AND XHG.NAME = #{name}
+        </if>
+        ORDER BY XHG.CREATE_TIME DESC
+    </select>
+
+    <!--删除商品预测-->
+    <delete id="deleteForecastMain"  parameterType="java.util.Map" >
+        DELETE FROM XH_FORECAST_MAIN WHERE ID = #{id}
+    </delete>
+
+
+
+    <!--更新商品预测信息-->
+    <update id="updateForecastMain" parameterType="java.util.Map">
+        UPDATE XH_FORECAST_MAIN XHG
+        <trim prefix="set" suffixOverrides=",">
+            <if test="classify_id!=null and classify_id != ''">
+                XHG.CLASSIFY_ID = #{classify_id},
+            </if>
+            <if test="goodsId!=null and goodsId != ''">
+                XHG.GOODS_ID = #{goodsId},
+            </if>
+            <if test="name!=null and name != ''">
+                XHG.NAME = #{name},
+            </if>
+            <if test="begin!=null and begin != ''">
+                XHG.BEGIN = #{begin},
+            </if>
+            <if test="end!=null and end != ''">
+                XHG.END = #{end},
+            </if>
+        </trim>
+        WHERE XHG.ID = #{id}
+    </update>
+
 
 
 </mapper>

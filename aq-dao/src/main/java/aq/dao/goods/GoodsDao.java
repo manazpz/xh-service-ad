@@ -75,6 +75,9 @@ public interface GoodsDao {
 
     /**********************************************************************************/
 
+    //新增标签
+    int instertLable(Map<String,Object> map);
+
     //查询标签
     List<Map<String,Object>> selectLable(Map<String,Object> map);
 
@@ -123,6 +126,19 @@ public interface GoodsDao {
 
     //更新商品预估价格
     int updateForecast(Map<String,Object> map);
+
+    //新增预测属性
+    int insertForecastMain(Map<String,Object> map);
+
+    //查询商品预测属性
+    List<Map<String,Object>> selectForecastMainList(Map<String,Object> map);
+
+    //删除商品预估价格属性
+    int deleteForecastMain(Map<String,Object> map);
+
+    //更新商品预估价格属性
+    int updateForecastMain(Map<String,Object> map);
+
 
     /**********************************************************************************/
 

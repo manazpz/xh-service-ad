@@ -5,6 +5,7 @@ import aq.common.other.Rtn;
 import aq.common.util.GsonHelper;
 import aq.common.util.StringUtil;
 import aq.common.util.UUIDUtil;
+import aq.common.util.WxUtil;
 import aq.dao.config.ConfigDao;
 import aq.dao.news.NewsDao;
 import aq.dao.order.OrderDao;
@@ -112,7 +113,7 @@ public class ConfigServiceImpl extends BaseServiceImpl  implements ConfigService
             }else{
                 payRequest.setOrderId(map.get("orderId").toString());
             }
-            payRequest.setSpbillCreateIp(APPConstants.SPBILL_CREATE_IP);
+            payRequest.setSpbillCreateIp(APPConstants.REMORT_IP);
             //发起支付
             PayResponse pay = bestPayService.pay(payRequest);
             data =  GsonHelper.getInstanceJsonparser().parse(GsonHelper.getInstance().toJson(pay)).getAsJsonObject();

@@ -53,4 +53,7 @@ public interface GoodsApiService extends BaseService {
     //查询商品价格预测列表
     JsonObject queryForecastList(JsonObject jsonObject);
 
+    //更新商品库存
+    JsonObject updateStock(JsonObject jsonObject);
+
 }

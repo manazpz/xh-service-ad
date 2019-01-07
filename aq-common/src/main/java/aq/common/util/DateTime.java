@@ -275,4 +275,16 @@ public class DateTime {
         return sdf.format(dates);
     }
 
+
+    // 获得当前日期与本周一相差的天数
+    public static int getMondayPlus() {
+        Calendar cd = Calendar.getInstance();
+        // 获得今天是一周的第几天，星期日是第一天，星期二是第二天
+        int dayOfWeek = cd.get(Calendar.DAY_OF_WEEK);
+        if (dayOfWeek == 1) {
+            return -6;
+        } else {
+            return 2 - dayOfWeek;
+        }
+    }
 }

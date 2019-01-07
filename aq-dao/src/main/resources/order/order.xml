@@ -163,6 +163,9 @@
             <if test="checkStatus!=null and checkStatus != ''">
                 XO.CHECK_STATUS = #{checkStatus},
             </if>
+            <if test="parameter!=null and parameter != ''">
+                XO.PARAMETER = #{parameter},
+            </if>
         </trim>
         WHERE XO.ID = #{id} AND XO.NO = #{no}
     </update>

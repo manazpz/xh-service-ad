@@ -26,7 +26,13 @@
                 LAST_CREATE_TIME = #{lastCreateTime,jdbcType=TIMESTAMP},
             </if>
         </trim>
-        WHERE ID = #{id}
+        WHERE
+        <if test="id!=null and id!=''">
+            ID = #{id}
+        </if>
+        <if test="goodsId!=null and goodsId!=''">
+            BASIC_ID = #{goodsId}
+        </if>
     </update>
 
     <!--删除库存-->
@@ -50,4 +56,22 @@
             ID = #{id}
         </if>
     </delete>
+
+    <!--查询库存-->
+    <select id="selectStock" resultType="java.util.Map" parameterType="java.util.Map">
+        SELECT
+        XB.ID AS id,
+        XB.BASIC_ID AS goodsId,
+        XB.CURRENT_STOCK AS currentStock
+        FROM
+        XH_STOCK_MAIN XB
+        WHERE 1=1
+        <if test="id != null and id!=''">
+            AND XB.ID = #{id}
+        </if>
+        <if test="goodsId != null and goodsId!=''">
+            AND XB.BASIC_ID = #{goodsId}
+        </if>
+    </select>
+
 </mapper>

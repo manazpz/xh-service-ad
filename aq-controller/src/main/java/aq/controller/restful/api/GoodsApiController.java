@@ -155,4 +155,11 @@ public class GoodsApiController extends aq.controller.restful.System {
         JsonObject jsonObject = HttpUtil.getParameterMap(request);
         writerJson(response,out,goodsService.queryForecastList(jsonObject));
     }
+
+    //更新商品库存
+    @RequestMapping(value = "/updateStock",method = RequestMethod.POST)
+    @ResponseBody
+    public void updateStock(@RequestBody JsonObject requestJson,HttpServletRequest request, HttpServletResponse response, PrintWriter out) throws Exception {
+        writerJson(response,out,goodsService.updateStock(requestJson));
+    }
 }

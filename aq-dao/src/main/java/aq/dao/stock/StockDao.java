@@ -19,4 +19,7 @@ public interface StockDao {
 
     //删除出库
     int deleteStockOut(Map<String,Object> map);
+
+    //查询库存
+    List<Map<String,Object>> selectStock(Map<String,Object> map);
 }

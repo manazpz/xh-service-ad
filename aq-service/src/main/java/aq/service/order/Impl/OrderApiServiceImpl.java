@@ -8,6 +8,7 @@ import aq.dao.goods.SpecDao;
 import aq.dao.news.NewsDao;
 import aq.dao.order.OrderDao;
 import aq.dao.resource.ResourceDao;
+import aq.dao.stock.StockDao;
 import aq.dao.user.UserDao;
 import aq.service.base.Impl.BaseServiceImpl;
 import aq.service.order.OrderApiService;
@@ -40,6 +41,9 @@ public class OrderApiServiceImpl extends BaseServiceImpl  implements OrderApiSer
 
     @Resource
     private GoodsDao goodsDao;
+
+    @Resource
+    private StockDao stockDao;
 
     @Resource
     private ResourceDao resourceDao;
@@ -276,6 +280,19 @@ public class OrderApiServiceImpl extends BaseServiceImpl  implements OrderApiSer
         Map<String,Object> rest = new HashMap<>();
         res = GsonHelper.getInstance().fromJson(jsonObject,Map.class);
         orderDao.updateOrder(res);
+        if("03".equals(res.get("paystatus"))){
+            List<Map> newOrder = (List) res.get("newOrder");
+            newOrder.forEach(obj->{
+                Map<String,Object> ress = new HashMap<>();
+                ress.put("goodsId",obj.get("goodsId"));
+                List<Map<String, Object>> maps = stockDao.selectStock(ress);
+                ress.clear();
+                ress.put("currentStock",Integer.parseInt(maps.get(0).get("currentStock").toString())+1);
+                ress.put("lastCreateTime",new Date());
+                ress.put("goodsId",obj.get("goodsId"));
+                stockDao.updateStock(ress);
+            });
+        }
         rest.put("openid",res.get("openId"));
         List<Map<String, Object>> maps = userDao.selectUserInfos(rest);
         if(maps.size()> 0 ){

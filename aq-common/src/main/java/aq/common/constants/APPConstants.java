@@ -11,6 +11,9 @@ public final class APPConstants {
     public static final String SPBILL_CREATE_IP = "47.106.177.213";
 //    public static final String SPBILL_CREATE_IP = "xa.huanyibu.com";
 
+
+    public static final String REMORT_IP = "120.79.8.197";
+
     //文件服务器地址
     public static final String FILE_SERVICE_URL = HTTP + SPBILL_CREATE_IP;
 //    public static final String FILE_SERVICE_URL = "D:\\Work\\resource\\contract\\";

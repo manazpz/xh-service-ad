@@ -7,6 +7,7 @@ import aq.dao.goods.ClassifyDao;
 import aq.dao.goods.GoodsDao;
 import aq.dao.goods.SpecDao;
 import aq.dao.resource.ResourceDao;
+import aq.dao.stock.StockDao;
 import aq.dao.user.CustomerDao;
 import aq.dao.user.UserDao;
 import aq.service.base.Impl.BaseServiceImpl;
@@ -20,6 +21,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.annotation.Resource;
+import java.text.DecimalFormat;
 import java.util.*;
 
 /**
@@ -34,6 +36,9 @@ public class GoodsApiServiceImpl extends BaseServiceImpl  implements GoodsApiSer
 
     @Resource
     private SpecDao specDao;
+
+    @Resource
+    private StockDao stockDao;
 
     @Resource
     private ClassifyDao classifyDao;
@@ -145,6 +150,9 @@ public class GoodsApiServiceImpl extends BaseServiceImpl  implements GoodsApiSer
                     rest.put("status","01");
                     rest.put("obligate1","Y");
                     rest.put("model",StringUtil.isEmpty(jsonObject.get("model"))?"":jsonObject.get("model").getAsString());
+                    if("01".equals(res.get("model"))){
+                        rest.put("currentStock","true");
+                    }
                     List<Map<String, Object>> goods = goodsDao.selectGoods(rest);
                     obj2.put("goods",goods);
                 }
@@ -525,43 +533,122 @@ public class GoodsApiServiceImpl extends BaseServiceImpl  implements GoodsApiSer
         JsonObject data = new JsonObject();
         JsonArray jsonArray = new JsonArray();
         Map<String,Object> res = new HashMap<>();
+        Map<String,Object> ress = new HashMap<>();
         Map<String,Object> rest = new HashMap<>();
-        int prices = 0;
+        double prices = 0.0;
         List datas = new ArrayList();
         List price = new ArrayList();
         List all = new ArrayList();
+        double nowprice = 0.0;
         res.clear();
         res = GsonHelper.getInstance().fromJson(jsonObject,Map.class);
-        List<Map<String, Object>> maps = goodsDao.selectForecastList(res);
-        Calendar cal = Calendar.getInstance();
-        int year = cal.get(Calendar.YEAR);
-        int month = cal.get(Calendar.MONTH )+1;
-        String now = (month< 10 ? "0" +month: month+"")+ "月";
-        datas.add(now);
-        for(int i=0; i< 5; i++){
-            cal.setTime(new Date());
-            cal.set(Calendar.MONTH, cal.get(Calendar.MONTH) - i);
-            datas.add((cal.get(Calendar.MONTH)< 10 ? "0" +cal.get(Calendar.MONTH)+"月": cal.get(Calendar.MONTH)+"月"));
-        }
-        Collections.reverse(datas);
-        for(int i=0; i< maps.size(); i++){
-            rest.put(maps.get(i).get("month").toString().split("-")[1]+"月",maps.get(i).get("price"));
-        }
-        for(int i=0; i< datas.size(); i++){
-            if(rest.get(datas.get(i))==null){
-                if(prices == 0){
-                    price.add(i,0);
-                }else{
-                    price.add(i,prices);
+        ress.put("id",res.get("id"));
+        List<Map<String, Object>> car = goodsDao.selectReplacementCar(ress);
+        if(car.size()>0){
+            ress.clear();
+            ress.put("goodsId",car.get(0).get("goodsId"));
+            List<Map<String, Object>> mapsMain = goodsDao.selectForecastMainList(ress);
+            res.clear();
+            if(mapsMain.size()>0){
+                double pricess = 0.0;
+                for(int i=Integer.parseInt(mapsMain.get(0).get("begin").toString());i>0;i--){
+                    int mondayPlus = DateTime.getMondayPlus();
+                    GregorianCalendar currentDate = new GregorianCalendar();
+                    currentDate.add(GregorianCalendar.DATE, mondayPlus + 7 * -i);
+                    Date monday = currentDate.getTime();
+                    GregorianCalendar currentDates = new GregorianCalendar();
+                    int sundayPlus = DateTime.getMondayPlus();
+                    currentDates.add(GregorianCalendar.DATE, sundayPlus + 7 * -i + 6);
+                    Date sunday = currentDates.getTime();
+                    rest.clear();
+                    rest.put("startTime",monday);
+                    rest.put("endTime",sunday);
+                    rest.put("goodsId",ress.get("goodsId"));
+                    List<Map<String, Object>> maps = goodsDao.selectForecastList(rest);
+                    datas.add("前"+i + "周");
+                    if(maps.size()>0){
+                        pricess = 0.0;
+                        for(int j=0; j< maps.size(); j++){
+                            pricess += Double.parseDouble(maps.get(j).get("price").toString());
+                        }
+                        res.put("前"+i + "周",pricess/maps.size());
+                    }else{
+                        if(pricess == 0.0){
+                            res.put("前"+i + "周",0.0);
+                        }else{
+                            res.put("前"+i + "周",pricess);
+                        }
+                    }
                 }
-            }else{
-                price.add(i, Integer.parseInt(rest.get(datas.get(i)).toString()));
-                prices = Integer.parseInt(rest.get(datas.get(i)).toString());
+                int mondayNowPlus = DateTime.getMondayPlus();
+                GregorianCalendar currentNowDate = new GregorianCalendar();
+                currentNowDate.add(GregorianCalendar.DATE, mondayNowPlus + 7);
+                Date monday = currentNowDate.getTime();
+                GregorianCalendar currentDates = new GregorianCalendar();
+                int sundayPlus = DateTime.getMondayPlus();
+                currentDates.add(GregorianCalendar.DATE, sundayPlus + 7 + 6);
+                Date sunday = currentDates.getTime();
+                rest.clear();
+                rest.put("startTime",monday);
+                rest.put("endTime",sunday);
+                rest.put("goodsId",ress.get("goodsId"));
+                List<Map<String, Object>> mapa = goodsDao.selectForecastList(rest);
+                datas.add("本周");
+                if(mapa.size()>0){
+                    pricess = 0.0;
+                    for(int j=0; j< mapa.size(); j++){
+                        pricess += Double.parseDouble(mapa.get(j).get("price").toString());
+                    }
+                    res.put("本周",pricess/mapa.size());
+                    nowprice = pricess/mapa.size();
+                }else{
+                    res.put("本周",res.get("前1周"));
+                    nowprice = Double.parseDouble(res.get("前1周").toString());
+                }
+                for(int i=1 ;i<Integer.parseInt(mapsMain.get(0).get("end").toString())+1;i++){
+                    int mondayPlus = DateTime.getMondayPlus();
+                    GregorianCalendar currentDate = new GregorianCalendar();
+                    currentDate.add(GregorianCalendar.DATE, mondayPlus + 7 * i);
+                    Date mondays = currentDate.getTime();
+                    GregorianCalendar currentDatess = new GregorianCalendar();
+                    int sundayPluss = DateTime.getMondayPlus();
+                    currentDatess.add(GregorianCalendar.DATE, sundayPluss + 7 * i + 6);
+                    Date sundays = currentDatess.getTime();
+                    rest.clear();
+                    rest.put("startTime",mondays);
+                    rest.put("endTime",sundays);
+                    rest.put("goodsId",ress.get("goodsId"));
+                    List<Map<String, Object>> mapss = goodsDao.selectForecastList(rest);
+                    datas.add("后"+i + "周");
+                    if(mapss.size()>0){
+                        double pricessz = 0.0;
+                        for(int j=0; j< mapss.size(); j++){
+                            pricessz += Double.parseDouble(mapss.get(j).get("price").toString());
+                        }
+                        res.put("后"+i + "周",pricessz/mapss.size());
+                    }else{
+                        res.put("后"+i + "周",res.get("本周"));
+                    }
+                }
+            }
+        }
+        for(int i=0; i< datas.size(); i++) {
+            DecimalFormat df = new DecimalFormat("#.00");
+            if (res.get(datas.get(i)) == null) {
+                if (prices == 0.0) {
+                    price.add(i, 0);
+                } else {
+                    price.add(i, prices);
+                }
+            } else {
+                price.add(i, Double.parseDouble(res.get(datas.get(i)).toString()));
+                prices = Double.parseDouble(res.get(datas.get(i)).toString());
             }
         }
         res.clear();
         res.put("datas",datas);
         res.put("price",price);
+        res.put("now",nowprice);
         all.add(res);
         rtn.setCode(200);
         rtn.setMessage("success");
@@ -573,4 +660,26 @@ public class GoodsApiServiceImpl extends BaseServiceImpl  implements GoodsApiSer
     }
 
 
+    @Override
+    public JsonObject updateStock(JsonObject jsonObject) {
+        Rtn rtn = new Rtn("Goods");
+        Map<String,Object> res = new HashMap<>();
+        res = GsonHelper.getInstance().fromJson(jsonObject,Map.class);
+        List goodsId = GsonHelper.getInstance().fromJson(res.get("goodsId").toString(), List.class);
+        goodsId.forEach(obj->{
+            Map<String,Object> rest = new HashMap<>();
+            rest.put("goodsId",obj);
+            List<Map<String, Object>> maps = stockDao.selectStock(rest);
+            rest.clear();
+            if(Integer.parseInt(maps.get(0).get("currentStock").toString())>0){
+                rest.put("currentStock",Integer.parseInt(maps.get(0).get("currentStock").toString())-1);
+                rest.put("lastCreateTime",new Date());
+                rest.put("goodsId",obj);
+                stockDao.updateStock(rest);
+            }
+        });
+        rtn.setCode(200);
+        rtn.setMessage("success");
+        return  Func.functionRtnToJsonObject.apply(rtn);
+    }
 }

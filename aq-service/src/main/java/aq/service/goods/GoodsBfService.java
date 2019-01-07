@@ -41,6 +41,9 @@ public interface GoodsBfService extends BaseService {
     //查询品牌
     JsonObject selectBrand(JsonObject jsonObject);
 
+    //新增标签
+    JsonObject instertLable(JsonObject jsonObject);
+
     //查询标签
     JsonObject queryLable(JsonObject jsonObject);
 
@@ -64,5 +67,17 @@ public interface GoodsBfService extends BaseService {
 
     //更新商品价格预测
     JsonObject updateForecast(JsonObject jsonObject);
+
+    //新增预测属性
+    JsonObject insertForecastMain(JsonObject jsonObject);
+
+    //查询预测属性
+    JsonObject queryForecastMainList(JsonObject jsonObject);
+
+    //删除商品价格预测属性
+    JsonObject deleteForecastMain(JsonObject jsonObject);
+
+    //更新商品价格预测属性
+    JsonObject updateForecastMain(JsonObject jsonObject);
 
 }

@@ -124,9 +124,6 @@ public class WxController extends aq.controller.restful.System {
             userService.insertUserInfos(res);
         }else{
             userService.updateUserInfos(res);
-//            if(!res.get("nickname").equals(mapsuser.get(0).get("nickName")) || !res.get("head_portrait").equals(mapsuser.get(0).get("headPortrait"))){
-//                userService.updateUserInfos(res);
-//            }
         }
         res.clear();
         res.put("code",200);

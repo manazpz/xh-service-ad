@@ -131,6 +131,14 @@ public class GoodsBfController extends aq.controller.restful.System {
         writerJson(response,out,goodsBfService.selectBrand(jsonObject));
     }
 
+
+    //添加标签
+    @RequestMapping(value = "/instertLable",method = RequestMethod.POST)
+    @ResponseBody
+    public void instertLable(@RequestBody JsonObject requestJson,HttpServletRequest request, HttpServletResponse response, PrintWriter out) throws Exception {
+        writerJson(response,out,goodsBfService.instertLable(requestJson));
+    }
+
     //查询标签列表
     @RequestMapping(value = "/lables",method = RequestMethod.GET)
     public void lableList(HttpServletRequest request, HttpServletResponse response, PrintWriter out) throws Exception {
@@ -189,5 +197,35 @@ public class GoodsBfController extends aq.controller.restful.System {
     @ResponseBody
     public void updateForecast(@RequestBody JsonObject requestJson,HttpServletRequest request, HttpServletResponse response, PrintWriter out) throws Exception {
         writerJson(response,out,goodsBfService.updateForecast(requestJson));
+    }
+
+    //新增预测属性
+    @RequestMapping(value = "/createForecastMain",method = RequestMethod.POST)
+    @ResponseBody
+    public void createForecastMain(@RequestBody JsonObject requestJson,HttpServletRequest request, HttpServletResponse response, PrintWriter out) throws Exception {
+        writerJson(response,out,goodsBfService.insertForecastMain(requestJson));
+    }
+
+
+    //查询商品价格预测属性列表
+    @ResponseBody
+    @RequestMapping(value = "/forecastMainList",method = RequestMethod.GET)
+    public void forecastMainList(HttpServletRequest request, HttpServletResponse response, PrintWriter out) throws Exception {
+        JsonObject jsonObject = HttpUtil.getParameterMap(request);
+        writerJson(response,out,goodsBfService.queryForecastMainList(jsonObject));
+    }
+
+    //删除商品价格预测属性
+    @RequestMapping(value = "/deleteForecastMain",method = RequestMethod.POST)
+    @ResponseBody
+    public void deleteForecastMain(@RequestBody JsonObject requestJson,HttpServletRequest request, HttpServletResponse response, PrintWriter out) throws Exception {
+        writerJson(response,out,goodsBfService.deleteForecastMain(requestJson));
+    }
+
+    //更新商品价格预测属性
+    @RequestMapping(value = "/updateForecastMain",method = RequestMethod.POST)
+    @ResponseBody
+    public void updateForecastMain(@RequestBody JsonObject requestJson,HttpServletRequest request, HttpServletResponse response, PrintWriter out) throws Exception {
+        writerJson(response,out,goodsBfService.updateForecastMain(requestJson));
     }
 }

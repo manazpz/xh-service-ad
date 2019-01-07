@@ -8,6 +8,7 @@ import aq.common.util.*;
 import aq.dao.goods.ClassifyDao;
 import aq.dao.goods.GoodsDao;
 import aq.dao.goods.SpecDao;
+import aq.dao.order.OrderDao;
 import aq.dao.resource.ResourceDao;
 import aq.dao.shop.ShopDao;
 import aq.dao.stock.StockDao;
@@ -42,6 +43,9 @@ public class GoodsBfServiceImpl extends BaseServiceImpl  implements GoodsBfServi
 
     @Resource
     private SpecDao specDao;
+
+    @Resource
+    private OrderDao orderDao;
 
     @Resource
     private ClassifyDao classifyDao;
@@ -165,6 +169,8 @@ public class GoodsBfServiceImpl extends BaseServiceImpl  implements GoodsBfServi
             rtn.setMessage("未登录！");
         }else {
             Map<String,Object> res = new HashMap<>();
+            Map<String,Object> ress = new HashMap<>();
+            Map<String,Object> rest = new HashMap<>();
             res.clear();
             res.put("userId",user.getUserId());
             List<Map<String, Object>> maps = shopDao.selectShop(res);
@@ -196,6 +202,48 @@ public class GoodsBfServiceImpl extends BaseServiceImpl  implements GoodsBfServi
                     stockDao.insertStock(stockMap);
                 }else {
                     goodsDao.updateGoods(res);
+                    List<Map<String, Object>> goods = goodsDao.selectGoods(res);
+                    for (Map obj:goods) {
+                        rest.put("goodsId",obj.get("id"));
+                        List<Map> specParameters = GsonHelper.getInstance().fromJson(obj.get("specParameter").toString(), List.class);
+                        List<Map<String, Object>> mapsCar = goodsDao.selectReplacementCar(rest);
+                        ress.put("orderStatus","03");
+                        List<Map<String, Object>> orderList = orderDao.selectorderList(ress);
+                        specParameters.forEach(objs->{
+                            mapsCar.forEach(parameters->{
+                                List<Map> goodsParameter = GsonHelper.getInstance().fromJson(parameters.get("bllParameter").toString(), List.class);
+                                goodsParameter.forEach(rec->{
+                                    if(objs.get("code").equals(rec.get("code"))){
+                                        ress.clear();
+                                        ress.put("price",objs.get("price"));
+                                        ress.put("id",parameters.get("bllId"));
+                                        goodsDao.updateReplacementCar(ress);
+                                    }
+                                });
+                            });
+                            orderList.forEach(list->{
+                                ress.clear();
+                                ress.put("id",list.get("id"));
+                                ress.put("goodsId",obj.get("id"));
+                                List<Map<String, Object>> orderDetail = orderDao.selectorderDetailList(ress);
+                                orderDetail.forEach(objz->{
+                                    List<Map> parameter = GsonHelper.getInstance().fromJson(objz.get("parameter").toString(), List.class);
+                                    parameter.forEach(rsc->{
+                                        if(objs.get("code").equals(rsc.get("code"))){
+                                            ress.clear();
+                                            ress.put("id",objz.get("id"));
+                                            ress.put("no",objz.get("no"));
+                                            JsonObject jsonArray = GsonHelper.getInstanceJsonparser().parse(GsonHelper.getInstance().toJson(objs)).getAsJsonObject();
+                                            ArrayList arrayList = new ArrayList();
+                                            arrayList.add(jsonArray);
+                                            ress.put("parameter",arrayList.toString());
+                                            orderDao.updateOrderDetail(ress);
+                                        }
+                                    });
+                                });
+                            });
+                        });
+                    }
                     if (res.get("delFiles") instanceof List) {
                         HashMap resourceMap = new HashMap();
                         List<Map> delResources = (List<Map>) res.get("delFiles");
@@ -626,6 +674,28 @@ public class GoodsBfServiceImpl extends BaseServiceImpl  implements GoodsBfServi
         });
     }
 
+    @Transactional(rollbackFor = {RuntimeException.class, Exception.class})
+    @Override
+    public JsonObject instertLable(JsonObject jsonObject) {
+        AbsAccessUser user = Factory.getContext().user();
+        Rtn rtn = new Rtn("Goods");
+        if (user == null) {
+            rtn.setCode(10000);
+            rtn.setMessage("未登录！");
+        }else {
+            Map<String,Object> res = new HashMap<>();
+            Map<String,Object> rest = new HashMap<>();
+            res = GsonHelper.getInstance().fromJson(jsonObject,Map.class);
+            res.put("id",UUIDUtil.getUUID());
+            res.put("createUserId", user.getUserId());
+            res.put("createTime",new Date());
+            goodsDao.instertLable(res);
+            rtn.setCode(200);
+            rtn.setMessage("success");
+        }
+        return Func.functionRtnToJsonObject.apply(rtn);
+    }
+
     @Override
     public JsonObject addGoodsLable(JsonObject jsonObject) {
         Rtn rtn = new Rtn("Goods");
@@ -712,7 +782,13 @@ public class GoodsBfServiceImpl extends BaseServiceImpl  implements GoodsBfServi
             rtn.setMessage("未登录！");
         }else {
             Map<String,Object> res = new HashMap<>();
+            Map<String,Object> rest = new HashMap<>();
             res = GsonHelper.getInstance().fromJson(jsonObject,Map.class);
+            rest.put("classifyId",res.get("classify_id"));
+            List<Map<String, Object>> maps = goodsDao.selectGoods(rest);
+            if(maps.size()>0){
+                res.put("goodsId",maps.get(0).get("id"));
+            }
             res.put("id",UUIDUtil.getUUID());
             res.put("createTime",new Date());
             goodsDao.insertForecast(res);
@@ -752,8 +828,97 @@ public class GoodsBfServiceImpl extends BaseServiceImpl  implements GoodsBfServi
             rtn.setMessage("未登录！");
         }else {
             Map<String,Object> res = new HashMap<>();
+            Map<String,Object> rest = new HashMap<>();
             res = GsonHelper.getInstance().fromJson(jsonObject,Map.class);
+            if(res.get("classify_id") != null ){
+                rest.put("classifyId",res.get("classify_id"));
+                List<Map<String, Object>> maps = goodsDao.selectGoods(rest);
+                if(maps.size()>0){
+                    res.put("goodsId",maps.get(0).get("id"));
+                }
+            }
             goodsDao.updateForecast(res);
+            rtn.setCode(200);
+            rtn.setMessage("success");
+        }
+        return Func.functionRtnToJsonObject.apply(rtn);
+    }
+
+
+    @Transactional(rollbackFor = {RuntimeException.class, Exception.class})
+    @Override
+    public JsonObject insertForecastMain(JsonObject jsonObject) {
+        AbsAccessUser user = Factory.getContext().user();
+        Rtn rtn = new Rtn("Goods");
+        if (user == null) {
+            rtn.setCode(10000);
+            rtn.setMessage("未登录！");
+        }else {
+            Map<String,Object> res = new HashMap<>();
+            Map<String,Object> rest = new HashMap<>();
+            res = GsonHelper.getInstance().fromJson(jsonObject,Map.class);
+            rest.put("classifyId",res.get("classify_id"));
+            List<Map<String, Object>> maps = goodsDao.selectGoods(rest);
+            if(maps.size()>0){
+                res.put("goodsId",maps.get(0).get("id"));
+            }
+            res.put("id",UUIDUtil.getUUID());
+            res.put("createTime",new Date());
+            goodsDao.insertForecastMain(res);
+            rtn.setCode(200);
+            rtn.setMessage("success");
+        }
+        return Func.functionRtnToJsonObject.apply(rtn);
+    }
+
+    @Transactional(rollbackFor = {RuntimeException.class, Exception.class})
+    @Override
+    public JsonObject queryForecastMainList(JsonObject jsonObject) {
+        jsonObject.addProperty("service","goods");
+        return query(jsonObject,(map)->{
+            return goodsDao.selectForecastMainList(map);
+        });
+    }
+
+    @Transactional(rollbackFor = {RuntimeException.class, Exception.class})
+    @Override
+    public JsonObject deleteForecastMain(JsonObject jsonObject) {
+        AbsAccessUser user = Factory.getContext().user();
+        Rtn rtn = new Rtn("Goods");
+        if (user == null) {
+            rtn.setCode(10000);
+            rtn.setMessage("未登录！");
+        }else {
+            Map<String,Object> res = new HashMap<>();
+            res = GsonHelper.getInstance().fromJson(jsonObject,Map.class);
+            goodsDao.deleteForecastMain(res);
+            rtn.setCode(200);
+            rtn.setMessage("success");
+        }
+        return Func.functionRtnToJsonObject.apply(rtn);
+    }
+
+
+    @Transactional(rollbackFor = {RuntimeException.class, Exception.class})
+    @Override
+    public JsonObject updateForecastMain(JsonObject jsonObject) {
+        AbsAccessUser user = Factory.getContext().user();
+        Rtn rtn = new Rtn("Goods");
+        if (user == null) {
+            rtn.setCode(10000);
+            rtn.setMessage("未登录！");
+        }else {
+            Map<String,Object> res = new HashMap<>();
+            Map<String,Object> rest = new HashMap<>();
+            res = GsonHelper.getInstance().fromJson(jsonObject,Map.class);
+            if(res.get("classify_id") != null ){
+                rest.put("classifyId",res.get("classify_id"));
+                List<Map<String, Object>> maps = goodsDao.selectGoods(rest);
+                if(maps.size()>0){
+                    res.put("goodsId",maps.get(0).get("id"));
+                }
+            }
+            goodsDao.updateForecastMain(res);
             rtn.setCode(200);
             rtn.setMessage("success");
         }
