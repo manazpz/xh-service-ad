@@ -142,6 +142,7 @@ public class WxController extends aq.controller.restful.System {
     @RequestMapping(value = "/pay",method = RequestMethod.POST)
     @ResponseBody
     public void Pay(@RequestBody JsonObject requestJson ,HttpServletRequest request, HttpServletResponse response, PrintWriter out) throws Exception {
+        requestJson.addProperty("remortIP",WxUtil.getRemortIP(request));
         writerJson(response,out,configService.pay(requestJson));
     }
 

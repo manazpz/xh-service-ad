@@ -113,7 +113,7 @@ public class ConfigServiceImpl extends BaseServiceImpl  implements ConfigService
             }else{
                 payRequest.setOrderId(map.get("orderId").toString());
             }
-            payRequest.setSpbillCreateIp(APPConstants.REMORT_IP);
+            payRequest.setSpbillCreateIp(map.get("remortIP").toString());
             //发起支付
             PayResponse pay = bestPayService.pay(payRequest);
             data =  GsonHelper.getInstanceJsonparser().parse(GsonHelper.getInstance().toJson(pay)).getAsJsonObject();
