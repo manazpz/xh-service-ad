@@ -111,7 +111,7 @@ public class ConfigServiceImpl extends BaseServiceImpl  implements ConfigService
             if(map.get("orderId") == null){
                 payRequest.setOrderId(UUIDUtil.getRandomOrderId());
             }else{
-                payRequest.setOrderId(map.get("orderId").toString());
+                payRequest.setOrderId(map.get("orderId").toString()+"_"+UUIDUtil.getRandomTwoNumber());
             }
             payRequest.setSpbillCreateIp(map.get("remortIP").toString());
             //发起支付

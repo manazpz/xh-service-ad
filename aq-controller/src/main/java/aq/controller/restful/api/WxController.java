@@ -178,7 +178,7 @@ public class WxController extends aq.controller.restful.System {
                 resXml = "<xml>" + "<return_code><![CDATA[SUCCESS]]></return_code>"
                         + "<return_msg><![CDATA[OK]]></return_msg>" + "</xml>";
                 //业务处理开始
-                res.put("number",map.get("out_trade_no"));
+                res.put("number",map.get("out_trade_no").split("_")[0]);
                 System.out.print("=============支付回调=================："+map);
                 List<Map<String, Object>> maps = orderApiService.selectOrder(res);
                 if(maps.size()>0){

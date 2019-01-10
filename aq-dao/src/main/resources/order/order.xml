@@ -149,7 +149,14 @@
                 XO.LAST_CREATE_TIME = #{lastCreateTime,jdbcType=TIMESTAMP},
             </if>
         </trim>
-        WHERE XO.ID = #{id}
+        WHERE 1=1
+        <if test="id!=null and id != ''">
+            AND XO.ID = #{id}
+        </if>
+        <if test="number!=null and number != ''">
+            AND XO.NUMBER = #{number}
+        </if>
+
     </update>
 
 
