@@ -143,6 +143,7 @@ public class GoodsApiServiceImpl extends BaseServiceImpl  implements GoodsApiSer
             for(Map obj2:req2) {
                 rest.clear();
                 rest.put("parentId",obj2.get("id"));
+                rest.put("parameter",'Y');
                 req3 = classifyDao.selectClassify(rest);
                 for(Map obj3:req3) {
                     rest.clear();

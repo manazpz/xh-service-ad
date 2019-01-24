@@ -46,6 +46,10 @@
         <if test="obligate1 != null">
             AND XC.OBLIGATE1 = #{obligate1}
         </if>
+        <if test="parameter != null">
+            AND XC.PARAMETER IS NOT NULL
+        </if>
+
         ORDER BY XC.PX ASC
     </select>
 

@@ -8,6 +8,7 @@
         SELECT
         XSM.ID AS id,
         XC.NAME AS grouName,
+        XC.ID AS grouId,
         XSM.SPEC_NAME AS specName,
         XSM.TIPS_TYPE AS tipsType,
         XSM.TIPS_TEXT AS tipsText,
@@ -52,7 +53,7 @@
         <if test="specName!=null and specName != ''">
             AND XSM.SPEC_NAME = #{specName}
         </if>
-        ORDER BY XSM.GROU_NAME
+        ORDER BY XSM.PX
     </select>
 
     <!--新增规格-->

@@ -3,6 +3,7 @@ package aq.service.coupon.Impl;
 import aq.common.annotation.DyncDataSource;
 import aq.common.other.Rtn;
 import aq.common.util.GsonHelper;
+import aq.common.util.UUIDUtil;
 import aq.dao.coupon.CouponDao;
 import aq.dao.user.UserDao;
 import aq.service.base.Impl.BaseServiceImpl;
@@ -59,7 +60,7 @@ public class CouponApiServiceImpl extends BaseServiceImpl  implements CouponApiS
         JsonObject data = new JsonObject();
         JsonArray jsonArray = new JsonArray();
         res = GsonHelper.getInstance().fromJson(jsonObject,Map.class);
-        if(res.get("number") != null){
+        if(res.get("no") != null){
             List<Map<String,Object>> list = couponDao.selectCoupon(res);
             if(list.size()>0){
                 rest.put("id",list.get(0).get("id"));
@@ -73,16 +74,17 @@ public class CouponApiServiceImpl extends BaseServiceImpl  implements CouponApiS
         if(rest.get("id")!= null){
             rests.put("openid",res.get("openId")== null ? "": res.get("openId"));
             List<Map<String, Object>> maps = userDao.selectUserInfos(rests);
-            rest.clear();
             if(maps.size()>0){
                 List<Map<String, Object>> maps1 = couponDao.selectUserCoupon(rest);
                 if(maps1.size()<=0){
-                    rest.put("userId",maps.get(0).get("id"));
-                    rest.put("types", "01");//01：未使用  02：已使用  03： 已过期
-                    rest.put("createUserId",maps.get(0).get("id"));
-                    rest.put("createTime",new Date());
-                    rest.put("updateTime",new Date());
-                    couponDao.instertCouponUser(rest);
+                    rests.clear();
+                    rests.put("id",rest.get("id"));
+                    rests.put("userId",maps.get(0).get("id"));
+                    rests.put("types", "01");//01：未使用  02：已使用  03： 已过期
+                    rests.put("createUserId",maps.get(0).get("id"));
+                    rests.put("createTime",new Date());
+                    rests.put("updateTime",new Date());
+                    couponDao.instertCouponUser(rests);
                     rtn.setCode(200);
                     rtn.setMessage("success");
                     rtn.setData(data);
