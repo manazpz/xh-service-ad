@@ -7,7 +7,7 @@
     <insert id="insertResourcet" >
         INSERT INTO system_attachment
         VALUES(#{id},#{name},#{type},#{refId},#{link},#{url},#{extend},#{size},#{createUserId},#{lastCreateUserId},
-        #{createTime,jdbcType=TIMESTAMP},#{lastCreateTime,jdbcType=TIMESTAMP},#{remarks})
+        #{createTime,jdbcType=TIMESTAMP},#{lastCreateTime,jdbcType=TIMESTAMP},#{remarks},#{bannerType},#{goodsType})
     </insert>
 
     <!--查询附件-->
@@ -20,6 +20,9 @@
         sc. NAME AS typeName,
         sa.FD_REF_ID AS refId,
         sa.FD_URL AS url,
+        sa.BANNERTYPE AS bannerType,
+        scs.NAME AS bannerTypeName,
+        sa.GOODSTYPE AS goodsType,
         sa.FD_EXTEND AS extend,
         sa.FD_SIZE AS size,
         sa.CREATE_USER AS createUserId,
@@ -37,6 +40,7 @@
         FROM
         system_attachment sa
         LEFT JOIN system_config sc ON sc.KEY_WORD = sa.FD_TYPE
+        LEFT JOIN system_config scs ON scs.KEY_WORD = sa.BANNERTYPE
         LEFT JOIN system_administrator cu ON cu.ID = sa.CREATE_USER
         LEFT JOIN system_administrator lcu ON lcu.ID = sa.LAST_CREATE_USER
         WHERE 1=1
@@ -93,6 +97,12 @@
             </if>
             <if test="remarks!=null and remarks!=''">
                 REMARKS = #{remarks},
+            </if>
+            <if test="bannerType!=null and bannerType!=''">
+                BANNERTYPE = #{bannerType},
+            </if>
+            <if test="goodsType!=null and goodsType!=''">
+                GOODSTYPE = #{goodsType},
             </if>
         </trim>
         WHERE ID = #{id}

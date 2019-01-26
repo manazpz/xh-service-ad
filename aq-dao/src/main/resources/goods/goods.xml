@@ -94,7 +94,7 @@
         <if test="currentStock != null">
             AND SK.CURRENT_STOCK != '0'
         </if>
-        <if test="id != null">
+        <if test="id != null and id != ''">
             AND XGM.ID = #{id}
         </if>
         <if test="brandId != null">

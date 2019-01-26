@@ -184,6 +184,8 @@ public class ResourceServiceImpl extends BaseServiceImpl  implements ResourceSer
                 for (int i=0;i<files.size();i++) {
                     files.get(i).put("type",res.get("type"));
                     files.get(i).put("name",res.get("name"));
+                    files.get(i).put("bannerType",StringUtil.isEmpty(res.get("bannerType"))?"":res.get("bannerType"));
+                    files.get(i).put("goodsType",StringUtil.isEmpty(res.get("goodsType"))?"":res.get("goodsType"));
                     files.get(i).put("refId",StringUtil.isEmpty(res.get("refId"))?"":res.get("refId"));
                     files.get(i).put("link",StringUtil.isEmpty(res.get("link"))?"":res.get("link"));
                     files.get(i).put("createUserId", user.getUserId());
