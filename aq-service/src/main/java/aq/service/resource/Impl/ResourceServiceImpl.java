@@ -216,7 +216,7 @@ public class ResourceServiceImpl extends BaseServiceImpl  implements ResourceSer
             if(res.get("files") instanceof List) {
                 Map respurce = (Map) ((List) res.get("files")).get(0);
                 ress.clear();
-                ress.put("id",respurce.get("id"));
+                ress.put("id",res.get("id"));
                 ress.put("type",res.get("type"));
                 List<Map<String, Object>> respurces1 = resourceDao.selectResource(ress);
                 if(respurces1.size() >0) {
@@ -230,6 +230,8 @@ public class ResourceServiceImpl extends BaseServiceImpl  implements ResourceSer
                     ress.put("size",respurce.get("size"));
                     ress.put("type",res.get("type").toString());
                     ress.put("link",res.get("link").toString());
+                    ress.put("bannerType",StringUtil.isEmpty(res.get("bannerType"))?"":res.get("bannerType"));
+                    ress.put("goodsType",StringUtil.isEmpty(res.get("goodsType"))?"":res.get("goodsType"));
 //                    ress.put("refId",StringUtil.isEmpty(res.get("id"))?"":res.get("id").toString());
                     ress.put("createUserId", user.getUserId());
                     ress.put("lastCreateUserId", user.getUserId());

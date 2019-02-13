@@ -255,22 +255,28 @@ public class GoodsBfServiceImpl extends BaseServiceImpl  implements GoodsBfServi
                     }
                 }
                 if (res.get("files") instanceof List) {
-                    HashMap resourceMap = new HashMap();
+                    ress.clear();
+                    ress.put("id",res.get("id"));
+                    List<Map<String, Object>> respurces1 = resourceDao.selectResource(ress);
                     List<Map> resources = (List<Map>) res.get("files");
+                    if(respurces1.size() >0) {
+                        ress.put("id",respurces1.get(0).get("id"));
+                        resourceDao.deleteResource(ress);
+                    }
                     for (Map obj : resources) {
-                        resourceMap.clear();
-                        resourceMap.put("id",obj.get("id"));
-                        resourceMap.put("name", obj.get("name"));
-                        resourceMap.put("url",obj.get("url"));
-                        resourceMap.put("extend",obj.get("extend"));
-                        resourceMap.put("size",obj.get("size"));
-                        resourceMap.put("type","GI");
-                        resourceMap.put("refId",uuid);
-                        resourceMap.put("createUserId", user.getUserId());
-                        resourceMap.put("lastCreateUserId", user.getUserId());
-                        resourceMap.put("createTime", new Date());
-                        resourceMap.put("lastCreateTime", new Date());
-                        resourceDao.insertResourcet(resourceMap);
+                        ress.clear();
+                        ress.put("id",obj.get("id"));
+                        ress.put("name", obj.get("name"));
+                        ress.put("url",obj.get("url"));
+                        ress.put("extend",obj.get("extend"));
+                        ress.put("size",obj.get("size"));
+                        ress.put("type","GI");
+                        ress.put("refId",uuid);
+                        ress.put("createUserId", user.getUserId());
+                        ress.put("lastCreateUserId", user.getUserId());
+                        ress.put("createTime", new Date());
+                        ress.put("lastCreateTime", new Date());
+                        resourceDao.insertResourcet(ress);
                     }
                 }
                 rtn.setCode(200);
