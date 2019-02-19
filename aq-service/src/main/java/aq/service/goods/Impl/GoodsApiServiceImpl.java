@@ -69,7 +69,7 @@ public class GoodsApiServiceImpl extends BaseServiceImpl  implements GoodsApiSer
             }
             if(!StringUtil.isEmpty(obj.get("id"))) {
                 Map<String,Object> ress = new HashMap<>();
-                ress.put("type","GI");
+                ress.put("type","GB");
                 ress.put("refId",obj.get("id"));
                 List imgs = resourceDao.selectResource(ress);
                 obj.put("imgs",imgs);
@@ -141,6 +141,7 @@ public class GoodsApiServiceImpl extends BaseServiceImpl  implements GoodsApiSer
             rest.put("parentId",obj1.get("id"));
             List<Map<String, Object>> req2 = classifyDao.selectClassify(rest);
             for(Map obj2:req2) {
+                ArrayList<Object> lists = new ArrayList<>();
                 rest.clear();
                 rest.put("parentId",obj2.get("id"));
                 rest.put("parameter",'Y');
@@ -155,9 +156,11 @@ public class GoodsApiServiceImpl extends BaseServiceImpl  implements GoodsApiSer
                         rest.put("currentStock","true");
                     }
                     List<Map<String, Object>> goods = goodsDao.selectGoods(rest);
-                    obj2.put("goods",goods);
+                    for(Map obj4:goods) {
+                        lists.add(obj4);
+                    }
                 }
-
+                obj2.put("goods",lists);
             }
             obj1.put("detail",req2);
         }

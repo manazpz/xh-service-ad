@@ -228,4 +228,19 @@ public class GoodsBfController extends aq.controller.restful.System {
     public void updateForecastMain(@RequestBody JsonObject requestJson,HttpServletRequest request, HttpServletResponse response, PrintWriter out) throws Exception {
         writerJson(response,out,goodsBfService.updateForecastMain(requestJson));
     }
+
+    //新增商品详情图片资源
+    @RequestMapping(value = "/insertResource",method = RequestMethod.POST)
+    @ResponseBody
+    public void insertResource(@RequestBody JsonObject requestJson,HttpServletRequest request, HttpServletResponse response, PrintWriter out) throws Exception {
+        writerJson(response,out,goodsBfService.insertResource(requestJson));
+    }
+
+    //删除商品详情图片资源
+    @RequestMapping(value = "/deleteResource",method = RequestMethod.POST)
+    @ResponseBody
+    public void deleteResource(@RequestBody JsonObject requestJson,HttpServletRequest request, HttpServletResponse response, PrintWriter out) throws Exception {
+        writerJson(response,out,goodsBfService.deleteResource(requestJson));
+    }
+
 }

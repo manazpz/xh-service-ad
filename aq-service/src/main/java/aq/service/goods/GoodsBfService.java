@@ -80,4 +80,10 @@ public interface GoodsBfService extends BaseService {
     //更新商品价格预测属性
     JsonObject updateForecastMain(JsonObject jsonObject);
 
+    //新增商品详情图片资源
+    JsonObject insertResource(JsonObject jsonObject);
+
+    //删除商品详情图片资源
+    JsonObject deleteResource(JsonObject jsonObject);
+
 }
