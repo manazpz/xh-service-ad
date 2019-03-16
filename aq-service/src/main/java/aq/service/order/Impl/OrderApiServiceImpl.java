@@ -90,11 +90,11 @@ public class OrderApiServiceImpl extends BaseServiceImpl  implements OrderApiSer
                             }
                         }
                         if ("01".equals(obj1.get("goodsModel"))) {
-                            obj1.put("guJia", obj2.get("price"));
+                            obj1.put("guJia", (double) Math.round(Double.parseDouble(obj2.get("price").toString()) * 100) / 100);
                         }
                     }
                     if ("02".equals(obj1.get("goodsModel"))) {
-                        obj1.put("guJia", 0- sum - banPrice);
+                        obj1.put("guJia", (double) Math.round((0- sum - banPrice) * 100) / 100);
                     }
                 }
                 obj1.put("parameterStr", str);
@@ -123,9 +123,9 @@ public class OrderApiServiceImpl extends BaseServiceImpl  implements OrderApiSer
                 falg = m.get("checkStatus").toString();//01 ： 未检验   02：已检验   03：同意检测结果
             }
             newMap.put("item", newOrder);
-            newMap.put("sum", newSum);
+            newMap.put("sum", (double) Math.round(newSum * 100) / 100);
             oldMap.put("item", oldOrder);
-            oldMap.put("sum", oldSum);
+            oldMap.put("sum", (double) Math.round(oldSum * 100) / 100);
             obj.put("newOrder", newMap);
             obj.put("oldOrder", oldMap);
             obj.put("checkStatus", falg);
