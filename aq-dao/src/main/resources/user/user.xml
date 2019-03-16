@@ -365,6 +365,9 @@
         <if test="id != null">
             AND sb.ID = #{id}
         </if>
+        <if test="user_id != null">
+            AND sb.BASIC_ID = #{user_id}
+        </if>
     </select>
 
     <!--更新用户银行信息-->

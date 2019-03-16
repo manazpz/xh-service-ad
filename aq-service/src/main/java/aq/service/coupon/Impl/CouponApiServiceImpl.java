@@ -61,7 +61,8 @@ public class CouponApiServiceImpl extends BaseServiceImpl  implements CouponApiS
         JsonArray jsonArray = new JsonArray();
         res = GsonHelper.getInstance().fromJson(jsonObject,Map.class);
         if(res.get("no") != null){
-            List<Map<String,Object>> list = couponDao.selectCoupon(res);
+            rests.put("no",res.get("no"));
+            List<Map<String,Object>> list = couponDao.selectCoupon(rests);
             if(list.size()>0){
                 rest.put("id",list.get(0).get("id"));
             }else{
@@ -72,6 +73,7 @@ public class CouponApiServiceImpl extends BaseServiceImpl  implements CouponApiS
             rest.put("id",res.get("id"));
         }
         if(rest.get("id")!= null){
+            rests.clear();
             rests.put("openid",res.get("openId")== null ? "": res.get("openId"));
             List<Map<String, Object>> maps = userDao.selectUserInfos(rests);
             if(maps.size()>0){

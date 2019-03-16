@@ -35,7 +35,7 @@ public class UserApiController extends aq.controller.restful.System {
         writerJson(response,out,userApiService.queryUserInfos(jsonObject));
     }
 
-    //删除地址
+    //更新用户信息
     @RequestMapping(value = "/update",method = RequestMethod.POST)
     @ResponseBody
     public void deleteAdress(@RequestBody JsonObject requestJson, HttpServletRequest request, HttpServletResponse response, PrintWriter out){
@@ -52,5 +52,21 @@ public class UserApiController extends aq.controller.restful.System {
     @RequestMapping(value = "/insertSuggestion",method = RequestMethod.POST)
     public void insertSuggestion(@RequestBody JsonObject requestJson, HttpServletRequest request, HttpServletResponse response, PrintWriter out){
         writerJson(response,out,userApiService.insertSuggestion(requestJson));
+    }
+    //查询用户银行信息
+    @ResponseBody
+    @RequestMapping(value = "/banklist", method=RequestMethod.GET)
+    public void  statementList(HttpServletRequest request, HttpServletResponse response, PrintWriter out) throws Exception{
+        JsonObject jsonObject = HttpUtil.getParameterMap(request);
+        if(StringUtil.isEmpty(jsonObject.get("openId")) || StringUtil.isEmpty(jsonObject.get("openId"))) {
+            response.sendError(HttpServletResponse.SC_NOT_FOUND,"openId and no is no null!");
+        }
+        writerJson(response,out,userApiService.queryUserBank(jsonObject));
+    }
+
+    //新增用户银行信息
+    @RequestMapping(value = "/insertUserBank",method = RequestMethod.POST)
+    public void insertBank(@RequestBody JsonObject requestJson, HttpServletRequest request, HttpServletResponse response, PrintWriter out){
+        writerJson(response,out,userApiService.insertBank(requestJson));
     }
 }

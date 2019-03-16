@@ -14,7 +14,7 @@ public interface UserApiService extends BaseService {
     //新增用户
     JsonObject queryUserInfos(JsonObject jsonObject);
 
-    //新增用户
+    //编辑用户
     JsonObject updateUserInfos(JsonObject jsonObject);
 
     //发送验证码
@@ -22,5 +22,11 @@ public interface UserApiService extends BaseService {
 
     //新增意见反馈
     JsonObject insertSuggestion(JsonObject jsonObject);
+
+    //新增意见反馈
+    JsonObject queryUserBank(JsonObject jsonObject);
+
+    //新增意见反馈
+    JsonObject insertBank(JsonObject jsonObject);
 
 }

@@ -275,6 +275,7 @@ public class GoodsApiServiceImpl extends BaseServiceImpl  implements GoodsApiSer
     @Override
     public JsonObject insertReplacementCar(JsonObject jsonObject) {
         Rtn rtn = new Rtn("Goods");
+        DecimalFormat df = new DecimalFormat("#.00");
         Map<String,Object> res = new HashMap<>();
         res.clear();
         res.put("id",UUIDUtil.getUUID());
@@ -298,7 +299,7 @@ public class GoodsApiServiceImpl extends BaseServiceImpl  implements GoodsApiSer
                     sum = sum + NumUtil.compareDouble(price,minPrice,cappedPrice)-banPrice;
                 }
             }
-            res.put("price",sum + banPrice);
+            res.put("price",Double.parseDouble(String.format("%.2f", sum+ banPrice)));
         }
         res.put("createUser",jsonObject.get("openId").getAsString());
         res.put("createTime",new Date());

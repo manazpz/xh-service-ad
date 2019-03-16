@@ -21,6 +21,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.annotation.Resource;
+import java.text.DecimalFormat;
 import java.util.*;
 
 /**
@@ -166,6 +167,7 @@ public class OrderApiServiceImpl extends BaseServiceImpl  implements OrderApiSer
     @Override
     public JsonObject instertorderList(JsonObject jsonObject) {
         Rtn rtn = new Rtn("order");
+        DecimalFormat df = new DecimalFormat("#.00");
         JsonObject data = new JsonObject();
         JsonArray jsonArray = new JsonArray();
         Map<String,Object> res = new HashMap<>();
@@ -205,7 +207,7 @@ public class OrderApiServiceImpl extends BaseServiceImpl  implements OrderApiSer
         }
         rest.put("orderstatus","03");//订单状态:01：已完成    02：已取消  03：进行中   04：售后中
         rest.put("deliverystatus","02");//收/发货状态://01：已发货    02：未发货    03：已发货用户未收货    04：已收货
-        rest.put("price",res.get("price"));
+        rest.put("price",df.format(Double.parseDouble(res.get("price").toString())));
         rest.put("recovery",res.get("recovery"));
         rest.put("address",res.get("address").toString());
         rest.put("createTime",new Date());

@@ -7,9 +7,11 @@ import aq.common.other.Rtn;
 import aq.common.util.GsonHelper;
 import aq.common.util.NumUtil;
 import aq.common.util.StringUtil;
+import aq.dao.invoice.InvoiceDao;
 import aq.dao.order.OrderDao;
 import aq.dao.resource.ResourceDao;
 import aq.dao.shop.ShopDao;
+import aq.dao.user.UserDao;
 import aq.service.base.Impl.BaseServiceImpl;
 import aq.service.order.OrderBfService;
 import aq.service.system.Func;
@@ -39,6 +41,12 @@ public class OrderBfServiceImpl extends BaseServiceImpl  implements OrderBfServi
 
     @Resource
     private ShopDao shopDao;
+
+    @Resource
+    private UserDao userDao;
+
+    @Resource
+    private InvoiceDao invoiceDao;
 
     @Transactional(rollbackFor = {RuntimeException.class, Exception.class})
     @Override
@@ -109,6 +117,18 @@ public class OrderBfServiceImpl extends BaseServiceImpl  implements OrderBfServi
                         List address = GsonHelper.getInstance().fromJson(obj.get("address").toString(), List.class);
                         if(address != null){
                             obj.put("address",address.get(0));
+                        }
+                        res.clear();
+                        res.put("user_id",obj.get("buyerId"));
+                        List<Map<String, Object>> banks = userDao.selectUserBank(res);
+                        if(banks.size()>0){
+                            obj.put("bank",banks.get(0));
+                        }
+                        res.clear();
+                        res.put("orderId", obj.get("id"));
+                        List<Map<String, Object>> invoice = invoiceDao.selectInvoice(res);
+                        if(invoice.size()>0){
+                            obj.put("invoice",invoice.get(0));
                         }
                     }
                     return orders;

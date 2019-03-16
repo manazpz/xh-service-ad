@@ -136,4 +136,67 @@ public class UserApiServiceImpl extends BaseServiceImpl implements UserApiServic
 
         return  Func.functionRtnToJsonObject.apply(rtn);
     }
+
+
+    @Override
+    public JsonObject queryUserBank(JsonObject jsonObject) {
+        Rtn rtn = new Rtn("User");
+        JsonObject json = new JsonObject();
+        Map<String,Object> res = new HashMap<>();
+        Map<String,Object> rest = new HashMap<>();
+        res = GsonHelper.getInstance().fromJson(jsonObject,Map.class);
+        rest.put("openid",res.get("openId"));
+        List<Map<String, Object>> userinfo = userDao.selectUserInfos(rest);
+        if(userinfo.size()>0){
+            rest.clear();
+            rest.put("user_id",userinfo.get(0).get("id"));
+            List<Map<String, Object>> maps = userDao.selectUserBank(rest);
+            if(maps.size()>0){
+                json = GsonHelper.getInstanceJsonparser().parse(GsonHelper.getInstance().toJson(maps.get(0))).getAsJsonObject();
+                rtn.setCode(200);
+                rtn.setData(json);
+                rtn.setMessage("success");
+            }else{
+                rtn.setCode(499);
+                rtn.setMessage("银行信息不存在不存在！");
+            }
+        }else{
+            rtn.setCode(500);
+            rtn.setMessage("用户不存在！");
+        }
+        return  Func.functionRtnToJsonObject.apply(rtn);
+    }
+
+    @Override
+    public JsonObject insertBank(JsonObject jsonObject) {
+        Rtn rtn = new Rtn("User");
+        Map<String,Object> res = new HashMap<>();
+        Map<String,Object> rest = new HashMap<>();
+        res = GsonHelper.getInstance().fromJson(jsonObject,Map.class);
+        rest.put("openid",res.get("openId"));
+        List<Map<String, Object>> maps = userDao.selectUserInfos(rest);
+        if(maps.size()>0){
+            rest.clear();
+            rest.put("basicId",maps.get(0).get("id"));
+            rest.put("bankName",res.get("bank_name"));
+            rest.put("bankAddress",res.get("bank_adress"));
+            rest.put("accountName",res.get("account_name"));
+            rest.put("accountNo",res.get("account_no"));
+            rest.put("createTime",new Date());
+            if("update".equals(res.get("type"))){
+                rest.put("id",res.get("id"));
+                userDao.updateUserBank(rest);
+            }else{
+                rest.put("id",UUIDUtil.getUUID());
+                userDao.insertUsersBank(rest);
+            }
+            rtn.setCode(200);
+            rtn.setMessage("success");
+        }else{
+            rtn.setCode(500);
+            rtn.setMessage("error");
+        }
+
+        return  Func.functionRtnToJsonObject.apply(rtn);
+    }
 }

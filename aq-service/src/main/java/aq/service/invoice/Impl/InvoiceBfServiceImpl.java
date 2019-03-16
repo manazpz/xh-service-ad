@@ -50,6 +50,9 @@ public class InvoiceBfServiceImpl extends BaseServiceImpl  implements InvoiceBfS
             res.put("id", UUIDUtil.getUUID());
             res.put("createUser", user.getUserId());
             res.put("createTime", DateTime.compareDate(res.get("createTime").toString()));
+            res.put("obligate",res.get("account_no"));//收款人账号
+            res.put("obligate1",res.get("payment"));//付款人
+            res.put("obligate2",res.get("paymentno"));//付款人账号
             invoiceDao.insertInvoice(res);
             res.clear();
             res.put("lastCreateUser",user.getUserId());
